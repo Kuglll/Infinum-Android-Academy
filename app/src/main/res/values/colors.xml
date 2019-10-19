@@ -7,4 +7,7 @@
     <color name="light_pink">#ffccd5</color>
     <color name="grey">#eaeaea</color>
     <color name="white">#ffffff</color>
+    <color name="black">#2e2e2e</color>
+    <color name="showName">#505050</color>
+    <color name="showDate">#a0a0a0</color>
 </resources>
