@@ -4,7 +4,7 @@
     <item android:top="-4dp" android:right="-4dp" android:left="-4dp">
         <shape>
             <stroke android:width="3dp"
-                    android:color="#eaeaea" />
+                    android:color="@color/pink" />
         </shape>
     </item>
 
