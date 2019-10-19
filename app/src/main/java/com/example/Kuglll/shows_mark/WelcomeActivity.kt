@@ -17,7 +17,7 @@ class WelcomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_welcome)
 
-        var username : String? = intent.getStringExtra("username").split("@")[0]
+        var username = intent.getStringExtra("username").split("@")[0]
         welcomeUserTextview.text = "Welcome $username"
 
         Handler().postDelayed(this::startShowActivity, 2000)

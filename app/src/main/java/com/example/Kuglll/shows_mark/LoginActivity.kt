@@ -16,27 +16,24 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        var button_enabled = false
         val mail_regex = Regex("[^@]+@[^\\.]+\\..+")
         val textwatcher = object : TextWatcher {
-            override fun afterTextChanged(p0: Editable?) {
+            override fun afterTextChanged(s: Editable?) {
 
             }
 
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
             }
 
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val username = usernameEditText.text
                 val password = passwordEdittext.text
 
                 if(username.length >= 1 && password.length >= 6){
-                    loginButton.setBackgroundResource(R.drawable.rectangle)
-                    button_enabled = true
+                    loginButton.isEnabled = true
                 } else {
-                    loginButton.setBackgroundResource(R.drawable.rectangle_light)
-                    button_enabled = false
+                    loginButton.isEnabled = false
                 }
             }
         }
@@ -46,12 +43,10 @@ class LoginActivity : AppCompatActivity() {
 
         loginButton.setOnClickListener(object : View.OnClickListener{
             override fun onClick(p0: View?) {
-                if(button_enabled){
-                    if (mail_regex.matches(usernameEditText.text)){
-                        startNewActivity()
-                    } else{
-                        displayWarning()
-                    }
+                if (mail_regex.matches(usernameEditText.text)){
+                    startNewActivity()
+                } else{
+                    displayWarning()
                 }
             }
         })
@@ -60,7 +55,7 @@ class LoginActivity : AppCompatActivity() {
             override fun onClick(p0: View?) {
                 println(passwordEdittext.inputType)
                 if(passwordEdittext.inputType == InputType.TYPE_CLASS_TEXT) {
-                    passwordEdittext.inputType = 129;
+                    passwordEdittext.inputType = 129
                     passwordEdittext.setSelection(passwordEdittext.text.length)
                 } else{
                     passwordEdittext.inputType = InputType.TYPE_CLASS_TEXT
