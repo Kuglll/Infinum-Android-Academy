@@ -72,7 +72,6 @@ class LoginActivity : AppCompatActivity() {
             }
         })
 
-
     }
 
     fun startNewActivity(){
