@@ -45,21 +45,9 @@ class LoginActivity : AppCompatActivity() {
             override fun onClick(p0: View?) {
                 if (mail_regex.matches(usernameEditText.text)){
                     startNewActivity()
+                    //WelcomeActivity.startWelcomeActivity(usernameEditText.text.toString())
                 } else{
                     displayWarning()
-                }
-            }
-        })
-
-        eye.setOnClickListener(object : View.OnClickListener{
-            override fun onClick(p0: View?) {
-                println(passwordEdittext.inputType)
-                if(passwordEdittext.inputType == InputType.TYPE_CLASS_TEXT) {
-                    passwordEdittext.inputType = 129
-                    passwordEdittext.setSelection(passwordEdittext.text.length)
-                } else{
-                    passwordEdittext.inputType = InputType.TYPE_CLASS_TEXT
-                    passwordEdittext.setSelection(passwordEdittext.text.length)
                 }
             }
         })

@@ -57,12 +57,16 @@
         android:id="@+id/passwordTextInputLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintHorizontal_weight="8"
+        app:passwordToggleEnabled="true"
+        app:passwordToggleDrawable="@drawable/eye"
+        app:passwordToggleTint="@color/pink"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/eye"
         app:layout_constraintTop_toBottomOf="@id/usernameTextInputLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="85dp"
-        android:layout_marginStart="16dp">
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp">
 
         <EditText
             android:id="@+id/passwordEdittext"
@@ -87,20 +91,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 
-    <ImageView
-        android:id="@+id/eye"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="85dp"
-        android:layout_marginEnd="16dp"
-        android:src="@drawable/eye"
-        android:background="@drawable/underline_grey"
-        android:paddingBottom="24dp"
-        android:scaleType="fitEnd"
-        app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintTop_toBottomOf="@id/usernameTextInputLayout"
-        app:layout_constraintStart_toEndOf="@id/passwordTextInputLayout"
-        app:layout_constraintEnd_toEndOf="parent"/>
+
 
     <TextView
         android:id="@+id/loginButton"
