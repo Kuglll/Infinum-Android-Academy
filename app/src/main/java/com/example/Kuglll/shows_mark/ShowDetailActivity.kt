@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_show_detail.*
 import kotlinx.android.synthetic.main.toolbar.*
@@ -18,28 +19,33 @@ class ShowDetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_detail)
 
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
         val title = intent.getStringExtra("toolbarTitle")
         toolbarTitle.text = title
 
         showID = intent.getIntExtra("showID", -1)
         episodes = ShowActivity.storage.shows[showID].episodes
-
         showDescription.text = ShowActivity.storage.shows[showID].description
+
         floatingButton.setOnClickListener(object : View.OnClickListener{
             override fun onClick(p0: View?) {
                 startAddEpisodeActivity()
             }
         })
 
+        toolbar.setNavigationOnClickListener(object : View.OnClickListener{
+            override fun onClick(p0: View?) {
+                finish()
+            }
+        })
+
         episodesRecyclerView.layoutManager = LinearLayoutManager(this)
         episodesRecyclerView.adapter = EpisodesAdapter(episodes)
-
 
     }
 
     override fun onResume() {
         super.onResume()
-        println("on resume")
 
         if(episodes.size > 0){
             episodesRecyclerView.visibility = View.VISIBLE

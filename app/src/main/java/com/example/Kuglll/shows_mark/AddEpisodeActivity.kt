@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import androidx.appcompat.widget.Toolbar
 import kotlinx.android.synthetic.main.activity_add_episode.*
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_login.loginButton
@@ -17,6 +18,7 @@ class AddEpisodeActivity : AppCompatActivity() {
         setContentView(R.layout.activity_add_episode)
 
         val showID = intent.getIntExtra("showID", -1)
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
         toolbarTitle.text = "Add episode"
 
         val textwatcher = object : TextWatcher {
@@ -42,6 +44,13 @@ class AddEpisodeActivity : AppCompatActivity() {
         saveButton.setOnClickListener(object : View.OnClickListener{
             override fun onClick(p0: View?) {
                 ShowActivity.storage.shows[showID].addEpisode(episodeTitleEditText.text.toString())
+                finish()
+            }
+        })
+
+        toolbar.setNavigationOnClickListener(object : View.OnClickListener{
+            override fun onClick(p0: View?) {
+                //check if there is something in edittext + dialog
                 finish()
             }
         })
