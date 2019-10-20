@@ -24,7 +24,7 @@ class EpisodesAdapter(val dataset: List<String>) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.episodeTitle?.text = "$numberOfEpisodes. ${dataset.get(position)}"
+        holder.episodeTitle.text = "$numberOfEpisodes. ${dataset.get(position)}"
         numberOfEpisodes++
     }
 

@@ -30,7 +30,6 @@ class AddEpisodeActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val episodeTitle = episodeTitleEditText.text
-                val episodeDescription = episodeDescriptionEditText.text
 
                 if(episodeTitle.length >= 1){
                     saveButton.isEnabled = true
