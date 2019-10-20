@@ -16,6 +16,7 @@ class AddEpisodeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_episode)
 
+        val showID = intent.getIntExtra("showID", -1)
         toolbarTitle.text = "Add episode"
 
         val textwatcher = object : TextWatcher {
@@ -31,22 +32,23 @@ class AddEpisodeActivity : AppCompatActivity() {
                 val episodeTitle = episodeTitleEditText.text
                 val episodeDescription = episodeDescriptionEditText.text
 
-                if(episodeTitle.length >= 1 && episodeDescription.length >= 1){
-                    loginButton.isEnabled = true
+                if(episodeTitle.length >= 1){
+                    saveButton.isEnabled = true
                 } else {
-                    loginButton.isEnabled = false
+                    saveButton.isEnabled = false
                 }
             }
         }
 
         saveButton.setOnClickListener(object : View.OnClickListener{
             override fun onClick(p0: View?) {
-
+                ShowActivity.storage.shows[showID].addEpisode(episodeTitleEditText.text.toString())
+                finish()
             }
         })
 
-        usernameEditText.addTextChangedListener(textwatcher)
-        passwordEdittext.addTextChangedListener(textwatcher)
+        episodeTitleEditText.addTextChangedListener(textwatcher)
+        episodeDescriptionEditText.addTextChangedListener(textwatcher)
 
 
     }

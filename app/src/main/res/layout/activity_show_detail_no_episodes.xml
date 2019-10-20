@@ -11,10 +11,9 @@
         layout="@layout/toolbar"/>
 
     <TextView
-        android:id="@+id/showDescription"
+        android:id="@+id/showDescriptionNoEpisodes"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="test testdegldf, bvdfhdg\nihdbfgjbndjfbgndfhehd\nkjnskg\n\|bhg bqfweff"
         android:textColor="@color/greyText"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -29,7 +28,7 @@
         android:text="Episodes"
         android:textSize="20sp"
         android:textColor="@color/black"
-        app:layout_constraintTop_toBottomOf="@id/showDescription"
+        app:layout_constraintTop_toBottomOf="@id/showDescriptionNoEpisodes"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="40dp"
@@ -70,7 +69,7 @@
         android:textAlignment="center"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingButton"
+        android:id="@+id/floatingButtonNoEpisodes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
