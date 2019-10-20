@@ -21,7 +21,7 @@ class ShowActivity : AppCompatActivity() {
         setContentView(R.layout.activity_show)
 
         showsRecyclerView.layoutManager = LinearLayoutManager(this)
-        showsRecyclerView.adapter = ShowsAdapter(shows)
+        showsRecyclerView.adapter = ShowsAdapter(shows, this)
     }
 
 

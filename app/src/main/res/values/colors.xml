@@ -2,12 +2,12 @@
 <resources>
     <color name="colorPrimary">#B0B0B0</color>
     <color name="colorPrimaryDark">#B0B0B0</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorAccent">#ff758c</color>
     <color name="pink">#ff758c</color>
     <color name="light_pink">#ffccd5</color>
     <color name="grey">#eaeaea</color>
     <color name="white">#ffffff</color>
     <color name="black">#2e2e2e</color>
-    <color name="showName">#505050</color>
+    <color name="greyText">#505050</color>
     <color name="showDate">#a0a0a0</color>
 </resources>

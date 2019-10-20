@@ -1,12 +1,15 @@
 package com.example.Kuglll.shows_mark
 
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.show_item.view.*
 
-class ShowsAdapter(private val dataset: List<Show>) :
+class ShowsAdapter(private val dataset: List<Show>, val activity: Activity) :
     RecyclerView.Adapter<ShowsAdapter.ShowViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShowViewHolder {
@@ -34,8 +37,13 @@ class ShowsAdapter(private val dataset: List<Show>) :
                 itemView.showDate.text = "(${item.start_date} - )"
             }
             itemView.setOnClickListener {
-                //on click
+                startShowDetailActivity()
             }
         }
+    }
+
+    fun startShowDetailActivity(){
+        val intent = Intent(activity, ShowDetailActivity::class.java)
+        activity.startActivity(intent)
     }
 }
