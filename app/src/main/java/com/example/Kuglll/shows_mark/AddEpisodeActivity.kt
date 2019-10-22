@@ -1,5 +1,7 @@
 package com.example.Kuglll.shows_mark
 
+import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
@@ -11,13 +13,23 @@ import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_login.loginButton
 import kotlinx.android.synthetic.main.toolbar.*
 
+private const val SHOWID = "showid"
+
 class AddEpisodeActivity : AppCompatActivity() {
+
+    companion object {
+        fun startAddEpisodeActvity(context : Context, showID : Int): Intent {
+            val intent = Intent(context, AddEpisodeActivity::class.java)
+            intent.putExtra(SHOWID, showID)
+            return intent
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_episode)
 
-        val showID = intent.getIntExtra("showID", -1)
+        val showID = intent.getIntExtra(SHOWID, -1)
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         toolbarTitle.text = "Add episode"
 

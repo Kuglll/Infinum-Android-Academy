@@ -1,5 +1,7 @@
 package com.example.Kuglll.shows_mark
 
+import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.LinearLayout
@@ -17,6 +19,13 @@ class ShowActivity : AppCompatActivity() {
             Show(3, "Jane The Virgin", 2014, 0, R.drawable.jane),
             Show(4, "Sherlock", 2010, 0, R.drawable.sherlock)
         )
+    }
+
+    companion object{
+        fun startShowActivity(context : Context) : Intent {
+            val intent = Intent(context, ShowActivity::class.java)
+            return intent
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

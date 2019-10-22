@@ -44,20 +44,13 @@ class LoginActivity : AppCompatActivity() {
         loginButton.setOnClickListener(object : View.OnClickListener{
             override fun onClick(p0: View?) {
                 if (mail_regex.matches(usernameEditText.text)){
-                    startNewActivity()
-                    //WelcomeActivity.startWelcomeActivity(usernameEditText.text.toString())
+                    startActivity(WelcomeActivity.startWelcomeActivity(this@LoginActivity, usernameEditText.text.toString()))
                 } else{
                     displayWarning()
                 }
             }
         })
 
-    }
-
-    fun startNewActivity(){
-        val intent = Intent(this, WelcomeActivity::class.java)
-        intent.putExtra("username", usernameEditText.text.toString())
-        startActivity(intent)
     }
 
     fun displayWarning(){

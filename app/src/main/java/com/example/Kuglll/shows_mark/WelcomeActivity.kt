@@ -1,5 +1,6 @@
 package com.example.Kuglll.shows_mark
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -15,9 +16,17 @@ import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 
 
+private const val USERNAME = "username"
+
 class WelcomeActivity : AppCompatActivity() {
 
-    private val USERNAME = "username"
+    companion object {
+        fun startWelcomeActivity(context: Context, username : String): Intent {
+            val intent = Intent(context, WelcomeActivity::class.java)
+            intent.putExtra(USERNAME, username)
+            return intent
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,16 +39,6 @@ class WelcomeActivity : AppCompatActivity() {
     }
 
     fun startShowActivity(){
-        val intent = Intent(this, ShowActivity::class.java)
-        startActivity(intent)
+        startActivity(ShowActivity.startShowActivity(this@WelcomeActivity))
     }
-
-    companion object {
-        fun startWelcomeActivity(username : String) {
-            //val intent = Intent(this, WelcomeActivity::class.java)
-            //intent.putExtra(USERNAME@WelcomeActivity, username)
-            return
-        }
-    }
-
 }
