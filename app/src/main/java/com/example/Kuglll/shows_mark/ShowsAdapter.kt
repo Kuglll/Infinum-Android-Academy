@@ -37,7 +37,7 @@ class ShowsAdapter(private val dataset: List<Show>, val activity: Activity) :
                 itemView.showDate.text = "(${item.start_date} - )"
             }
             itemView.setOnClickListener {
-                activity.startActivity(ShowDetailActivity.startShowDetailActivity(activity, item.name, item.ID))
+                activity.startActivity(ShowDetailActivity.startShowDetailActivity(activity, item.ID))
             }
         }
     }

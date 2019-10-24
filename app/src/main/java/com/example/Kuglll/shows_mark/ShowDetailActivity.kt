@@ -20,9 +20,8 @@ class ShowDetailActivity : AppCompatActivity() {
     var episodes : MutableList<String> = ArrayList()
 
     companion object{
-        fun startShowDetailActivity(context : Context, showname : String, showID : Int) : Intent{
+        fun startShowDetailActivity(context : Context, showID : Int) : Intent{
             val intent = Intent(context, ShowDetailActivity::class.java)
-            intent.putExtra(SHOWNAME, showname)
             intent.putExtra(SHOWID, showID)
             return intent
         }
@@ -33,7 +32,7 @@ class ShowDetailActivity : AppCompatActivity() {
         setContentView(R.layout.activity_show_detail)
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        val title = intent.getStringExtra(SHOWNAME)
+        val title = ShowActivity.storage.shows[showID].name
         toolbarTitle.text = title
 
         showID = intent.getIntExtra(SHOWID, -1)
@@ -48,7 +47,7 @@ class ShowDetailActivity : AppCompatActivity() {
 
         toolbar.setNavigationOnClickListener(object : View.OnClickListener{
             override fun onClick(p0: View?) {
-                finish()
+                onBackPressed()
             }
         })
 

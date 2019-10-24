@@ -9,8 +9,6 @@ import android.text.TextWatcher
 import android.view.View
 import androidx.appcompat.widget.Toolbar
 import kotlinx.android.synthetic.main.activity_add_episode.*
-import kotlinx.android.synthetic.main.activity_login.*
-import kotlinx.android.synthetic.main.activity_login.loginButton
 import kotlinx.android.synthetic.main.toolbar.*
 
 private const val SHOWID = "showid"
@@ -63,7 +61,7 @@ class AddEpisodeActivity : AppCompatActivity() {
         toolbar.setNavigationOnClickListener(object : View.OnClickListener{
             override fun onClick(p0: View?) {
                 //check if there is something in edittext + dialog
-                finish()
+                onBackPressed()
             }
         })
 

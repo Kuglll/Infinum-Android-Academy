@@ -13,8 +13,6 @@ import kotlinx.android.synthetic.main.show_item.view.*
 class EpisodesAdapter(val dataset: List<String>) :
     RecyclerView.Adapter<ViewHolder>() {
 
-    var numberOfEpisodes = 1
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.episodes_item, parent, false))
     }
@@ -24,8 +22,7 @@ class EpisodesAdapter(val dataset: List<String>) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.episodeTitle.text = "$numberOfEpisodes. ${dataset.get(position)}"
-        numberOfEpisodes++
+        holder.episodeTitle.text = "${position+1}. ${dataset.get(position)}"
     }
 
 }
