@@ -11,15 +11,18 @@ import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : AppCompatActivity() {
 
+    var userLogedIn = false
+    val mail_regex = Regex("[^@]+@[^\\.]+\\..+")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        val mail_regex = Regex("[^@]+@[^\\.]+\\..+")
+        if(userLogedIn) startActivity(ShowActivity.startShowActivity(this@LoginActivity))
+
 
         usernameEditText.doOnTextChanged { text, start, count, after ->  validateInput()}
         passwordEdittext.doOnTextChanged { text, start, count, after ->  validateInput()}
-
 
         loginButton.setOnClickListener(object : View.OnClickListener{
             override fun onClick(p0: View?) {
@@ -30,7 +33,6 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
         })
-
     }
 
     fun validateInput(){
