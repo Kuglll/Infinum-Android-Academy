@@ -34,7 +34,7 @@ class ShowDetailActivity : AppCompatActivity() {
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         val title = ShowActivity.storage.shows[showID].name
         toolbarTitle.text = title
-
+        
         showID = intent.getIntExtra(SHOWID, -1)
         episodes = ShowActivity.storage.shows[showID].episodes
         showDescription.text = ShowActivity.storage.shows[showID].description
