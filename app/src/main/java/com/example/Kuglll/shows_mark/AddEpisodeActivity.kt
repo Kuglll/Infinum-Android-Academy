@@ -1,5 +1,6 @@
 package com.example.Kuglll.shows_mark
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -54,6 +55,7 @@ class AddEpisodeActivity : AppCompatActivity() {
         saveButton.setOnClickListener(object : View.OnClickListener{
             override fun onClick(p0: View?) {
                 ShowActivity.storage.shows[showID].addEpisode(episodeTitleEditText.text.toString())
+                setResult(Activity.RESULT_OK)
                 finish()
             }
         })

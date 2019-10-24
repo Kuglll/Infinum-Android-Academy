@@ -9,8 +9,11 @@ import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_show_detail.*
 import kotlinx.android.synthetic.main.toolbar.*
+import android.app.Activity
 
-private const val SHOWNAME = "showname"
+
+
+private const val REQUESTCODE = 1
 private const val SHOWID = "showid"
 
 class ShowDetailActivity : AppCompatActivity() {
@@ -31,17 +34,17 @@ class ShowDetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_detail)
 
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        val title = ShowActivity.storage.shows[showID].name
-        toolbarTitle.text = title
-        
         showID = intent.getIntExtra(SHOWID, -1)
+
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        toolbarTitle.text = ShowActivity.storage.shows[showID].name
+
         episodes = ShowActivity.storage.shows[showID].episodes
         showDescription.text = ShowActivity.storage.shows[showID].description
 
         floatingButton.setOnClickListener(object : View.OnClickListener{
             override fun onClick(p0: View?) {
-                startActivity(AddEpisodeActivity.startAddEpisodeActvity(this@ShowDetailActivity, showID))
+                startActivityForResult(AddEpisodeActivity.startAddEpisodeActvity(this@ShowDetailActivity, showID), REQUESTCODE)
             }
         })
 
@@ -58,14 +61,27 @@ class ShowDetailActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-
-        if(episodes.size > 0){
+        if(episodes.size>0){
             episodesRecyclerView.visibility = View.VISIBLE
             iconSleep.visibility = View.GONE
             fallenAsleepTextView.visibility = View.GONE
             fallenAsleepTextView2.visibility = View.GONE
-            episodesRecyclerView.adapter?.notifyItemInserted(episodes.size)
+        }else {
+            episodesRecyclerView.visibility = View.GONE
+            iconSleep.visibility = View.VISIBLE
+            fallenAsleepTextView.visibility = View.VISIBLE
+            fallenAsleepTextView2.visibility = View.VISIBLE
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
+        super.onActivityResult(requestCode, resultCode, intent)
+        if (requestCode == REQUESTCODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                episodesRecyclerView.adapter?.notifyItemInserted(episodes.size)
+            }
+        }
+
     }
 
 }
