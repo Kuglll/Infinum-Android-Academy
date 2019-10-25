@@ -8,7 +8,9 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
+import androidx.core.widget.doOnTextChanged
 import kotlinx.android.synthetic.main.activity_add_episode.*
 import kotlinx.android.synthetic.main.toolbar.*
 
@@ -32,25 +34,6 @@ class AddEpisodeActivity : AppCompatActivity() {
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         toolbarTitle.text = "Add episode"
 
-        val textwatcher = object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val episodeTitle = episodeTitleEditText.text
-
-                if(episodeTitle.length >= 1){
-                    saveButton.isEnabled = true
-                } else {
-                    saveButton.isEnabled = false
-                }
-            }
-        }
 
         saveButton.setOnClickListener(object : View.OnClickListener{
             override fun onClick(p0: View?) {
@@ -62,14 +45,50 @@ class AddEpisodeActivity : AppCompatActivity() {
 
         toolbar.setNavigationOnClickListener(object : View.OnClickListener{
             override fun onClick(p0: View?) {
-                //check if there is something in edittext + dialog
                 onBackPressed()
             }
         })
 
-        episodeTitleEditText.addTextChangedListener(textwatcher)
-        episodeDescriptionEditText.addTextChangedListener(textwatcher)
+        episodeTitleEditText.doOnTextChanged { text, start, count, after ->  validateInput()}
+        episodeDescriptionEditText.doOnTextChanged { text, start, count, after -> validateInput() }
 
+    }
 
+    override fun onBackPressed() {
+        if(textInInputFields()){
+            displayDialog()
+        } else{
+            super.onBackPressed()
+        }
+    }
+
+    fun textInInputFields() : Boolean{
+        return episodeTitleEditText.text.isNotEmpty() || episodeDescriptionEditText.text.isNotEmpty()
+    }
+
+    fun validateInput() {
+        val episodeTitle = episodeTitleEditText.text
+        if(episodeTitle.length >= 1){
+            saveButton.isEnabled = true
+        } else {
+            saveButton.isEnabled = false
+        }
+    }
+
+    fun displayDialog(){
+        val builder = AlertDialog.Builder(this@AddEpisodeActivity)
+        builder.setTitle("Are you sure you want to quit?")
+        builder.setMessage("You left text in input fields.")
+
+        builder.setPositiveButton("YES"){dialog, which ->
+            finish()
+        }
+
+        builder.setNegativeButton("No"){dialog,which ->
+            //I think I can ignore this
+        }
+
+        val dialog: AlertDialog = builder.create()
+        dialog.show()
     }
 }

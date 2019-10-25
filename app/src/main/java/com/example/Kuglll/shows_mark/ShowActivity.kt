@@ -6,12 +6,15 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_show.*
 
 class ShowActivity : AppCompatActivity() {
 
     var userLogedIn = false
+    var userWantsToLogout = false
 
     object storage {
         val shows = mutableListOf<Show>(
@@ -43,11 +46,26 @@ class ShowActivity : AppCompatActivity() {
 
         logoutButton.setOnClickListener(object : View.OnClickListener{
             override fun onClick(p0: View?) {
-                //dialog
-                logout()
-                startActivity(LoginActivity.startLoginActivity(this@ShowActivity))
+                displayDialog()
             }
         })
+    }
+
+    fun displayDialog(){
+        val builder = AlertDialog.Builder(this@ShowActivity)
+        builder.setTitle("Are you sure you want to log out?")
+
+        builder.setPositiveButton("YES"){dialog, which ->
+            logout()
+            startActivity(LoginActivity.startLoginActivity(this@ShowActivity))
+        }
+
+        builder.setNegativeButton("No"){dialog,which ->
+            //I think I can ignore this
+        }
+
+        val dialog: AlertDialog = builder.create()
+        dialog.show()
     }
 
     fun logout(){
