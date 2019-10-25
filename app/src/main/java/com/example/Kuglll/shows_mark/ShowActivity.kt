@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_show.*
@@ -34,7 +35,21 @@ class ShowActivity : AppCompatActivity() {
 
         showsRecyclerView.layoutManager = LinearLayoutManager(this)
         showsRecyclerView.adapter = ShowsAdapter(storage.shows, this)
+
+        logoutButton.setOnClickListener(object : View.OnClickListener{
+            override fun onClick(p0: View?) {
+                logout()
+                startActivity(LoginActivity.startLoginActivity(this@ShowActivity))
+            }
+        })
     }
 
+    fun logout(){
+        val sharedPref = this?.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE) ?: return
+        with (sharedPref.edit()) {
+            putBoolean(REMEMBERME, false)
+            commit()
+        }
+    }
 
 }

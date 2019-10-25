@@ -1,28 +1,37 @@
 package com.example.Kuglll.shows_mark
 
 import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.TypedValue
 import android.view.View
+import androidx.core.content.ContextCompat.startActivity
 import androidx.core.widget.doOnTextChanged
 import kotlinx.android.synthetic.main.activity_login.*
 
 const val REMEMBERME = "rememberMe"
+const val PREFERENCES = "myPreferences"
 
 class LoginActivity : AppCompatActivity() {
 
     var userLogedIn = false
     val mail_regex = Regex("[^@]+@[^\\.]+\\..+")
 
+    companion object{
+        fun startLoginActivity(context: Context) : Intent{
+            val intent = Intent(context, LoginActivity::class.java)
+            return intent
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        //get userLogedIn from sharedPreferences
-        val sharedPref = this?.getPreferences(Context.MODE_PRIVATE)
+        val sharedPref = this?.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
         userLogedIn = sharedPref.getBoolean(REMEMBERME, false)
 
 
@@ -57,7 +66,7 @@ class LoginActivity : AppCompatActivity() {
 
     fun checkForRememberMe(){
         if (rememberMeCheckBox.isChecked){
-            val sharedPref = this?.getPreferences(Context.MODE_PRIVATE) ?: return
+            val sharedPref = this?.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE) ?: return
             with (sharedPref.edit()) {
                 putBoolean(REMEMBERME, true)
                 commit()
@@ -71,4 +80,5 @@ class LoginActivity : AppCompatActivity() {
         usernameErrorTextview.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
         usernameErrorTextview.setTextColor(resources.getColor(R.color.pink))
     }
+
 }
