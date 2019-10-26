@@ -20,7 +20,7 @@ class ShowDetailActivity : AppCompatActivity() {
 
     var showID = 0
     //there must be a better way of initializing empty list
-    var episodes : MutableList<String> = ArrayList()
+    var episodes : MutableList<Episode> = ArrayList()
 
     companion object{
         fun startShowDetailActivity(context : Context, showID : Int) : Intent{
