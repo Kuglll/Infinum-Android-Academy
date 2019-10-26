@@ -10,6 +10,7 @@ import android.text.TextWatcher
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
+import androidx.constraintlayout.widget.Group
 import androidx.core.widget.doOnTextChanged
 import kotlinx.android.synthetic.main.activity_add_episode.*
 import kotlinx.android.synthetic.main.toolbar.*
@@ -17,6 +18,8 @@ import kotlinx.android.synthetic.main.toolbar.*
 private const val SHOWID = "showid"
 
 class AddEpisodeActivity : AppCompatActivity() {
+
+    var showID = -1
 
     companion object {
         fun startAddEpisodeActvity(context : Context, showID : Int): Intent {
@@ -30,11 +33,24 @@ class AddEpisodeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_episode)
 
-        val showID = intent.getIntExtra(SHOWID, -1)
+        showID = intent.getIntExtra(SHOWID, -1)
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         toolbarTitle.text = "Add episode"
 
+        toolbar.setNavigationOnClickListener(object : View.OnClickListener{
+            override fun onClick(p0: View?) {
+                onBackPressed()
+            }
+        })
 
+        initOnClickListeners()
+
+        episodeTitleEditText.doOnTextChanged { text, start, count, after ->  validateInput()}
+        episodeDescriptionEditText.doOnTextChanged { text, start, count, after -> validateInput() }
+
+    }
+
+    fun initOnClickListeners(){
         saveButton.setOnClickListener(object : View.OnClickListener{
             override fun onClick(p0: View?) {
                 ShowActivity.storage.shows[showID].addEpisode(episodeTitleEditText.text.toString())
@@ -43,15 +59,17 @@ class AddEpisodeActivity : AppCompatActivity() {
             }
         })
 
-        toolbar.setNavigationOnClickListener(object : View.OnClickListener{
+        uploadPhotoGroup.setAllOnClickListeners(object : View.OnClickListener{
             override fun onClick(p0: View?) {
-                onBackPressed()
+                
             }
         })
+    }
 
-        episodeTitleEditText.doOnTextChanged { text, start, count, after ->  validateInput()}
-        episodeDescriptionEditText.doOnTextChanged { text, start, count, after -> validateInput() }
-
+    fun Group.setAllOnClickListeners(listener: View.OnClickListener){
+        referencedIds.forEach { id ->
+            rootView.findViewById<View>(id).setOnClickListener(listener)
+        }
     }
 
     override fun onBackPressed() {
@@ -81,7 +99,9 @@ class AddEpisodeActivity : AppCompatActivity() {
         builder.setMessage("You left text in input fields.")
 
         builder.setPositiveButton("YES"){dialog, which ->
-            finish()
+            episodeTitleEditText.setText("")
+            episodeDescriptionEditText.setText("")
+            onBackPressed()
         }
 
         builder.setNegativeButton("No"){dialog,which ->
