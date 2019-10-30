@@ -24,6 +24,7 @@ import androidx.constraintlayout.widget.Group
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.graphics.drawable.toDrawable
 import androidx.core.widget.doOnTextChanged
 import kotlinx.android.synthetic.main.activity_add_episode.*
 import kotlinx.android.synthetic.main.toolbar.*
@@ -39,6 +40,7 @@ class AddEpisodeActivity : AppCompatActivity() {
 
     var showID = -1
     var pathToFile : String = ""
+    var bitmap : Bitmap? = null
 
     companion object {
         fun startAddEpisodeActvity(context : Context, showID : Int): Intent {
@@ -166,12 +168,25 @@ class AddEpisodeActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_IMAGE_CAPTURE){
-            val bitmap = BitmapFactory.decodeFile(pathToFile)
-            episodePhoto.setImageBitmap(bitmap)
+            bitmap = BitmapFactory.decodeFile(pathToFile)
+            //episodePhoto.setImageBitmap(bitmap)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        println("onResume")
+        if(bitmap != null){
             changePhotoGroup.visibility = View.VISIBLE
+            episodePhoto.setImageBitmap(bitmap)
             changePhotoTextView.text = "Change photo"
             uploadPhotoGroup.visibility = View.GONE
+        } else {
+            changePhotoGroup.visibility = View.GONE
+            changePhotoTextView.text = ""
+            uploadPhotoGroup.visibility = View.VISIBLE
         }
+
     }
 
     override fun onRequestPermissionsResult(
