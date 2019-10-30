@@ -8,6 +8,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -40,7 +42,6 @@ class AddEpisodeActivity : AppCompatActivity() {
 
     var showID = -1
     var pathToFile : String = ""
-    var bitmap : Bitmap? = null
 
     companion object {
         fun startAddEpisodeActvity(context : Context, showID : Int): Intent {
@@ -168,17 +169,17 @@ class AddEpisodeActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_IMAGE_CAPTURE){
-            bitmap = BitmapFactory.decodeFile(pathToFile)
-            //episodePhoto.setImageBitmap(bitmap)
+            var drawable = Drawable.createFromPath(pathToFile)
+            ShowActivity.storage.drawable = drawable
         }
     }
 
     override fun onResume() {
         super.onResume()
-        println("onResume")
-        if(bitmap != null){
+        var drawable = ShowActivity.storage.drawable
+        if (drawable != null){
             changePhotoGroup.visibility = View.VISIBLE
-            episodePhoto.setImageBitmap(bitmap)
+            episodePhoto.setImageDrawable(drawable)
             changePhotoTextView.text = "Change photo"
             uploadPhotoGroup.visibility = View.GONE
         } else {

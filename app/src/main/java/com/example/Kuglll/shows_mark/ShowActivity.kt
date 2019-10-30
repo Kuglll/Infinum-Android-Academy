@@ -2,6 +2,7 @@ package com.example.Kuglll.shows_mark
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -17,6 +18,7 @@ class ShowActivity : AppCompatActivity() {
     var userWantsToLogout = false
 
     object storage {
+        var drawable : Drawable? = null
         val shows = mutableListOf<Show>(
             Show(0, "The Big Bang theory", 2007, 2019, R.drawable.theory),
             Show(1, "The Office", 2005, 2013, R.drawable.office,
