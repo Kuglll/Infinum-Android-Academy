@@ -114,11 +114,7 @@ class AddEpisodeActivity : AppCompatActivity() {
 
     fun validateInput() {
         val episodeTitle = episodeTitleEditText.text
-        if(episodeTitle.length >= 1){
-            saveButton.isEnabled = true
-        } else {
-            saveButton.isEnabled = false
-        }
+        saveButton.isEnabled = episodeTitle.length >= 1
     }
 
     fun displayDialog(){

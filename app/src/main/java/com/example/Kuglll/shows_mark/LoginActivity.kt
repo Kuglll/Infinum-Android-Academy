@@ -31,7 +31,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        val sharedPref = this?.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
+        val sharedPref = this.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
         userLogedIn = sharedPref.getBoolean(REMEMBERME, false)
 
 
@@ -66,10 +66,10 @@ class LoginActivity : AppCompatActivity() {
 
     fun checkForRememberMe(){
         if (rememberMeCheckBox.isChecked){
-            val sharedPref = this?.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE) ?: return
+            val sharedPref = getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE) ?: return
             with (sharedPref.edit()) {
                 putBoolean(REMEMBERME, true)
-                commit()
+                apply()
             }
         }
     }
