@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_show_detail.*
 import kotlinx.android.synthetic.main.toolbar.*
 import android.app.Activity
-
+import androidx.constraintlayout.widget.Group
 
 
 private const val REQUESTCODE = 1
@@ -20,7 +20,7 @@ class ShowDetailActivity : AppCompatActivity() {
 
     var showID = 0
     //there must be a better way of initializing empty list
-    var episodes : MutableList<String> = ArrayList()
+    var episodes : MutableList<Episode> = ArrayList()
 
     companion object{
         fun startShowDetailActivity(context : Context, showID : Int) : Intent{
@@ -42,35 +42,47 @@ class ShowDetailActivity : AppCompatActivity() {
         episodes = ShowActivity.storage.shows[showID].episodes
         showDescription.text = ShowActivity.storage.shows[showID].description
 
-        floatingButton.setOnClickListener(object : View.OnClickListener{
-            override fun onClick(p0: View?) {
-                startActivityForResult(AddEpisodeActivity.startAddEpisodeActvity(this@ShowDetailActivity, showID), REQUESTCODE)
-            }
-        })
-
         toolbar.setNavigationOnClickListener(object : View.OnClickListener{
             override fun onClick(p0: View?) {
                 onBackPressed()
             }
         })
 
+        initOnClickListeners()
+
         episodesRecyclerView.layoutManager = LinearLayoutManager(this)
         episodesRecyclerView.adapter = EpisodesAdapter(episodes)
 
+    }
+
+    fun initOnClickListeners(){
+        floatingButton.setOnClickListener(object : View.OnClickListener{
+            override fun onClick(p0: View?) {
+                startActivityForResult(AddEpisodeActivity.startAddEpisodeActvity(this@ShowDetailActivity, showID), REQUESTCODE)
+            }
+        })
+
+        sleepGroup.setAllOnClickListeners(object : View.OnClickListener{
+            override fun onClick(p0: View?) {
+                startActivityForResult(AddEpisodeActivity.startAddEpisodeActvity(this@ShowDetailActivity, showID), REQUESTCODE)
+            }
+        })
+    }
+
+    fun Group.setAllOnClickListeners(listener: View.OnClickListener){
+        referencedIds.forEach { id ->
+            rootView.findViewById<View>(id).setOnClickListener(listener)
+        }
     }
 
     override fun onResume() {
         super.onResume()
         if(episodes.size>0){
             episodesRecyclerView.visibility = View.VISIBLE
-            iconSleep.visibility = View.GONE
-            fallenAsleepTextView.visibility = View.GONE
-            fallenAsleepTextView2.visibility = View.GONE
+            sleepGroup.visibility = View.GONE
         }else {
             episodesRecyclerView.visibility = View.GONE
-            iconSleep.visibility = View.VISIBLE
-            fallenAsleepTextView.visibility = View.VISIBLE
-            fallenAsleepTextView2.visibility = View.VISIBLE
+            sleepGroup.visibility = View.VISIBLE
         }
     }
 

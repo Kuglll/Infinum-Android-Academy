@@ -7,9 +7,9 @@ data class Show(
     val end_date: Int,
     val imageID: Int,
     var description: String = "Description missing!",
-    var episodes: MutableList<String> = mutableListOf<String>()
+    var episodes: MutableList<Episode> = mutableListOf<Episode>()
 ){
-    fun addEpisode(episode: String){
+    fun addEpisode(episode: Episode){
         episodes.add(episode)
     }
 }

@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.episodes_item.view.*
 import kotlinx.android.synthetic.main.show_item.view.*
 
-class EpisodesAdapter(val dataset: List<String>) :
+class EpisodesAdapter(val dataset: List<Episode>) :
     RecyclerView.Adapter<ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -22,7 +22,7 @@ class EpisodesAdapter(val dataset: List<String>) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.episodeTitle.text = "${position+1}. ${dataset.get(position)}"
+        holder.episodeTitle.text = "${position+1}. ${dataset.get(position).title}"
     }
 
 }
