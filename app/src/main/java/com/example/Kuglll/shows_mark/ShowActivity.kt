@@ -6,26 +6,25 @@ import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.activity_show.*
+import com.example.Kuglll.shows_mark.Adapters.ShowsAdapter
+import com.example.Kuglll.shows_mark.DataClasses.Show
+import kotlinx.android.synthetic.main.fragment_show.*
 
 class ShowActivity : AppCompatActivity() {
 
     var userLogedIn = false
-    var userWantsToLogout = false
 
     object storage {
         var drawable : Drawable? = null
         val shows = mutableListOf<Show>(
-            Show(0, "The Big Bang theory", 2007, 2019, R.drawable.theory),
+            Show(0,"The Big Bang theory",2007,2019,R.drawable.theory),
             Show(1, "The Office", 2005, 2013, R.drawable.office,
                 "A mockumentary on a group of typical office workers, where the workday consists of ego clashes, inappropriate behavior, and tedium."),
-            Show(2, "House M.D.", 2004, 2012, R.drawable.house),
-            Show(3, "Jane The Virgin", 2014, 0, R.drawable.jane),
-            Show(4, "Sherlock", 2010, 0, R.drawable.sherlock)
+            Show(2,"House M.D.",2004,2012,R.drawable.house),
+            Show(3,"Jane The Virgin",2014,0,R.drawable.jane),
+            Show(4,"Sherlock",2010,0,R.drawable.sherlock)
         )
     }
 
@@ -38,13 +37,14 @@ class ShowActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_show)
+        setContentView(R.layout.fragment_show)
 
-        val sharedPref = this?.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
+        val sharedPref = this.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
         userLogedIn = sharedPref.getBoolean(REMEMBERME, false)
 
         showsRecyclerView.layoutManager = LinearLayoutManager(this)
-        showsRecyclerView.adapter = ShowsAdapter(storage.shows, this)
+        showsRecyclerView.adapter =
+            ShowsAdapter(storage.shows, this)
 
         logoutButton.setOnClickListener(object : View.OnClickListener{
             override fun onClick(p0: View?) {
@@ -71,7 +71,7 @@ class ShowActivity : AppCompatActivity() {
     }
 
     fun logout(){
-        val sharedPref = this?.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE) ?: return
+        val sharedPref = this.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE) ?: return
         with (sharedPref.edit()) {
             putBoolean(REMEMBERME, false)
             commit()

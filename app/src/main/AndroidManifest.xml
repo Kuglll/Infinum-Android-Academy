@@ -3,7 +3,7 @@
         package="com.example.Kuglll.shows_mark">
 
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
             android:allowBackup="true"
@@ -12,7 +12,8 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
-        <activity android:name=".AddEpisodeActivity"></activity>
+        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".AddEpisodeActivity" />
         <activity android:name=".ShowDetailActivity" />
         <activity android:name=".ShowActivity" />
         <activity android:name=".WelcomeActivity" />
@@ -23,17 +24,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
-        <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="com.example.Kuglll.shows_mark.fileprovider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-                <meta-data android:name="android.support.FILE_PROVIDER_PATHS"
-                        android:resource="@xml/file_paths">
-                </meta-data>
-        </provider>
 
+        <provider
+                android:name="androidx.core.content.FileProvider"
+                android:authorities="com.example.Kuglll.shows_mark.fileprovider"
+                android:exported="false"
+                android:grantUriPermissions="true">
+            <meta-data
+                    android:name="android.support.FILE_PROVIDER_PATHS"
+                    android:resource="@xml/file_paths"></meta-data>
+        </provider>
     </application>
 
 </manifest>

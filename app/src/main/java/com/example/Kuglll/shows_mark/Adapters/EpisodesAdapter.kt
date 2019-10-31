@@ -1,20 +1,24 @@
-package com.example.Kuglll.shows_mark
+package com.example.Kuglll.shows_mark.Adapters
 
-import android.app.Activity
-import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.Kuglll.shows_mark.DataClasses.Episode
+import com.example.Kuglll.shows_mark.R
 import kotlinx.android.synthetic.main.episodes_item.view.*
-import kotlinx.android.synthetic.main.show_item.view.*
 
 class EpisodesAdapter(val dataset: List<Episode>) :
     RecyclerView.Adapter<ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.episodes_item, parent, false))
+        return ViewHolder(
+            LayoutInflater.from(parent.context).inflate(
+                R.layout.episodes_item,
+                parent,
+                false
+            )
+        )
     }
 
     override fun getItemCount(): Int {

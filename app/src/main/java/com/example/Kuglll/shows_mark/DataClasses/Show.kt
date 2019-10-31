@@ -1,4 +1,4 @@
-package com.example.Kuglll.shows_mark
+package com.example.Kuglll.shows_mark.DataClasses
 
 data class Show(
     val ID: Int,
@@ -7,7 +7,7 @@ data class Show(
     val end_date: Int,
     val imageID: Int,
     var description: String = "Description missing!",
-    var episodes: MutableList<Episode> = mutableListOf<Episode>()
+    var episodes: MutableList<Episode> = mutableListOf()
 ){
     fun addEpisode(episode: Episode){
         episodes.add(episode)

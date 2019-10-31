@@ -35,10 +35,10 @@ class WelcomeActivity : AppCompatActivity() {
         var username = intent.getStringExtra("username").split("@")[0]
         welcomeUserTextview.text = "Welcome $username"
 
-        Handler().postDelayed(this::startShowActivity, 2000)
+        Handler().postDelayed(this::startMainActivity, 2000)
     }
 
-    fun startShowActivity(){
-        startActivity(ShowActivity.startShowActivity(this@WelcomeActivity))
+    fun startMainActivity(){
+        startActivity(MainActivity.startMainActivity(this@WelcomeActivity))
     }
 }

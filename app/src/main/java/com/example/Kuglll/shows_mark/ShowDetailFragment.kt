@@ -10,7 +10,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_show_detail.*
 import kotlinx.android.synthetic.main.toolbar.*
 import android.app.Activity
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import androidx.constraintlayout.widget.Group
+import androidx.fragment.app.Fragment
 import com.example.Kuglll.shows_mark.Adapters.EpisodesAdapter
 import com.example.Kuglll.shows_mark.DataClasses.Episode
 
@@ -18,25 +21,34 @@ import com.example.Kuglll.shows_mark.DataClasses.Episode
 private const val REQUESTCODE = 1
 private const val SHOWID = "showid"
 
-class ShowDetailActivity : AppCompatActivity() {
+class ShowDetailFragment : Fragment() {
 
     var showID = 0
     //there must be a better way of initializing empty list
     var episodes : MutableList<Episode> = ArrayList()
 
     companion object{
-        fun startShowDetailActivity(context : Context, showID : Int) : Intent{
-            val intent = Intent(context, ShowDetailActivity::class.java)
-            intent.putExtra(SHOWID, showID)
-            return intent
+        fun returnShowDetailFragment(showID : Int) : ShowDetailFragment{
+            val args = Bundle()
+            args.putInt(SHOWID, showID)
+            val fragment = ShowDetailFragment()
+            fragment.arguments = args
+            return fragment
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.fragment_show_detail)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_show_detail, container, false)
+    }
 
-        showID = intent.getIntExtra(SHOWID, -1)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        showID = arguments!!.getInt(SHOWID, -1)
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         toolbarTitle.text = ShowActivity.storage.shows[showID].name
@@ -53,9 +65,7 @@ class ShowDetailActivity : AppCompatActivity() {
         initOnClickListeners()
 
         episodesRecyclerView.layoutManager = LinearLayoutManager(this)
-        episodesRecyclerView.adapter =
-            EpisodesAdapter(episodes)
-
+        episodesRecyclerView.adapter = EpisodesAdapter(episodes)
     }
 
     fun initOnClickListeners(){

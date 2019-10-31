@@ -1,12 +1,15 @@
-package com.example.Kuglll.shows_mark
+package com.example.Kuglll.shows_mark.Adapters
 
 import android.app.Activity
-import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.Kuglll.shows_mark.DataClasses.Show
+import com.example.Kuglll.shows_mark.R
+import com.example.Kuglll.shows_mark.ShowDetailFragment
+
+
 import kotlinx.android.synthetic.main.show_item.view.*
 
 class ShowsAdapter(private val dataset: List<Show>, val activity: Activity) :
@@ -37,7 +40,10 @@ class ShowsAdapter(private val dataset: List<Show>, val activity: Activity) :
                 itemView.showDate.text = "(${item.start_date} - )"
             }
             itemView.setOnClickListener {
-                activity.startActivity(ShowDetailActivity.startShowDetailActivity(activity, item.ID))
+                activity.fragmentManager.beginTransaction()
+                    .add(R.id.fragmentContainer, ShowDetailFragment.returnShowDetailFragment(item.ID))
+                    .addToBackStack("ShowDetail")
+                    .commit()
             }
         }
     }
