@@ -7,7 +7,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.Kuglll.shows_mark.DataClasses.Show
 
+const val SHOW_FRAGMENT = "SHOW_FRAGMENT"
+
 class MainActivity : AppCompatActivity() {
+
+    var userLogedIn = false
 
     companion object{
         fun startMainActivity(context : Context) : Intent{
@@ -31,17 +35,32 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        startShowFragment()
+        val sharedPref = getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
+        userLogedIn = sharedPref.getBoolean(REMEMBERME, false)
+
+        if(supportFragmentManager.backStackEntryCount == 0) {
+            displayShowFragment()
+        }
     }
 
-    fun startShowFragment(){
+    fun displayShowFragment(){
         supportFragmentManager.beginTransaction()
-            .add(R.id.fragmentContainer, ShowFragment.displayShowFragment())
-            .addToBackStack("Show")
+            .replace(R.id.fragmentContainer, ShowFragment.returnShowFragment())
+            .addToBackStack(SHOW_FRAGMENT)
             .commit()
     }
 
-
+    override fun onBackPressed() {
+        if(supportFragmentManager.backStackEntryCount == 1){
+            if(userLogedIn) {
+                finishAffinity()
+            } else{
+                startActivity(LoginActivity.startLoginActivity(this))
+            }
+        }else {
+            super.onBackPressed()
+        }
+    }
 
 
 

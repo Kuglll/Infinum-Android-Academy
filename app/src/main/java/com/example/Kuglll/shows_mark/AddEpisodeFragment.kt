@@ -6,12 +6,13 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
 import android.os.Environment.getExternalStoragePublicDirectory
 import android.provider.MediaStore
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
@@ -19,6 +20,9 @@ import androidx.constraintlayout.widget.Group
 import androidx.core.app.ActivityCompat
 import androidx.core.content.FileProvider
 import androidx.core.widget.doOnTextChanged
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
+import com.example.Kuglll.shows_mark.DataClasses.DataViewModel
 import com.example.Kuglll.shows_mark.DataClasses.Episode
 import kotlinx.android.synthetic.main.fragment_add_episode.*
 import kotlinx.android.synthetic.main.toolbar.*
@@ -30,25 +34,37 @@ private const val SHOWID = "showid"
 private const val CAMERA_PERMISSION_REQUEST = 1
 private const val REQUEST_IMAGE_CAPTURE = 2
 
-class AddEpisodeActivity : AppCompatActivity() {
+class AddEpisodeFragment : Fragment() {
 
     var showID = -1
     var pathToFile : String = ""
+    lateinit var viewModel: DataViewModel
 
     companion object {
-        fun startAddEpisodeActvity(context : Context, showID : Int): Intent {
-            val intent = Intent(context, AddEpisodeActivity::class.java)
-            intent.putExtra(SHOWID, showID)
-            return intent
+        fun returnAddEpisodeFragment(showID: Int) : AddEpisodeFragment{
+            val args = Bundle()
+            args.putInt(SHOWID, showID)
+            val fragment = AddEpisodeFragment()
+            fragment.arguments = args
+            return fragment
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.fragment_add_episode)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_add_episode, container, false)
+    }
 
-        showID = intent.getIntExtra(SHOWID, -1)
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        viewModel = ViewModelProviders.of(this).get(DataViewModel::class.java)
+
+        showID = arguments!!.getInt(SHOWID, -1)
+        val toolbar = view.findViewById<Toolbar>(R.id.toolbar)
         toolbarTitle.text = "Add episode"
 
         toolbar.setNavigationOnClickListener(object : View.OnClickListener{
@@ -64,16 +80,14 @@ class AddEpisodeActivity : AppCompatActivity() {
 
     }
 
+
+
     fun initOnClickListeners(){
         saveButton.setOnClickListener(object : View.OnClickListener{
             override fun onClick(p0: View?) {
-                ShowActivity.storage.shows[showID].addEpisode(
-                    Episode(
-                        episodeTitleEditText.text.toString()
-                    )
-                )
-                setResult(Activity.RESULT_OK)
-                finish()
+                MainActivity.storage.shows[showID].addEpisode(Episode(episodeTitleEditText.text.toString()))
+                viewModel.episodeInserted.value = true
+                activity?.onBackPressed()
             }
         })
 
@@ -96,11 +110,11 @@ class AddEpisodeActivity : AppCompatActivity() {
         }
     }
 
-    override fun onBackPressed() {
+    fun onBackPressed() {
         if(textInInputFields()){
             displayDialog()
         } else{
-            super.onBackPressed()
+            activity?.onBackPressed()
         }
     }
 
@@ -114,7 +128,7 @@ class AddEpisodeActivity : AppCompatActivity() {
     }
 
     fun displayDialog(){
-        val builder = AlertDialog.Builder(this@AddEpisodeActivity)
+        val builder = AlertDialog.Builder(requireContext())
         builder.setTitle("Are you sure you want to quit?")
         builder.setMessage("You left text in input fields.")
 
@@ -134,19 +148,19 @@ class AddEpisodeActivity : AppCompatActivity() {
 
     fun startCamera(){
         //if both permissions are granted, start the camera
-        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
+        if(ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
             Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
-                takePictureIntent.resolveActivity(packageManager)?.also {
+                takePictureIntent.resolveActivity(activity!!.packageManager)?.also {
                     val photoFile = createPhotoFile()
                     pathToFile = photoFile.absolutePath
-                    val photoURI = FileProvider.getUriForFile(this, "com.example.Kuglll.shows_mark.fileprovider", photoFile)
+                    val photoURI = FileProvider.getUriForFile(requireContext(), "com.example.Kuglll.shows_mark.fileprovider", photoFile)
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
                     startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
                 }
             }
         }else{ //request for both permissions
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE), CAMERA_PERMISSION_REQUEST)
+            ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE), CAMERA_PERMISSION_REQUEST)
         }
     }
 
@@ -162,13 +176,13 @@ class AddEpisodeActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_IMAGE_CAPTURE){
             var drawable = Drawable.createFromPath(pathToFile)
-            ShowActivity.storage.drawable = drawable
+            MainActivity.storage.drawable = drawable
         }
     }
 
     override fun onResume() {
         super.onResume()
-        var drawable = ShowActivity.storage.drawable
+        var drawable = MainActivity.storage.drawable
         if (drawable != null) {
             changePhotoGroup.visibility = View.VISIBLE
             episodePhoto.setImageDrawable(drawable)
@@ -190,7 +204,7 @@ class AddEpisodeActivity : AppCompatActivity() {
             if(grantResults.isNotEmpty() && allPermisionGranted(grantResults)){
                 startCamera()
             } else{
-                Toast.makeText(this, "To use camera, we need your permissions", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), "To use camera, we need your permissions", Toast.LENGTH_LONG).show()
             }
         } else{
             super.onRequestPermissionsResult(requestCode, permissions, grantResults)

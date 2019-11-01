@@ -1,31 +1,28 @@
 package com.example.Kuglll.shows_mark
 
-import android.content.Context
-import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_show_detail.*
 import kotlinx.android.synthetic.main.toolbar.*
-import android.app.Activity
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.Group
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
 import com.example.Kuglll.shows_mark.Adapters.EpisodesAdapter
+import com.example.Kuglll.shows_mark.DataClasses.DataViewModel
 import com.example.Kuglll.shows_mark.DataClasses.Episode
 
-
-private const val REQUESTCODE = 1
 private const val SHOWID = "showid"
 
 class ShowDetailFragment : Fragment() {
 
     var showID = 0
-    //there must be a better way of initializing empty list
     var episodes : MutableList<Episode> = ArrayList()
+    lateinit var viewModel: DataViewModel
+
 
     companion object{
         fun returnShowDetailFragment(showID : Int) : ShowDetailFragment{
@@ -48,36 +45,39 @@ class ShowDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel = ViewModelProviders.of(this).get(DataViewModel::class.java)
         showID = arguments!!.getInt(SHOWID, -1)
 
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        toolbarTitle.text = ShowActivity.storage.shows[showID].name
+        val toolbar = view.findViewById<Toolbar>(R.id.toolbar)
+        toolbarTitle.text = MainActivity.storage.shows[showID].name
 
-        episodes = ShowActivity.storage.shows[showID].episodes
-        showDescription.text = ShowActivity.storage.shows[showID].description
+        episodes = MainActivity.storage.shows[showID].episodes
+        showDescription.text = MainActivity.storage.shows[showID].description
 
         toolbar.setNavigationOnClickListener(object : View.OnClickListener{
             override fun onClick(p0: View?) {
-                onBackPressed()
+                activity?.onBackPressed()
             }
         })
 
+        displayEpisodes()
+
         initOnClickListeners()
 
-        episodesRecyclerView.layoutManager = LinearLayoutManager(this)
+        episodesRecyclerView.layoutManager = LinearLayoutManager(activity)
         episodesRecyclerView.adapter = EpisodesAdapter(episodes)
     }
 
     fun initOnClickListeners(){
         floatingButton.setOnClickListener(object : View.OnClickListener{
             override fun onClick(p0: View?) {
-                startActivityForResult(AddEpisodeActivity.startAddEpisodeActvity(this@ShowDetailActivity, showID), REQUESTCODE)
+                displayAddEpisodeFragment()
             }
         })
 
         sleepGroup.setAllOnClickListeners(object : View.OnClickListener{
             override fun onClick(p0: View?) {
-                startActivityForResult(AddEpisodeActivity.startAddEpisodeActvity(this@ShowDetailActivity, showID), REQUESTCODE)
+                displayAddEpisodeFragment()
             }
         })
     }
@@ -88,8 +88,15 @@ class ShowDetailFragment : Fragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
+    fun displayAddEpisodeFragment(){
+        activity!!.supportFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, AddEpisodeFragment.returnAddEpisodeFragment(showID))
+            .addToBackStack("AddEpisode")
+            .commit()
+    }
+
+    fun displayEpisodes() {
+        checkForNewEpisode()
         if(episodes.size>0){
             episodesRecyclerView.visibility = View.VISIBLE
             sleepGroup.visibility = View.GONE
@@ -99,14 +106,14 @@ class ShowDetailFragment : Fragment() {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
-        super.onActivityResult(requestCode, resultCode, intent)
-        if (requestCode == REQUESTCODE) {
-            if (resultCode == Activity.RESULT_OK) {
-                episodesRecyclerView.adapter?.notifyItemInserted(episodes.size)
-            }
-        }
 
+    fun checkForNewEpisode(){
+        if(viewModel.episodeInserted.value == true){
+            viewModel.episodeInserted.value = false
+            episodesRecyclerView.adapter?.notifyItemInserted(episodes.size)
+        }
     }
 
+
 }
+

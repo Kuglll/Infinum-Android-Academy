@@ -35,7 +35,7 @@ class LoginActivity : AppCompatActivity() {
         userLogedIn = sharedPref.getBoolean(REMEMBERME, false)
 
 
-        if(userLogedIn) startActivity(ShowActivity.startShowActivity(this@LoginActivity))
+        if(userLogedIn) startActivity(MainActivity.startMainActivity(this@LoginActivity))
 
 
         usernameEditText.doOnTextChanged { text, start, count, after ->  validateInput()}
