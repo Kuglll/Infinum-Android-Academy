@@ -2,7 +2,7 @@ package com.example.Kuglll.shows_mark
 
 import android.Manifest
 import android.app.Activity
-import android.content.Context
+import android.app.Dialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
@@ -13,6 +13,8 @@ import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.NumberPicker
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
@@ -39,6 +41,9 @@ class AddEpisodeFragment : Fragment() {
     var showID = -1
     var pathToFile : String = ""
     lateinit var viewModel: DataViewModel
+
+    var episodeNumber = 1
+    var seasonNumber = 1
 
     companion object {
         fun returnAddEpisodeFragment(showID: Int) : AddEpisodeFragment{
@@ -85,7 +90,7 @@ class AddEpisodeFragment : Fragment() {
     fun initOnClickListeners(){
         saveButton.setOnClickListener(object : View.OnClickListener{
             override fun onClick(p0: View?) {
-                MainActivity.storage.shows[showID].addEpisode(Episode(episodeTitleEditText.text.toString()))
+                MainActivity.storage.shows[showID].addEpisode(Episode(episodeTitleEditText.text.toString(), episodeNumber ,seasonNumber))
                 viewModel.episodeInserted.value = true
                 activity?.onBackPressed()
             }
@@ -100,6 +105,12 @@ class AddEpisodeFragment : Fragment() {
         changePhotoGroup.setAllOnClickListeners(object : View.OnClickListener{
             override fun onClick(p0: View?) {
                 startCamera()
+            }
+        })
+
+        episodeSeasonGroup.setAllOnClickListeners(object : View.OnClickListener{
+            override fun onClick(p0: View?) {
+                displayNumberPicker()
             }
         })
     }
@@ -143,6 +154,31 @@ class AddEpisodeFragment : Fragment() {
         }
 
         val dialog: AlertDialog = builder.create()
+        dialog.show()
+    }
+
+    fun displayNumberPicker(){
+        val dialog = Dialog(context!!)
+        dialog.setContentView(R.layout.number_picker_dialog)
+
+        val episodeNumberPicker : NumberPicker = dialog.findViewById(R.id.episodeNumberPicker)
+        val seasonNumberPicker : NumberPicker = dialog.findViewById(R.id.seasonNumberPicker)
+        val saveEpisodeSeason : TextView = dialog.findViewById(R.id.saveEpisodeSeason)
+
+        episodeNumberPicker.minValue = 1
+        episodeNumberPicker.maxValue = 99
+
+        seasonNumberPicker.minValue = 1
+        seasonNumberPicker.maxValue = 20
+
+        saveEpisodeSeason.setOnClickListener(object : View.OnClickListener{
+            override fun onClick(p0: View?) {
+                episodeNumber = episodeNumberPicker.value
+                seasonNumber = seasonNumberPicker.value
+                episodeSeasonNumber.text = String.format("S%02d E%02d", seasonNumber, episodeNumber)
+                dialog.dismiss()
+            }
+        })
         dialog.show()
     }
 

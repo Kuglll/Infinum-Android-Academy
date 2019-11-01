@@ -7,8 +7,7 @@
         android:background="@color/white"
         android:clickable="true"
         android:focusable="true"
-        android:focusableInTouchMode="true"
-        tools:context=".ShowDetailActivity">
+        android:focusableInTouchMode="true">
 
     <include
         android:id="@+id/toolbar"
@@ -93,12 +92,43 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
+    <androidx.constraintlayout.widget.Group
+            android:id="@+id/episodeSeasonGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="episodeSeasonNumber,episodeSeasonNumber"/>
+
+    <TextView
+        android:id="@+id/episodeSeasonNumberHint"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Season &amp; Episode"
+        android:textSize="17sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/episodeTitleTextInputLayout"
+        android:layout_marginTop="50dp"
+        android:layout_marginStart="16dp"/>
+
+    <TextView
+        android:id="@+id/episodeSeasonNumber"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/episodeSeasonNumberHint"
+        android:text="S 01, E 01"
+        android:textSize="16dp"
+        android:textColor="@color/pink"
+        android:layout_marginStart="16dp"/>
+
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/episodeDescriptionTextInputLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/episodeTitleTextInputLayout"
+        app:layout_constraintTop_toBottomOf="@id/episodeSeasonNumber"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="50dp"
