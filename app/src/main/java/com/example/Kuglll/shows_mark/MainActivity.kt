@@ -38,6 +38,7 @@ class MainActivity : AppCompatActivity() {
         val sharedPref = getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
         userLogedIn = sharedPref.getBoolean(REMEMBERME, false)
 
+        //only show the fragment when there is no other fragments "started" (upon first start)
         if(supportFragmentManager.backStackEntryCount == 0) {
             displayShowFragment()
         }

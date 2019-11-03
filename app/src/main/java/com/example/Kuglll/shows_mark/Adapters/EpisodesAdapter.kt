@@ -28,7 +28,7 @@ class EpisodesAdapter(val dataset: List<Episode>) :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val formatedString = String.format("S%02d E%02d", dataset.get(position).season, dataset.get(position).episode)
         holder.episodeSeason.text = formatedString
-        holder.episodeTitle.text = "${position+1}. ${dataset.get(position).title}"
+        holder.episodeTitle.text = "${dataset.get(position).title}"
     }
 
 }

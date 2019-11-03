@@ -8,6 +8,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.TypedValue
 import android.view.View
+import android.view.ViewTreeObserver
 import androidx.core.content.ContextCompat.startActivity
 import androidx.core.widget.doOnTextChanged
 import kotlinx.android.synthetic.main.activity_login.*
@@ -57,11 +58,7 @@ class LoginActivity : AppCompatActivity() {
         val username = usernameEditText.text
         val password = passwordEdittext.text
 
-        if(username.length >= 1 && password.length >= 6){
-            loginButton.isEnabled = true
-        } else {
-            loginButton.isEnabled = false
-        }
+        loginButton.isEnabled = username.length >= 1 && password.length >= 6
     }
 
     fun checkForRememberMe(){
