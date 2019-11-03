@@ -40,5 +40,6 @@ class WelcomeActivity : AppCompatActivity() {
 
     fun startMainActivity(){
         startActivity(MainActivity.startMainActivity(this@WelcomeActivity))
+        finish()
     }
 }

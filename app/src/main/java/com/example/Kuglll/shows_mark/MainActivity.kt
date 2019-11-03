@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity() {
             if(userLogedIn) {
                 finishAffinity()
             } else{
-                startActivity(LoginActivity.startLoginActivity(this))
+                startActivity(LoginRegisterActivity.startLoginRegisterActivity(this))
             }
         }else {
             super.onBackPressed()

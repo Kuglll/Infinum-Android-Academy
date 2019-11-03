@@ -15,7 +15,7 @@
         <activity android:name=".MainActivity"
                 android:windowSoftInputMode="adjustResize"></activity>
         <activity android:name=".WelcomeActivity" />
-        <activity android:name=".LoginActivity"
+        <activity android:name=".LoginRegisterActivity"
                 android:windowSoftInputMode="adjustResize">
 
             <intent-filter>

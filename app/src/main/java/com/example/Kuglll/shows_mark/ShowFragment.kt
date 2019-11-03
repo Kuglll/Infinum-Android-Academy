@@ -40,7 +40,12 @@ class ShowFragment : Fragment() {
 
         logoutButton.setOnClickListener(object : View.OnClickListener{
             override fun onClick(p0: View?) {
-                displayDialog()
+                if(userLogedIn) {
+                    displayDialog()
+                } else{
+                    startActivity(LoginRegisterActivity.startLoginRegisterActivity(requireContext()))
+                    activity!!.finish()
+                }
             }
         })
     }
@@ -52,7 +57,8 @@ class ShowFragment : Fragment() {
 
         builder.setPositiveButton("YES"){dialog, which ->
             logout()
-            startActivity(LoginActivity.startLoginActivity(requireContext()))
+            startActivity(LoginRegisterActivity.startLoginRegisterActivity(requireContext()))
+            activity!!.finish()
         }
 
         builder.setNegativeButton("No"){dialog,which ->
