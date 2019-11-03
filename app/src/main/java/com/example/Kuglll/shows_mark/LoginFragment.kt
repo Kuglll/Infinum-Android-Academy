@@ -56,7 +56,8 @@ class LoginFragment : Fragment() {
             override fun onClick(p0: View?) {
                 if (emailMatchesRegex()){
                     checkForRememberMe()
-                    startActivity(WelcomeActivity.startWelcomeActivity(activity!!, usernameEditText.text.toString()))
+                    //TODO: Login user
+                    startActivity(MainActivity.startMainActivity(activity!!))
                 } else{
                     displayWarning()
                 }

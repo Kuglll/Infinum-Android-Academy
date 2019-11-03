@@ -10,6 +10,9 @@ import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_register.*
 import kotlinx.android.synthetic.main.toolbar.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 const val USERNAME_REGISTER = "USERNAME"
 const val PASSWORD_REGISTER = "PASSWORD"
@@ -70,12 +73,32 @@ class RegisterFragment : Fragment(){
         registerButton.setOnClickListener(object : View.OnClickListener{
             override fun onClick(p0: View?) {
                 if(passwordsMatch() && emailMatchesRegex()){
-                    startActivity(MainActivity.startMainActivity(activity!!))
+                    registerUser(emailEditText.text.toString(), registerPasswordEdittext.text.toString())
+                    startActivity(WelcomeActivity.startWelcomeActivity(activity!!, emailEditText.text.toString()))
                 } else{
                     displayWarning()
                 }
             }
         })
+    }
+
+    fun registerUser(email : String, password: String){
+        //TODO: make a json out of string and password and make post request to API
+        Singleton.service.Register(email, password).enqueue(object : Callback<RegisterResult>{
+            override fun onFailure(call: Call<RegisterResult>, t: Throwable) {
+
+            }
+
+            override fun onResponse(call: Call<RegisterResult>, response: Response<RegisterResult>){
+                if(response.isSuccessful){
+                    val body = response.body()
+                    if(body != null){
+                        
+                    }
+                }
+            }
+        })
+
     }
 
     fun passwordsMatch(): Boolean{
