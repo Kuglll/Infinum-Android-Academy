@@ -69,10 +69,7 @@ class AddEpisodeFragment : Fragment() {
         viewModel = ViewModelProviders.of(this).get(DataViewModel::class.java)
 
         showID = arguments!!.getInt(SHOWID, -1)
-        val toolbar = view.findViewById<Toolbar>(R.id.toolbar)
         toolbarTitle.text = "Add episode"
-
-        toolbar.setNavigationOnClickListener{onBackPressed()}
 
         initOnClickListeners()
 
@@ -84,6 +81,8 @@ class AddEpisodeFragment : Fragment() {
 
 
     fun initOnClickListeners(){
+        toolbar.setNavigationOnClickListener{onBackPressed()}
+
         saveButton.setOnClickListener{
                 MainActivity.storage.shows[showID].addEpisode(Episode(episodeTitleEditText.text.toString(), episodeNumber ,seasonNumber))
                 viewModel.episodeInserted.value = true

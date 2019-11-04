@@ -49,7 +49,7 @@ class LoginFragment : Fragment() {
         textViewCreateAccount.setOnClickListener{displayRegisterFragment()}
 
         loginButton.setOnClickListener {
-            if (emailMatchesRegex()) {
+            if (emailMatchesRegex(usernameEditText.text.toString())) {
                 checkForRememberMe()
                 //TODO: Login user
                 startActivity(MainActivity.startMainActivity(activity!!))
@@ -85,8 +85,8 @@ class LoginFragment : Fragment() {
             .commit()
     }
 
-    fun emailMatchesRegex(): Boolean{
-        return mail_regex.matches(usernameEditText.text)
+    fun emailMatchesRegex(email: String): Boolean{
+        return mail_regex.matches(email)
     }
 
     fun displayWarning(){

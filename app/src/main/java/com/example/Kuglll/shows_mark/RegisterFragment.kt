@@ -20,6 +20,7 @@ const val PASSWORD_REGISTER = "PASSWORD"
 class RegisterFragment : Fragment(){
 
     val mail_regex = Regex("[^@]+@[^\\.]+\\..+")
+    var userRegistered = false
 
     companion object {
         fun returnRegisterFragment(username: String = "", password: String = ""): Fragment {
@@ -43,10 +44,7 @@ class RegisterFragment : Fragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val toolbar = view.findViewById<Toolbar>(R.id.toolbar)
         toolbarTitle.text = "Register"
-
-        toolbar.setNavigationOnClickListener() { activity!!.onBackPressed() }
 
         checkForArguments()
         initOnClickListeners()
@@ -66,10 +64,14 @@ class RegisterFragment : Fragment(){
         registerPasswordEdittext.doOnTextChanged { text, start, count, after ->  validateInput()}
         registerAgainPasswordEdittext.doOnTextChanged { text, start, count, after ->  validateInput()}
 
+        toolbar.setNavigationOnClickListener{ activity!!.onBackPressed() }
+
         registerButton.setOnClickListener{
-            if(passwordsMatch() && emailMatchesRegex()){
+            if(passwordsMatch() && emailMatchesRegex(emailEditText.text.toString())){
                 registerUser(emailEditText.text.toString(), registerPasswordEdittext.text.toString())
-                startActivity(WelcomeActivity.startWelcomeActivity(activity!!, emailEditText.text.toString()))
+                if(userRegistered){
+                    startActivity(WelcomeActivity.startWelcomeActivity(activity!!, emailEditText.text.toString()))
+                }
             } else{
                 displayWarning()
             }
@@ -77,8 +79,7 @@ class RegisterFragment : Fragment(){
     }
 
     fun registerUser(email : String, password: String){
-        //TODO: make a json out of string and password and make post request to API
-        Singleton.service.Register(email, password).enqueue(object : Callback<RegisterResult>{
+        Singleton.createRequest().Register(email, password).enqueue(object : Callback<RegisterResult>{
             override fun onFailure(call: Call<RegisterResult>, t: Throwable) {
 
             }
@@ -87,9 +88,9 @@ class RegisterFragment : Fragment(){
                 if(response.isSuccessful){
                     val body = response.body()
                     if(body != null){
-                        
+                        userRegistered = true
                     }
-                }
+                } else println("Something went wrong!")
             }
         })
 
@@ -99,8 +100,8 @@ class RegisterFragment : Fragment(){
         return registerPasswordEdittext.text.toString() == registerAgainPasswordEdittext.text.toString()
     }
 
-    fun emailMatchesRegex(): Boolean{
-        return mail_regex.matches(emailEditText.text)
+    fun emailMatchesRegex(email: String): Boolean{
+        return mail_regex.matches(email)
     }
 
     fun validateInput(){

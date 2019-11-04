@@ -48,13 +48,10 @@ class ShowDetailFragment : Fragment() {
         viewModel = ViewModelProviders.of(this).get(DataViewModel::class.java)
         showID = arguments!!.getInt(SHOWID, -1)
 
-        val toolbar = view.findViewById<Toolbar>(R.id.toolbar)
         toolbarTitle.text = MainActivity.storage.shows[showID].name
 
         episodes = MainActivity.storage.shows[showID].episodes
         showDescription.text = MainActivity.storage.shows[showID].description
-
-        toolbar.setNavigationOnClickListener{activity?.onBackPressed()}
 
         displayEpisodes()
 
@@ -65,6 +62,8 @@ class ShowDetailFragment : Fragment() {
     }
 
     fun initOnClickListeners(){
+        toolbar.setNavigationOnClickListener{activity?.onBackPressed()}
+
         floatingButton.setOnClickListener { displayAddEpisodeFragment() }
 
         sleepGroup.setAllOnClickListeners(object : View.OnClickListener{
