@@ -2,13 +2,20 @@ package com.example.Kuglll.shows_mark
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
+import com.example.Kuglll.shows_mark.utils.LoginRequest
+import com.example.Kuglll.shows_mark.utils.LoginResult
+import com.example.Kuglll.shows_mark.utils.Singleton
 import kotlinx.android.synthetic.main.fragment_login.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 
 class LoginFragment : Fragment() {
@@ -51,12 +58,30 @@ class LoginFragment : Fragment() {
         loginButton.setOnClickListener {
             if (emailMatchesRegex(usernameEditText.text.toString())) {
                 checkForRememberMe()
-                //TODO: Login user
-                startActivity(MainActivity.startMainActivity(activity!!))
+                loginUser(usernameEditText.text.toString(), passwordEdittext.text.toString())
             } else {
                 displayWarning()
             }
         }
+    }
+
+    fun loginUser(email: String, password: String){
+        Singleton.createRequest().login(LoginRequest(email, password)).enqueue(object : Callback<LoginResult>{
+            override fun onFailure(call: Call<LoginResult>, t: Throwable) {
+                //TODO: implement on failure
+            }
+
+            override fun onResponse(call: Call<LoginResult>, response: Response<LoginResult>) {
+                if(response.isSuccessful){
+                    val body = response.body()
+                    if(body != null){
+                        //TODO: Get the token!
+                        Log.d("TOKEN", "")
+                        startActivity(MainActivity.startMainActivity(activity!!))
+                    }
+                }
+            }
+        })
     }
 
     fun validateInput(){

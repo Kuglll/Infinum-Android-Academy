@@ -11,7 +11,13 @@ interface ApiService{
         "Content-Type: application/json"
     )
     @POST("/api/users")
-    fun Register(@Body registerRequest: RegisterRequest): Call<RegisterResult>
+    fun register(@Body registerRequest: RegisterRequest): Call<RegisterResult>
+
+    @Headers(
+        "Content-Type: application/json"
+    )
+    @POST("/api/users/sessions")
+    fun login(@Body loginRequest: LoginRequest): Call<LoginResult>
 
 }
 

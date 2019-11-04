@@ -22,7 +22,6 @@ const val PASSWORD_REGISTER = "PASSWORD"
 class RegisterFragment : Fragment(){
 
     val mail_regex = Regex("[^@]+@[^\\.]+\\..+")
-    var userRegistered = false
 
     companion object {
         fun returnRegisterFragment(username: String = "", password: String = ""): Fragment {
@@ -46,7 +45,7 @@ class RegisterFragment : Fragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        toolbarTitle.text = "Register"
+        toolbarTitle.text = "register"
 
         checkForArguments()
         initOnClickListeners()
@@ -78,7 +77,7 @@ class RegisterFragment : Fragment(){
     }
 
     fun registerUser(email : String, password: String){
-        Singleton.createRequest().Register(RegisterRequest(email, password)).enqueue(object : Callback<RegisterResult>{
+        Singleton.createRequest().register(RegisterRequest(email, password)).enqueue(object : Callback<RegisterResult>{
             override fun onFailure(call: Call<RegisterResult>, t: Throwable) {
                 //TODO: Handle failure
             }
