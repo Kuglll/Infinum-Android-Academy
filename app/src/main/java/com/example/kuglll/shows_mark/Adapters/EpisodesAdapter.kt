@@ -1,11 +1,11 @@
-package com.example.Kuglll.shows_mark.Adapters
+package com.example.kuglll.shows_mark.Adapters
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.Kuglll.shows_mark.DataClasses.Episode
-import com.example.Kuglll.shows_mark.R
+import com.example.kuglll.shows_mark.DataClasses.Episode
+import com.example.kuglll.shows_mark.R
 import kotlinx.android.synthetic.main.episodes_item.view.*
 
 class EpisodesAdapter(val dataset: List<Episode>) :

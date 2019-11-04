@@ -1,4 +1,4 @@
-package com.example.Kuglll.shows_mark
+package com.example.kuglll.shows_mark
 
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4

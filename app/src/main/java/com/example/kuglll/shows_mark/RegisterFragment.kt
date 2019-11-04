@@ -1,4 +1,4 @@
-package com.example.Kuglll.shows_mark
+package com.example.kuglll.shows_mark
 
 import android.os.Bundle
 import android.util.TypedValue
@@ -7,9 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
-import com.example.Kuglll.shows_mark.utils.RegisterRequest
-import com.example.Kuglll.shows_mark.utils.RegisterResult
-import com.example.Kuglll.shows_mark.utils.Singleton
+import com.example.kuglll.shows_mark.utils.RegisterRequest
+import com.example.kuglll.shows_mark.utils.RegisterResult
+import com.example.kuglll.shows_mark.utils.Singleton
 import kotlinx.android.synthetic.main.fragment_register.*
 import kotlinx.android.synthetic.main.toolbar.*
 import retrofit2.Call

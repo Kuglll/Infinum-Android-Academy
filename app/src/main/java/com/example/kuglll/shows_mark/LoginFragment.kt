@@ -1,4 +1,4 @@
-package com.example.Kuglll.shows_mark
+package com.example.kuglll.shows_mark
 
 import android.content.Context
 import android.os.Bundle
@@ -9,14 +9,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
-import com.example.Kuglll.shows_mark.utils.LoginRequest
-import com.example.Kuglll.shows_mark.utils.LoginResult
-import com.example.Kuglll.shows_mark.utils.Singleton
+import com.example.kuglll.shows_mark.utils.LoginRequest
+import com.example.kuglll.shows_mark.utils.LoginResult
+import com.example.kuglll.shows_mark.utils.Singleton
+import com.example.kuglll.shows_mark.utils.Token
 import kotlinx.android.synthetic.main.fragment_login.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+lateinit var token: String
 
 class LoginFragment : Fragment() {
 
@@ -75,8 +77,7 @@ class LoginFragment : Fragment() {
                 if(response.isSuccessful){
                     val body = response.body()
                     if(body != null){
-                        //TODO: Get the token!
-                        Log.d("TOKEN", "")
+                        token = body.data.token
                         startActivity(MainActivity.startMainActivity(activity!!))
                     }
                 }

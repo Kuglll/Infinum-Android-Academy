@@ -1,4 +1,4 @@
-package com.example.Kuglll.shows_mark
+package com.example.kuglll.shows_mark
 
 import android.content.Context
 import android.content.Intent

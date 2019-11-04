@@ -1,8 +1,7 @@
-package com.example.Kuglll.shows_mark
+package com.example.kuglll.shows_mark
 
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_show_detail.*
 import kotlinx.android.synthetic.main.toolbar.*
@@ -11,9 +10,9 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.Group
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
-import com.example.Kuglll.shows_mark.Adapters.EpisodesAdapter
-import com.example.Kuglll.shows_mark.DataClasses.DataViewModel
-import com.example.Kuglll.shows_mark.DataClasses.Episode
+import com.example.kuglll.shows_mark.Adapters.EpisodesAdapter
+import com.example.kuglll.shows_mark.DataClasses.DataViewModel
+import com.example.kuglll.shows_mark.DataClasses.Episode
 
 private const val SHOWID = "showid"
 

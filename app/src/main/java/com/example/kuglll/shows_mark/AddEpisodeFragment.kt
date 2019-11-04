@@ -1,4 +1,4 @@
-package com.example.Kuglll.shows_mark
+package com.example.kuglll.shows_mark
 
 import android.Manifest
 import android.app.Activity
@@ -17,15 +17,14 @@ import android.widget.NumberPicker
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.Group
 import androidx.core.app.ActivityCompat
 import androidx.core.content.FileProvider
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
-import com.example.Kuglll.shows_mark.DataClasses.DataViewModel
-import com.example.Kuglll.shows_mark.DataClasses.Episode
+import com.example.kuglll.shows_mark.DataClasses.DataViewModel
+import com.example.kuglll.shows_mark.DataClasses.Episode
 import kotlinx.android.synthetic.main.fragment_add_episode.*
 import kotlinx.android.synthetic.main.toolbar.*
 import java.io.File

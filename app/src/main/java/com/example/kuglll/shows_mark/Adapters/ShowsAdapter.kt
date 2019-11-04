@@ -1,12 +1,12 @@
-package com.example.Kuglll.shows_mark.Adapters
+package com.example.kuglll.shows_mark.Adapters
 
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.Kuglll.shows_mark.DataClasses.Show
-import com.example.Kuglll.shows_mark.R
+import com.example.kuglll.shows_mark.DataClasses.Show
+import com.example.kuglll.shows_mark.R
 
 
 import kotlinx.android.synthetic.main.show_item.view.*

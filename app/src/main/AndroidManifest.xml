@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-        package="com.example.Kuglll.shows_mark">
+        package="com.example.kuglll.shows_mark">
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -13,10 +13,10 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity"
+        <activity android:name="com.example.kuglll.shows_mark.MainActivity"
                 android:windowSoftInputMode="adjustResize"></activity>
-        <activity android:name=".WelcomeActivity" />
-        <activity android:name=".LoginRegisterActivity"
+        <activity android:name="com.example.kuglll.shows_mark.WelcomeActivity" />
+        <activity android:name="com.example.kuglll.shows_mark.LoginRegisterActivity"
                 android:windowSoftInputMode="adjustResize">
 
             <intent-filter>
@@ -28,7 +28,7 @@
 
         <provider
                 android:name="androidx.core.content.FileProvider"
-                android:authorities="com.example.Kuglll.shows_mark.fileprovider"
+                android:authorities="com.example.kuglll.shows_mark.fileprovider"
                 android:exported="false"
                 android:grantUriPermissions="true">
             <meta-data

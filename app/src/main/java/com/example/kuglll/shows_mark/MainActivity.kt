@@ -1,11 +1,11 @@
-package com.example.Kuglll.shows_mark
+package com.example.kuglll.shows_mark
 
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.example.Kuglll.shows_mark.DataClasses.Show
+import com.example.kuglll.shows_mark.DataClasses.Show
 
 const val SHOW_FRAGMENT = "SHOW_FRAGMENT"
 

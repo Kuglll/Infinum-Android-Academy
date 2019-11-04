@@ -1,4 +1,4 @@
-package com.example.Kuglll.shows_mark.utils
+package com.example.kuglll.shows_mark.utils
 
 import retrofit2.Call
 import retrofit2.http.Body

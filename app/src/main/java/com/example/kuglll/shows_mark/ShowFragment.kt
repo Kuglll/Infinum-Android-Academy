@@ -1,4 +1,4 @@
-package com.example.Kuglll.shows_mark
+package com.example.kuglll.shows_mark
 
 import android.content.Context
 import android.os.Bundle
@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.Kuglll.shows_mark.Adapters.ShowsAdapter
+import com.example.kuglll.shows_mark.Adapters.ShowsAdapter
 import kotlinx.android.synthetic.main.fragment_show.*
 
 class ShowFragment : Fragment() {
