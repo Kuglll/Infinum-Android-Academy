@@ -1,4 +1,4 @@
-package com.example.Kuglll.shows_mark
+package com.example.Kuglll.shows_mark.Utils
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass

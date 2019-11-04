@@ -5,9 +5,11 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.Toolbar
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
+import com.example.Kuglll.shows_mark.Utils.RegisterRequest
+import com.example.Kuglll.shows_mark.Utils.RegisterResult
+import com.example.Kuglll.shows_mark.Utils.Singleton
 import kotlinx.android.synthetic.main.fragment_register.*
 import kotlinx.android.synthetic.main.toolbar.*
 import retrofit2.Call
@@ -79,7 +81,7 @@ class RegisterFragment : Fragment(){
     }
 
     fun registerUser(email : String, password: String){
-        Singleton.createRequest().Register(email, password).enqueue(object : Callback<RegisterResult>{
+        Singleton.createRequest().Register(RegisterRequest(email, password)).enqueue(object : Callback<RegisterResult>{
             override fun onFailure(call: Call<RegisterResult>, t: Throwable) {
 
             }
@@ -89,6 +91,8 @@ class RegisterFragment : Fragment(){
                     val body = response.body()
                     if(body != null){
                         userRegistered = true
+                    } else{
+                        println("Body is null")
                     }
                 } else println("Something went wrong!")
             }
