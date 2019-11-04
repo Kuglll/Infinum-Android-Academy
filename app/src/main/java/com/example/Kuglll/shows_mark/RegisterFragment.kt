@@ -46,11 +46,7 @@ class RegisterFragment : Fragment(){
         val toolbar = view.findViewById<Toolbar>(R.id.toolbar)
         toolbarTitle.text = "Register"
 
-        toolbar.setOnClickListener(object : View.OnClickListener{
-            override fun onClick(p0: View?) {
-                activity!!.onBackPressed()
-            }
-        })
+        toolbar.setNavigationOnClickListener() { activity!!.onBackPressed() }
 
         checkForArguments()
         initOnClickListeners()
@@ -70,16 +66,14 @@ class RegisterFragment : Fragment(){
         registerPasswordEdittext.doOnTextChanged { text, start, count, after ->  validateInput()}
         registerAgainPasswordEdittext.doOnTextChanged { text, start, count, after ->  validateInput()}
 
-        registerButton.setOnClickListener(object : View.OnClickListener{
-            override fun onClick(p0: View?) {
-                if(passwordsMatch() && emailMatchesRegex()){
-                    registerUser(emailEditText.text.toString(), registerPasswordEdittext.text.toString())
-                    startActivity(WelcomeActivity.startWelcomeActivity(activity!!, emailEditText.text.toString()))
-                } else{
-                    displayWarning()
-                }
+        registerButton.setOnClickListener{
+            if(passwordsMatch() && emailMatchesRegex()){
+                registerUser(emailEditText.text.toString(), registerPasswordEdittext.text.toString())
+                startActivity(WelcomeActivity.startWelcomeActivity(activity!!, emailEditText.text.toString()))
+            } else{
+                displayWarning()
             }
-        })
+        }
     }
 
     fun registerUser(email : String, password: String){

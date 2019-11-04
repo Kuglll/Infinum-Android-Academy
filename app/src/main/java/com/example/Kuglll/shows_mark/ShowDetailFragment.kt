@@ -54,11 +54,7 @@ class ShowDetailFragment : Fragment() {
         episodes = MainActivity.storage.shows[showID].episodes
         showDescription.text = MainActivity.storage.shows[showID].description
 
-        toolbar.setNavigationOnClickListener(object : View.OnClickListener{
-            override fun onClick(p0: View?) {
-                activity?.onBackPressed()
-            }
-        })
+        toolbar.setNavigationOnClickListener{activity?.onBackPressed()}
 
         displayEpisodes()
 
@@ -69,11 +65,7 @@ class ShowDetailFragment : Fragment() {
     }
 
     fun initOnClickListeners(){
-        floatingButton.setOnClickListener(object : View.OnClickListener{
-            override fun onClick(p0: View?) {
-                displayAddEpisodeFragment()
-            }
-        })
+        floatingButton.setOnClickListener { displayAddEpisodeFragment() }
 
         sleepGroup.setAllOnClickListeners(object : View.OnClickListener{
             override fun onClick(p0: View?) {

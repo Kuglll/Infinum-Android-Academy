@@ -38,16 +38,18 @@ class ShowFragment : Fragment() {
         showsRecyclerView.layoutManager = LinearLayoutManager(activity)
         showsRecyclerView.adapter = ShowsAdapter(MainActivity.storage.shows){ showID -> displayShowDetailFragment(showID) }
 
-        logoutButton.setOnClickListener(object : View.OnClickListener{
-            override fun onClick(p0: View?) {
-                if(userLogedIn) {
-                    displayDialog()
-                } else{
-                    startActivity(LoginRegisterActivity.startLoginRegisterActivity(requireContext()))
-                    activity!!.finish()
-                }
-            }
-        })
+        initOnClickListeners()
+    }
+
+    fun initOnClickListeners(){
+        logoutButton.setOnClickListener {
+            if(userLogedIn) {
+                displayDialog()
+            } else{
+                startActivity(LoginRegisterActivity.startLoginRegisterActivity(requireContext()))
+                activity!!.finish()
+             }
+        }
     }
 
 

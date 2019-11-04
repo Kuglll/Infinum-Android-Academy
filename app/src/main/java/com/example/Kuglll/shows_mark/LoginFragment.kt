@@ -46,23 +46,17 @@ class LoginFragment : Fragment() {
         usernameEditText.doOnTextChanged { text, start, count, after ->  validateInput()}
         passwordEdittext.doOnTextChanged { text, start, count, after ->  validateInput()}
 
-        textViewCreateAccount.setOnClickListener(object  : View.OnClickListener{
-            override fun onClick(p0: View?) {
-                displayRegisterFragment()
-            }
-        })
+        textViewCreateAccount.setOnClickListener{displayRegisterFragment()}
 
-        loginButton.setOnClickListener(object : View.OnClickListener{
-            override fun onClick(p0: View?) {
-                if (emailMatchesRegex()){
-                    checkForRememberMe()
-                    //TODO: Login user
-                    startActivity(MainActivity.startMainActivity(activity!!))
-                } else{
-                    displayWarning()
-                }
+        loginButton.setOnClickListener {
+            if (emailMatchesRegex()) {
+                checkForRememberMe()
+                //TODO: Login user
+                startActivity(MainActivity.startMainActivity(activity!!))
+            } else {
+                displayWarning()
             }
-        })
+        }
     }
 
     fun validateInput(){
