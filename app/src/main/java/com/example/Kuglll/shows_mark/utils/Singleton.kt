@@ -1,4 +1,4 @@
-package com.example.Kuglll.shows_mark.Utils
+package com.example.Kuglll.shows_mark.utils
 
 import android.util.Log
 import com.squareup.moshi.Moshi
@@ -17,7 +17,7 @@ object Singleton {
             }
         })
 
-        logging.level = HttpLoggingInterceptor.Level.BODY
+        //logging.level = HttpLoggingInterceptor.Level.BODY
 
         val okhttp = OkHttpClient.Builder()
             .addInterceptor(logging)

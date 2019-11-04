@@ -7,9 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
-import com.example.Kuglll.shows_mark.Utils.RegisterRequest
-import com.example.Kuglll.shows_mark.Utils.RegisterResult
-import com.example.Kuglll.shows_mark.Utils.Singleton
+import com.example.Kuglll.shows_mark.utils.RegisterRequest
+import com.example.Kuglll.shows_mark.utils.RegisterResult
+import com.example.Kuglll.shows_mark.utils.Singleton
 import kotlinx.android.synthetic.main.fragment_register.*
 import kotlinx.android.synthetic.main.toolbar.*
 import retrofit2.Call
@@ -71,9 +71,6 @@ class RegisterFragment : Fragment(){
         registerButton.setOnClickListener{
             if(passwordsMatch() && emailMatchesRegex(emailEditText.text.toString())){
                 registerUser(emailEditText.text.toString(), registerPasswordEdittext.text.toString())
-                if(userRegistered){
-                    startActivity(WelcomeActivity.startWelcomeActivity(activity!!, emailEditText.text.toString()))
-                }
             } else{
                 displayWarning()
             }
@@ -83,18 +80,16 @@ class RegisterFragment : Fragment(){
     fun registerUser(email : String, password: String){
         Singleton.createRequest().Register(RegisterRequest(email, password)).enqueue(object : Callback<RegisterResult>{
             override fun onFailure(call: Call<RegisterResult>, t: Throwable) {
-
+                //TODO: Handle failure
             }
 
             override fun onResponse(call: Call<RegisterResult>, response: Response<RegisterResult>){
                 if(response.isSuccessful){
                     val body = response.body()
                     if(body != null){
-                        userRegistered = true
-                    } else{
-                        println("Body is null")
+                        startActivity(WelcomeActivity.startWelcomeActivity(activity!!, emailEditText.text.toString()))
                     }
-                } else println("Something went wrong!")
+                }
             }
         })
 
