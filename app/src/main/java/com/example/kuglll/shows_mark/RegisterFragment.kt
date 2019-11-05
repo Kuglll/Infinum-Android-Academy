@@ -45,7 +45,7 @@ class RegisterFragment : Fragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        toolbarTitle.text = "register"
+        toolbarTitle.text = "Register"
 
         checkForArguments()
         initOnClickListeners()
@@ -77,13 +77,14 @@ class RegisterFragment : Fragment(){
     }
 
     fun registerUser(email : String, password: String){
-        Singleton.createRequest().register(RegisterRequest(email, password)).enqueue(object : Callback<RegisterResult>{
-            override fun onFailure(call: Call<RegisterResult>, t: Throwable) {
+        Singleton.createRequest().register(RegisterRequest(email, password)).enqueue(object : Callback<Any>{
+            override fun onFailure(call: Call<Any>, t: Throwable) {
                 //TODO: Handle failure
             }
 
-            override fun onResponse(call: Call<RegisterResult>, response: Response<RegisterResult>){
+            override fun onResponse(call: Call<Any>, response: Response<Any>){
                 if(response.isSuccessful){
+                    // how to get each header: response.headers().get("name")
                     val body = response.body()
                     if(body != null){
                         startActivity(WelcomeActivity.startWelcomeActivity(activity!!, emailEditText.text.toString()))

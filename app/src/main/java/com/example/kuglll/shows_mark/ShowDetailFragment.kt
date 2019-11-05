@@ -24,9 +24,9 @@ class ShowDetailFragment : Fragment() {
 
 
     companion object{
-        fun returnShowDetailFragment(showID : Int) : ShowDetailFragment{
+        fun returnShowDetailFragment(showID : String) : ShowDetailFragment{
             val args = Bundle()
-            args.putInt(SHOWID, showID)
+            args.putString(SHOWID, showID)
             val fragment = ShowDetailFragment()
             fragment.arguments = args
             return fragment
@@ -45,7 +45,9 @@ class ShowDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel = ViewModelProviders.of(this).get(DataViewModel::class.java)
-        showID = arguments!!.getInt(SHOWID, -1)
+        showID = arguments!!.getInt(SHOWID, 1)
+
+        //TODO: fetch show data with showID
 
         toolbarTitle.text = MainActivity.storage.shows[showID].name
 

@@ -5,13 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.kuglll.shows_mark.DataClasses.Show
 import com.example.kuglll.shows_mark.R
+import com.example.kuglll.shows_mark.utils.Show
+import com.squareup.picasso.Picasso
 
 
 import kotlinx.android.synthetic.main.show_item.view.*
 
-class ShowsAdapter(private val dataset: List<Show>, val itemOnClick : (Int) -> Unit) :
+class ShowsAdapter(private val dataset: List<Show>, val itemOnClick : (String) -> Unit) :
     RecyclerView.Adapter<ShowsAdapter.ShowViewHolder>() {
 
 
@@ -32,15 +33,10 @@ class ShowsAdapter(private val dataset: List<Show>, val itemOnClick : (Int) -> U
     inner class ShowViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         fun bind(item: Show) {
-            itemView.showImage.setImageResource(item.imageID)
-            itemView.showName.text = item.name
-            if(item.end_date != 0){
-                itemView.showDate.text = "(${item.start_date} - ${item.end_date})"
-            } else {
-                itemView.showDate.text = "(${item.start_date} - )"
-            }
+            Picasso.get().load(item.imageUrl).into(itemView.showImage)
+            itemView.showName.text = item.title
             itemView.setOnClickListener {
-                itemOnClick(item.ID)
+                itemOnClick(item.id)
             }
         }
 
