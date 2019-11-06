@@ -33,7 +33,9 @@ class ShowsAdapter(private val dataset: List<Show>, val itemOnClick : (String) -
     inner class ShowViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         fun bind(item: Show) {
-            Picasso.get().load(item.imageUrl).into(itemView.showImage)
+            Picasso.get().load("https://api.infinum.academy${item.imageUrl}")
+                .placeholder(R.drawable.office) //using office as a placeholder
+                .into(itemView.showImage)
             itemView.showName.text = item.title
             itemView.setOnClickListener {
                 itemOnClick(item.id)

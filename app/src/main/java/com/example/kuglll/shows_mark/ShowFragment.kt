@@ -43,6 +43,8 @@ class ShowFragment : Fragment() {
         val sharedPref = requireActivity().getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
         userLogedIn = sharedPref.getBoolean(REMEMBERME, false)
 
+        shows = ArrayList()
+
         fetchAPIData()
 
         initOnClickListeners()

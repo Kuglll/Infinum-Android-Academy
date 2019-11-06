@@ -17,7 +17,7 @@ object Singleton {
             }
         })
 
-        //logging.level = HttpLoggingInterceptor.Level.BODY
+        logging.level = HttpLoggingInterceptor.Level.BODY
 
         val okhttp = OkHttpClient.Builder()
             .addInterceptor(logging)
