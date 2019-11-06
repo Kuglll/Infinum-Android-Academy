@@ -1,10 +1,7 @@
 package com.example.kuglll.shows_mark.utils
 
 import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.Headers
-import retrofit2.http.POST
+import retrofit2.http.*
 
 interface ApiService{
 
@@ -23,5 +20,10 @@ interface ApiService{
     @GET("/api/shows")
     fun getShows(): Call<ShowResult>
 
+    @GET("/api/shows/{showID}")
+    fun getShowDetails(@Path("showID") showID : String): Call<ShowDetailResult>
+
+    @GET("/api/shows/{showID}/episodes")
+    fun getShowEpisodes(@Path("showID") showID : String): Call<EpisodeResult>
 }
 

@@ -45,9 +45,9 @@ class AddEpisodeFragment : Fragment() {
     var seasonNumber = 1
 
     companion object {
-        fun returnAddEpisodeFragment(showID: Int) : AddEpisodeFragment{
+        fun returnAddEpisodeFragment(showID: String) : AddEpisodeFragment{
             val args = Bundle()
-            args.putInt(SHOWID, showID)
+            args.putString(SHOWID, showID)
             val fragment = AddEpisodeFragment()
             fragment.arguments = args
             return fragment

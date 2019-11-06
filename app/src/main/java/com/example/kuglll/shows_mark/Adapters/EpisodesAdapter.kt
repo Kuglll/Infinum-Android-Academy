@@ -4,8 +4,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.kuglll.shows_mark.DataClasses.Episode
 import com.example.kuglll.shows_mark.R
+import com.example.kuglll.shows_mark.utils.Episode
 import kotlinx.android.synthetic.main.episodes_item.view.*
 
 class EpisodesAdapter(val dataset: List<Episode>) :
@@ -26,7 +26,7 @@ class EpisodesAdapter(val dataset: List<Episode>) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val formatedString = String.format("S%02d E%02d", dataset.get(position).season, dataset.get(position).episode)
+        val formatedString = String.format("S%s E%s", dataset.get(position).seasonNumber, dataset.get(position).episodeNumber)
         holder.episodeSeason.text = formatedString
         holder.episodeTitle.text = "${dataset.get(position).title}"
     }

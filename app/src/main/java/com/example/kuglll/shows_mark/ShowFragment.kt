@@ -2,7 +2,6 @@ package com.example.kuglll.shows_mark
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,12 +44,12 @@ class ShowFragment : Fragment() {
 
         shows = ArrayList()
 
-        fetchAPIData()
+        fetchShows()
 
         initOnClickListeners()
     }
 
-    fun fetchAPIData(){
+    fun fetchShows(){
         Singleton.createRequest().getShows().enqueue(object: Callback<ShowResult>{
             override fun onFailure(call: Call<ShowResult>, t: Throwable) {
                 //TODO: implement on failure
