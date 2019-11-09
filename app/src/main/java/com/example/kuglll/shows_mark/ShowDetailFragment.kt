@@ -12,7 +12,7 @@ import androidx.constraintlayout.widget.Group
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import com.example.kuglll.shows_mark.Adapters.EpisodesAdapter
-import com.example.kuglll.shows_mark.DataClasses.DataViewModel
+import com.example.kuglll.shows_mark.dataClasses.DataViewModel
 import com.example.kuglll.shows_mark.utils.Episode
 import com.example.kuglll.shows_mark.utils.EpisodeResult
 import com.example.kuglll.shows_mark.utils.ShowDetailResult

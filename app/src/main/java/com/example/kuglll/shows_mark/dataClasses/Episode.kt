@@ -1,4 +1,4 @@
-package com.example.kuglll.shows_mark.DataClasses
+package com.example.kuglll.shows_mark.dataClasses
 
 import android.graphics.drawable.Drawable
 

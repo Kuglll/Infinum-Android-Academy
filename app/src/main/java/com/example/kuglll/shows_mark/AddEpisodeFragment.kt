@@ -24,8 +24,7 @@ import androidx.core.content.FileProvider
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
-import com.example.kuglll.shows_mark.DataClasses.DataViewModel
-import com.example.kuglll.shows_mark.DataClasses.Episode
+import com.example.kuglll.shows_mark.dataClasses.DataViewModel
 import kotlinx.android.synthetic.main.fragment_add_episode.*
 import kotlinx.android.synthetic.main.toolbar.*
 import java.io.File
@@ -101,7 +100,6 @@ class AddEpisodeFragment : Fragment() {
         saveButton.setOnClickListener{
                 viewModel.episodeInserted.value = true
                 activity?.onBackPressed()
-
         }
 
         uploadPhotoGroup.setAllOnClickListeners(object : View.OnClickListener{

@@ -1,4 +1,4 @@
-package com.example.kuglll.shows_mark.DataClasses
+package com.example.kuglll.shows_mark.dataClasses
 
 data class Show(
     val ID: Int,
