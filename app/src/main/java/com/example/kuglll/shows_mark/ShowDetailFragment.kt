@@ -57,8 +57,6 @@ class ShowDetailFragment : Fragment() {
         showID = arguments!!.getString(SHOWID, "")
         Log.d("OkHttp", showID)
         fetchShowDetails()
-
-        initOnClickListeners()
     }
 
     fun fetchShowDetails(){
@@ -98,6 +96,7 @@ class ShowDetailFragment : Fragment() {
                             episodes.add(episode)
                         }
                         initEpisodes()
+                        initOnClickListeners()
                     }
                 }
             }

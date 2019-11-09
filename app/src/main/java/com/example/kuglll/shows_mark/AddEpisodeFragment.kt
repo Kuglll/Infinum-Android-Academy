@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.os.Environment.getExternalStoragePublicDirectory
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,6 +35,9 @@ import java.util.*
 private const val SHOWID = "showid"
 private const val CAMERA_PERMISSION_REQUEST = 1
 private const val REQUEST_IMAGE_CAPTURE = 2
+private const val EPISODE_NUMBER = "EPISODE_NUMBER"
+private const val SEASON_NUMBER = "SEASON_NUMBER"
+private const val IMAGE = "IMAGE"
 
 class AddEpisodeFragment : Fragment() {
 
@@ -65,6 +69,18 @@ class AddEpisodeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        if(savedInstanceState != null){
+            episodeNumber = savedInstanceState.getInt(EPISODE_NUMBER)
+            seasonNumber = savedInstanceState.getInt(SEASON_NUMBER)
+            episodeSeasonNumber.text = String.format("S %02d E %02d", seasonNumber, episodeNumber)
+
+            pathToFile = savedInstanceState.getString(IMAGE, "")
+            if(pathToFile != ""){
+                Log.d("PathToFILE", pathToFile)
+                displayImage()
+            }
+        }
+
         viewModel = ViewModelProviders.of(this).get(DataViewModel::class.java)
 
         showID = arguments!!.getInt(SHOWID, -1)
@@ -83,7 +99,6 @@ class AddEpisodeFragment : Fragment() {
         toolbar.setNavigationOnClickListener{onBackPressed()}
 
         saveButton.setOnClickListener{
-                MainActivity.storage.shows[showID].addEpisode(Episode(episodeTitleEditText.text.toString(), episodeNumber ,seasonNumber))
                 viewModel.episodeInserted.value = true
                 activity?.onBackPressed()
 
@@ -167,7 +182,7 @@ class AddEpisodeFragment : Fragment() {
         saveEpisodeSeason.setOnClickListener {
             episodeNumber = episodeNumberPicker.value
             seasonNumber = seasonNumberPicker.value
-            episodeSeasonNumber.text = String.format("S%02d E%02d", seasonNumber, episodeNumber)
+            episodeSeasonNumber.text = String.format("S %02d E %02d", seasonNumber, episodeNumber)
             dialog.dismiss()
         }
 
@@ -182,13 +197,13 @@ class AddEpisodeFragment : Fragment() {
                 takePictureIntent.resolveActivity(activity!!.packageManager)?.also {
                     val photoFile = createPhotoFile()
                     pathToFile = photoFile.absolutePath
-                    val photoURI = FileProvider.getUriForFile(requireContext(), "com.example.Kuglll.shows_mark.fileprovider", photoFile)
+                    val photoURI = FileProvider.getUriForFile(requireContext(), "com.example.kuglll.shows_mark.fileprovider", photoFile)
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
                     startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
                 }
             }
         }else{ //request for both permissions
-            ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE), CAMERA_PERMISSION_REQUEST)
+            requestPermissions(arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE), CAMERA_PERMISSION_REQUEST)
         }
     }
 
@@ -204,23 +219,26 @@ class AddEpisodeFragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_IMAGE_CAPTURE){
             var drawable = Drawable.createFromPath(pathToFile)
-            MainActivity.storage.drawable = drawable
+            episodePhoto.setImageDrawable(drawable)
+        } else{
+            pathToFile = ""
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        var drawable = MainActivity.storage.drawable
-        if (drawable != null) {
-            changePhotoGroup.visibility = View.VISIBLE
-            episodePhoto.setImageDrawable(drawable)
-            changePhotoTextView.text = "Change photo"
-            uploadPhotoGroup.visibility = View.GONE
-        } else {
-            changePhotoGroup.visibility = View.GONE
-            changePhotoTextView.text = ""
-            uploadPhotoGroup.visibility = View.VISIBLE
-        }
+    override fun onSaveInstanceState(bundle: Bundle) {
+        super.onSaveInstanceState(bundle)
+        bundle.putInt(EPISODE_NUMBER, episodeNumber)
+        bundle.putInt(SEASON_NUMBER, seasonNumber)
+        bundle.putString(IMAGE, pathToFile)
+    }
+
+    fun displayImage(){
+        var drawable = Drawable.createFromPath(pathToFile)
+
+        changePhotoGroup.visibility = View.VISIBLE
+        episodePhoto.setImageDrawable(drawable)
+        changePhotoTextView.text = "Change photo"
+        uploadPhotoGroup.visibility = View.GONE
     }
 
     override fun onRequestPermissionsResult(

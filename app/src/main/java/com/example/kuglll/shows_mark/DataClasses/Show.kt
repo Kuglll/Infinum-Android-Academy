@@ -8,8 +8,4 @@ data class Show(
     val imageID: Int,
     var description: String = "Description missing!",
     var episodes: MutableList<Episode> = mutableListOf()
-){
-    fun addEpisode(episode: Episode){
-        episodes.add(episode)
-    }
-}
+)
