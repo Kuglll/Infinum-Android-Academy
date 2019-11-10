@@ -1,10 +1,7 @@
 package com.example.kuglll.shows_mark.database
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.ForeignKey
+import androidx.room.*
 import androidx.room.ForeignKey.CASCADE
-import androidx.room.PrimaryKey
 
 @Entity(
     foreignKeys = [
@@ -14,12 +11,13 @@ import androidx.room.PrimaryKey
             childColumns = ["show_id"],
             onDelete = CASCADE
         )
-    ]
+    ],
+    indices = [Index("show_id")]
 )
 data class EpisodeTable(
-    @PrimaryKey val id: String,
     @ColumnInfo(name = "show_id")
     val showId: String,
+    @PrimaryKey val id: String,
 
     val title: String,
     val description: String,

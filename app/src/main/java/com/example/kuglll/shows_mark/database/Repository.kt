@@ -29,4 +29,56 @@ object Repository{
         }
     }
 
+    fun getShowById(ID: String, callback: (String?) -> Unit){
+        exectuor.execute{
+            val id = database.showDao().getShowById(ID)
+            callback(id)
+        }
+    }
+
+    fun deleteAllShows(){
+        exectuor.execute{
+            database.showDao().deleteAll()
+        }
+    }
+
+    fun updateDesctiption(description: String, id: String){
+        exectuor.execute{
+            database.showDao().updateDescription(description, id)
+        }
+    }
+
+    fun getDescriptionByShowId(id: String, callback: (String) -> Unit){
+        exectuor.execute{
+            val description = database.showDao().getDescriptionByShowId(id)
+            callback(description)
+        }
+    }
+
+    fun addEpisode(episode: EpisodeTable){
+        exectuor.execute{
+            database.episodeDao().insert(episode)
+        }
+    }
+
+    fun getEpisodesByShowId(showId: String, callback: (List<EpisodeTable>) -> Unit){
+        exectuor.execute{
+            val episodeList = database.episodeDao().getEpisodesByShowId(showId)
+            callback(episodeList)
+        }
+    }
+
+    fun deleteAllEpisodes(){
+        exectuor.execute{
+            database.episodeDao().deleteAll()
+        }
+    }
+
+    fun getEpisodeById(id: String, callback: (String?) -> Unit){
+        exectuor.execute{
+            val id = database.episodeDao().getEpisodeById(id)
+            callback(id)
+        }
+    }
+
 }

@@ -9,5 +9,7 @@ class DataViewModel : ViewModel(){
     val password = MutableLiveData<String>()
     val episodeInserted = MutableLiveData<Boolean>()
 
+    val showDescription = MutableLiveData<String>()
+
 
 }

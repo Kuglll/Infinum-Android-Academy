@@ -1,6 +1,5 @@
 package com.example.kuglll.shows_mark.database
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -10,5 +9,6 @@ data class ShowTable(
 
     val title: String,
     val imageUrl: String,
-    val likesCount: Int
+    val likesCount: Int,
+    val description: String = "Description missing!"
 )
