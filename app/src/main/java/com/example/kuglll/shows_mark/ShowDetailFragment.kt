@@ -22,6 +22,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 private const val SHOWID = "showid"
+private const val TITLE = "TITLE"
 
 class ShowDetailFragment : Fragment() {
 
@@ -33,9 +34,10 @@ class ShowDetailFragment : Fragment() {
 
 
     companion object{
-        fun returnShowDetailFragment(showID : String) : ShowDetailFragment{
+        fun returnShowDetailFragment(showID: String, title: String) : ShowDetailFragment{
             val args = Bundle()
             args.putString(SHOWID, showID)
+            args.putString(TITLE, title)
             val fragment = ShowDetailFragment()
             fragment.arguments = args
             return fragment
@@ -55,21 +57,22 @@ class ShowDetailFragment : Fragment() {
 
         viewModel = ViewModelProviders.of(this).get(DataViewModel::class.java)
         showID = arguments!!.getString(SHOWID, "")
-        Log.d("OkHttp", showID)
+        showTitle = arguments!!.getString(TITLE, "")
+        toolbarTitle.text = showTitle
         fetchShowDetails()
     }
 
     fun fetchShowDetails(){
         Singleton.createRequest().getShowDetails(showID).enqueue(object : Callback<ShowDetailResult> {
             override fun onFailure(call: Call<ShowDetailResult>, t: Throwable) {
-                //do nothing
-                Log.d("OkHttp", "fail")
+                //TODO: provide title and desription from DB
             }
 
             override fun onResponse(call: Call<ShowDetailResult>, response: Response<ShowDetailResult>) {
                 if(response.isSuccessful){
                     val body = response.body()
                     if(body != null){
+                        //TODO: update ShowTable with description and likes count
                         showTitle = body.data.title
                         showDescription = body.data.description
                         toolbarTitle.text = showTitle
@@ -85,7 +88,7 @@ class ShowDetailFragment : Fragment() {
     fun fetchEpisodes(){
         Singleton.createRequest().getShowEpisodes(showID).enqueue(object : Callback<EpisodeResult>{
             override fun onFailure(call: Call<EpisodeResult>, t: Throwable) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                //TODO: get episodes from DB
             }
 
             override fun onResponse(call: Call<EpisodeResult>, response: Response<EpisodeResult>) {
@@ -94,6 +97,7 @@ class ShowDetailFragment : Fragment() {
                     if(body != null){
                         body.data.map{ episode ->
                             episodes.add(episode)
+                            //TODO: store episodes into database
                         }
                         initEpisodes()
                         initOnClickListeners()

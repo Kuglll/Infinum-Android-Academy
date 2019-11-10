@@ -1,6 +1,8 @@
 package com.example.kuglll.shows_mark.database
 
+import android.content.Context
 import androidx.room.Database
+import androidx.room.Room
 import androidx.room.RoomDatabase
 
 @Database(
@@ -9,7 +11,7 @@ import androidx.room.RoomDatabase
     exportSchema = false
 )
 
-abstract class Database: RoomDatabase(){
+abstract class MyDatabase: RoomDatabase(){
 
     abstract fun episodeDao(): EpisodeDao
 
