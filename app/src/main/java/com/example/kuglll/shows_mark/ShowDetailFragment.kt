@@ -1,7 +1,7 @@
 package com.example.kuglll.shows_mark
 
 import android.os.Bundle
-import android.util.Log
+import android.os.Handler
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_show_detail.*
@@ -9,10 +9,14 @@ import kotlinx.android.synthetic.main.toolbar.*
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.Group
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import com.example.kuglll.shows_mark.Adapters.EpisodesAdapter
 import com.example.kuglll.shows_mark.dataClasses.DataViewModel
+import com.example.kuglll.shows_mark.database.EpisodeTable
+import com.example.kuglll.shows_mark.database.Repository
+import com.example.kuglll.shows_mark.databinding.FragmentShowDetailBinding
 import com.example.kuglll.shows_mark.utils.Episode
 import com.example.kuglll.shows_mark.utils.EpisodeResult
 import com.example.kuglll.shows_mark.utils.ShowDetailResult
@@ -28,7 +32,6 @@ class ShowDetailFragment : Fragment() {
 
     var showID = ""
     var showTitle = ""
-    var showDescription = ""
     var episodes : MutableList<Episode> = ArrayList()
     lateinit var viewModel: DataViewModel
 
@@ -49,13 +52,19 @@ class ShowDetailFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_show_detail, container, false)
+        viewModel = ViewModelProviders.of(requireActivity()).get(DataViewModel::class.java)
+        val binding: FragmentShowDetailBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_show_detail, container, false)
+        binding.viewmodel = viewModel
+        binding.setLifecycleOwner { lifecycle }
+        val view = binding.root
+
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProviders.of(this).get(DataViewModel::class.java)
+        viewModel.showDescription.value = "Missing description!"
         showID = arguments!!.getString(SHOWID, "")
         showTitle = arguments!!.getString(TITLE, "")
         toolbarTitle.text = showTitle
@@ -65,18 +74,20 @@ class ShowDetailFragment : Fragment() {
     fun fetchShowDetails(){
         Singleton.createRequest().getShowDetails(showID).enqueue(object : Callback<ShowDetailResult> {
             override fun onFailure(call: Call<ShowDetailResult>, t: Throwable) {
-                //TODO: provide title and desription from DB
+                Repository.getDescriptionByShowId(showID){description ->
+                    viewModel.showDescription.postValue(description)
+                }
+                getEpisodesFromDatabase()
             }
 
             override fun onResponse(call: Call<ShowDetailResult>, response: Response<ShowDetailResult>) {
                 if(response.isSuccessful){
                     val body = response.body()
                     if(body != null){
-                        //TODO: update ShowTable with description and likes count
+                        Repository.updateDesctiption(body.data.description, body.data.id)
                         showTitle = body.data.title
-                        showDescription = body.data.description
                         toolbarTitle.text = showTitle
-                        showDescriptionTextView.text = showDescription
+                        viewModel.showDescription.value = body.data.description
                         fetchEpisodes()
                     }
                 }
@@ -88,7 +99,6 @@ class ShowDetailFragment : Fragment() {
     fun fetchEpisodes(){
         Singleton.createRequest().getShowEpisodes(showID).enqueue(object : Callback<EpisodeResult>{
             override fun onFailure(call: Call<EpisodeResult>, t: Throwable) {
-                //TODO: get episodes from DB
             }
 
             override fun onResponse(call: Call<EpisodeResult>, response: Response<EpisodeResult>) {
@@ -97,7 +107,9 @@ class ShowDetailFragment : Fragment() {
                     if(body != null){
                         body.data.map{ episode ->
                             episodes.add(episode)
-                            //TODO: store episodes into database
+                            Repository.getEpisodeById(episode.id){
+                                if (it == null) addEpisodeToDatabase(episode)
+                            }
                         }
                         initEpisodes()
                         initOnClickListeners()
@@ -106,6 +118,37 @@ class ShowDetailFragment : Fragment() {
             }
 
         })
+    }
+
+    fun getEpisodesFromDatabase(){
+        Repository.getEpisodesByShowId(showID){
+            it.map{episode ->
+                episodes.add(
+                    Episode(
+                        episode.id,
+                        episode.title,
+                        episode.description,
+                        episode.imageUrl,
+                        episode.episodeNumber,
+                        episode.seasonNumber
+                    )
+                )
+            }
+        }
+        Handler().postDelayed(this::initEpisodes, 150)
+        Handler().postDelayed(this::initOnClickListeners, 150)
+    }
+
+    fun addEpisodeToDatabase(episode: Episode){
+        Repository.addEpisode(EpisodeTable(
+            showID,
+            episode.id,
+            episode.title,
+            episode.description,
+            episode.imageUrl,
+            episode.episodeNumber,
+            episode.seasonNumber
+        ))
     }
 
     fun initEpisodes(){

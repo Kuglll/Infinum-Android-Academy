@@ -19,9 +19,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-const val USERNAME_REGISTER = "USERNAME"
-const val PASSWORD_REGISTER = "PASSWORD"
-
 class RegisterFragment : Fragment(){
 
     val mail_regex = Regex("[^@]+@[^\\.]+\\..+")

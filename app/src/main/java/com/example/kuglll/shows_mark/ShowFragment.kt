@@ -65,19 +65,24 @@ class ShowFragment : Fragment() {
                     if(body != null){
                         body.data.map {Show ->
                             shows.add(Show)
-                            //TODO: only add "new" shows (update) - can't add same because of primary key
-                            Repository.addShow(ShowTable(
-                                Show.id,
-                                Show.title,
-                                Show.imageUrl,
-                                Show.likesCount
-                            ))
+                            Repository.getShowById(Show.id){
+                                if (it == null) addShowtoDatabase(Show)
+                            }
                         }
                         initRecyclerview()
                     }
                 }
             }
         })
+    }
+
+    fun addShowtoDatabase(show: Show){
+        Repository.addShow(ShowTable(
+            show.id,
+            show.title,
+            show.imageUrl,
+            show.likesCount
+        ))
     }
 
     fun getDataFromDatabase(){
@@ -91,7 +96,7 @@ class ShowFragment : Fragment() {
                 ))
             }
         }
-        Handler().postDelayed(this::initRecyclerview, 1000)
+        Handler().postDelayed(this::initRecyclerview, 150)
     }
 
     fun initRecyclerview(){
