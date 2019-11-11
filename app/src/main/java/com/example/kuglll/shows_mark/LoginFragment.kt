@@ -2,17 +2,19 @@ package com.example.kuglll.shows_mark
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.doOnTextChanged
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
+import com.example.kuglll.shows_mark.dataClasses.DataViewModel
+import com.example.kuglll.shows_mark.databinding.FragmentLoginBinding
 import com.example.kuglll.shows_mark.utils.LoginRequest
 import com.example.kuglll.shows_mark.utils.LoginResult
 import com.example.kuglll.shows_mark.utils.Singleton
-import com.example.kuglll.shows_mark.utils.Token
 import kotlinx.android.synthetic.main.fragment_login.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -24,6 +26,7 @@ class LoginFragment : Fragment() {
 
     var userLogedIn = false
     val mail_regex = Regex("[^@]+@[^\\.]+\\..+")
+    lateinit var viewModel: DataViewModel
 
     companion object{
         fun returnLoginFramgent() : Fragment{
@@ -36,7 +39,14 @@ class LoginFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_login, container, false)
+        viewModel = ViewModelProviders.of(requireActivity()).get(DataViewModel::class.java)
+
+        val binding: FragmentLoginBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_login, container, false)
+        binding.viewmodel = viewModel
+        binding.setLifecycleOwner { lifecycle }
+        val view = binding.root
+
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -103,10 +113,10 @@ class LoginFragment : Fragment() {
     }
 
     fun displayRegisterFragment(){
+        viewModel.username.value = usernameEditText.text.toString()
+        viewModel.password.value = passwordEdittext.text.toString()
         activity!!.supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainerLoginRegister, RegisterFragment.returnRegisterFragment(
-                usernameEditText.text.toString(),
-                passwordEdittext.text.toString()))
+            .replace(R.id.fragmentContainerLoginRegister, RegisterFragment.returnRegisterFragment())
             .addToBackStack(LOGIN_FRAGMENT)
             .commit()
     }

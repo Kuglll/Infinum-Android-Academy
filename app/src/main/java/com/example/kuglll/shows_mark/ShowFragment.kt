@@ -2,6 +2,7 @@ package com.example.kuglll.shows_mark
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.kuglll.shows_mark.Adapters.ShowsAdapter
+import com.example.kuglll.shows_mark.database.MyDatabase
+import com.example.kuglll.shows_mark.database.Repository
+import com.example.kuglll.shows_mark.database.ShowTable
 import com.example.kuglll.shows_mark.utils.Show
 import com.example.kuglll.shows_mark.utils.ShowResult
 import com.example.kuglll.shows_mark.utils.Singleton
@@ -52,7 +56,7 @@ class ShowFragment : Fragment() {
     fun fetchShows(){
         Singleton.createRequest().getShows().enqueue(object: Callback<ShowResult>{
             override fun onFailure(call: Call<ShowResult>, t: Throwable) {
-                //TODO: implement on failure
+                getDataFromDatabase()
             }
 
             override fun onResponse(call: Call<ShowResult>, response: Response<ShowResult>) {
@@ -61,6 +65,13 @@ class ShowFragment : Fragment() {
                     if(body != null){
                         body.data.map {Show ->
                             shows.add(Show)
+                            //TODO: only add "new" shows (update) - can't add same because of primary key
+                            Repository.addShow(ShowTable(
+                                Show.id,
+                                Show.title,
+                                Show.imageUrl,
+                                Show.likesCount
+                            ))
                         }
                         initRecyclerview()
                     }
@@ -69,9 +80,23 @@ class ShowFragment : Fragment() {
         })
     }
 
+    fun getDataFromDatabase(){
+        Repository.getShows{
+            it.map {show ->
+                shows.add(Show(
+                    show.id,
+                    show.title,
+                    show.imageUrl,
+                    show.likesCount
+                ))
+            }
+        }
+        Handler().postDelayed(this::initRecyclerview, 1000)
+    }
+
     fun initRecyclerview(){
         showsRecyclerView.layoutManager = LinearLayoutManager(activity)
-        showsRecyclerView.adapter = ShowsAdapter(shows){ showID -> displayShowDetailFragment(showID) }
+        showsRecyclerView.adapter = ShowsAdapter(shows){ showID, title -> displayShowDetailFragment(showID, title) }
     }
 
     fun initOnClickListeners(){
@@ -112,9 +137,9 @@ class ShowFragment : Fragment() {
         }
     }
 
-    fun displayShowDetailFragment(showID: String){
+    fun displayShowDetailFragment(showID: String, title: String){
         activity!!.supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainer, ShowDetailFragment.returnShowDetailFragment(showID))
+            .replace(R.id.fragmentContainer, ShowDetailFragment.returnShowDetailFragment(showID, title))
             .addToBackStack("ShowDetail")
             .commit()
     }

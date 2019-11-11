@@ -12,7 +12,7 @@ import com.squareup.picasso.Picasso
 
 import kotlinx.android.synthetic.main.show_item.view.*
 
-class ShowsAdapter(private val dataset: List<Show>, val itemOnClick : (String) -> Unit) :
+class ShowsAdapter(private val dataset: List<Show>, val itemOnClick : (String, String) -> Unit) :
     RecyclerView.Adapter<ShowsAdapter.ShowViewHolder>() {
 
 
@@ -38,7 +38,7 @@ class ShowsAdapter(private val dataset: List<Show>, val itemOnClick : (String) -
                 .into(itemView.showImage)
             itemView.showName.text = item.title
             itemView.setOnClickListener {
-                itemOnClick(item.id)
+                itemOnClick(item.id, item.title)
             }
         }
 

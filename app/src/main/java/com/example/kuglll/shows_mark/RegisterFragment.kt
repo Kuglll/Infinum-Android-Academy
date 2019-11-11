@@ -6,9 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.doOnTextChanged
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
+import com.example.kuglll.shows_mark.dataClasses.DataViewModel
+import com.example.kuglll.shows_mark.databinding.FragmentRegisterBinding
 import com.example.kuglll.shows_mark.utils.RegisterRequest
-import com.example.kuglll.shows_mark.utils.RegisterResult
 import com.example.kuglll.shows_mark.utils.Singleton
 import kotlinx.android.synthetic.main.fragment_register.*
 import kotlinx.android.synthetic.main.toolbar.*
@@ -22,15 +25,11 @@ const val PASSWORD_REGISTER = "PASSWORD"
 class RegisterFragment : Fragment(){
 
     val mail_regex = Regex("[^@]+@[^\\.]+\\..+")
+    lateinit var viewModel: DataViewModel
 
     companion object {
-        fun returnRegisterFragment(username: String = "", password: String = ""): Fragment {
-            val args = Bundle()
-            args.putString(USERNAME_REGISTER, username)
-            args.putString(PASSWORD_REGISTER, password)
-            val fragment = RegisterFragment()
-            fragment.arguments = args
-            return fragment
+        fun returnRegisterFragment(): Fragment {
+            return RegisterFragment()
         }
     }
 
@@ -39,7 +38,14 @@ class RegisterFragment : Fragment(){
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_register, container, false)
+        viewModel = ViewModelProviders.of(requireActivity()).get(DataViewModel::class.java)
+
+        val binding: FragmentRegisterBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_register, container, false)
+        binding.viewmodel = viewModel
+        binding.setLifecycleOwner { lifecycle }
+        val view = binding.root
+
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -47,18 +53,11 @@ class RegisterFragment : Fragment(){
 
         toolbarTitle.text = "Register"
 
-        checkForArguments()
+        validateInput()
+
         initOnClickListeners()
     }
 
-    fun checkForArguments(){
-        val username = arguments!!.getString(USERNAME_REGISTER, "").toString()
-        val password = arguments!!.getString(PASSWORD_REGISTER, "").toString()
-        emailEditText.setText(username)
-        registerPasswordEdittext.setText(password)
-        registerAgainPasswordEdittext.setText(password)
-        validateInput()
-    }
 
     fun initOnClickListeners(){
         emailEditText.doOnTextChanged { text, start, count, after ->  validateInput()}
