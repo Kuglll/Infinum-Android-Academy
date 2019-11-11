@@ -47,7 +47,7 @@
             android:paddingBottom="20dp"/>
 
         <androidx.constraintlayout.widget.Group
-            android:id="@+id/sleepGroup"
+            android:id="@+id/sleepGroupEpisodes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:constraint_referenced_ids="iconSleep,fallenAsleepTextView,fallenAsleepTextView2"/>

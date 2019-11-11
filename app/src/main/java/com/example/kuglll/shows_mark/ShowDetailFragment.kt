@@ -163,7 +163,7 @@ class ShowDetailFragment : Fragment() {
 
         floatingButton.setOnClickListener { displayAddEpisodeFragment() }
 
-        sleepGroup.setAllOnClickListeners(object : View.OnClickListener{
+        sleepGroupEpisodes.setAllOnClickListeners(object : View.OnClickListener{
             override fun onClick(p0: View?) {
                 displayAddEpisodeFragment()
             }
@@ -187,10 +187,10 @@ class ShowDetailFragment : Fragment() {
         checkForNewEpisode()
         if(episodes.size>0){
             episodesRecyclerView.visibility = View.VISIBLE
-            sleepGroup.visibility = View.GONE
+            sleepGroupEpisodes.visibility = View.GONE
         }else {
             episodesRecyclerView.visibility = View.GONE
-            sleepGroup.visibility = View.VISIBLE
+            sleepGroupEpisodes.visibility = View.VISIBLE
         }
     }
 

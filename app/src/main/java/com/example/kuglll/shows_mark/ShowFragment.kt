@@ -10,7 +10,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.kuglll.shows_mark.Adapters.ShowsAdapter
-import com.example.kuglll.shows_mark.database.MyDatabase
 import com.example.kuglll.shows_mark.database.Repository
 import com.example.kuglll.shows_mark.database.ShowTable
 import com.example.kuglll.shows_mark.utils.Show
@@ -100,8 +99,13 @@ class ShowFragment : Fragment() {
     }
 
     fun initRecyclerview(){
-        showsRecyclerView.layoutManager = LinearLayoutManager(activity)
-        showsRecyclerView.adapter = ShowsAdapter(shows){ showID, title -> displayShowDetailFragment(showID, title) }
+        if(shows.size > 0) {
+            showsRecyclerView.layoutManager = LinearLayoutManager(activity)
+            showsRecyclerView.adapter =
+                ShowsAdapter(shows) { showID, title -> displayShowDetailFragment(showID, title) }
+            showsRecyclerView.visibility = View.VISIBLE
+            sleepGroupShows.visibility = View.GONE
+        }
     }
 
     fun initOnClickListeners(){
