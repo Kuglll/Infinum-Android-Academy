@@ -82,7 +82,7 @@ class AddEpisodeFragment : Fragment() {
 
         viewModel = ViewModelProviders.of(this).get(DataViewModel::class.java)
 
-        showID = arguments!!.getInt(SHOWID, -1)
+        showID = requireArguments().getInt(SHOWID, -1)
         toolbarTitle.text = "Add episode"
 
         initOnClickListeners()
