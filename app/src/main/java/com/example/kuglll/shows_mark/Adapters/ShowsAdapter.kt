@@ -1,16 +1,20 @@
-package com.example.Kuglll.shows_mark
+package com.example.kuglll.shows_mark.Adapters
 
-import android.app.Activity
-import android.content.Context
-import android.content.Intent
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.kuglll.shows_mark.R
+import com.example.kuglll.shows_mark.utils.Show
+import com.squareup.picasso.Picasso
+
+
 import kotlinx.android.synthetic.main.show_item.view.*
 
-class ShowsAdapter(private val dataset: List<Show>, val activity: Activity) :
+class ShowsAdapter(private val dataset: List<Show>, val itemOnClick : (String) -> Unit) :
     RecyclerView.Adapter<ShowsAdapter.ShowViewHolder>() {
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShowViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.show_item, parent, false)
@@ -29,16 +33,15 @@ class ShowsAdapter(private val dataset: List<Show>, val activity: Activity) :
     inner class ShowViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         fun bind(item: Show) {
-            itemView.showImage.setImageResource(item.imageID)
-            itemView.showName.text = item.name
-            if(item.end_date != 0){
-                itemView.showDate.text = "(${item.start_date} - ${item.end_date})"
-            } else {
-                itemView.showDate.text = "(${item.start_date} - )"
-            }
+            Picasso.get().load("https://api.infinum.academy${item.imageUrl}")
+                .placeholder(R.drawable.office) //using office as a placeholder
+                .into(itemView.showImage)
+            itemView.showName.text = item.title
             itemView.setOnClickListener {
-                activity.startActivity(ShowDetailActivity.startShowDetailActivity(activity, item.ID))
+                itemOnClick(item.id)
             }
         }
+
+
     }
 }

@@ -1,7 +1,7 @@
 /**
  * Automatically generated file. DO NOT MODIFY
  */
-package com.example.Kuglll.shows_mark;
+package com.example.kuglll.shows_mark;
 
 public final class BuildConfig {
   public static final boolean DEBUG = Boolean.parseBoolean("true");

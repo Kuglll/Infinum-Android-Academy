@@ -4,14 +4,16 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ShowDetailActivity">
+        android:background="@color/white"
+        android:clickable="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
 
     <include
-        android:id="@+id/toolbar"
         layout="@layout/toolbar"/>
 
     <TextView
-        android:id="@+id/showDescription"
+        android:id="@+id/showDescriptionTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textColor="@color/greyText"
@@ -28,7 +30,7 @@
         android:text="Episodes"
         android:textSize="20sp"
         android:textColor="@color/black"
-        app:layout_constraintTop_toBottomOf="@id/showDescription"
+        app:layout_constraintTop_toBottomOf="@id/showDescriptionTextView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="40dp"
