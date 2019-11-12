@@ -20,10 +20,11 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class ShowFragment : Fragment() {
+class ShowFragment : Fragment(), FragmentBackListener {
 
     var userLogedIn = false
     var shows = ArrayList<Show>()
+    lateinit var call: Call<ShowResult>
 
     companion object{
         fun returnShowFragment(): ShowFragment{
@@ -53,9 +54,10 @@ class ShowFragment : Fragment() {
     }
 
     fun fetchShows(){
-        Singleton.createRequest().getShows().enqueue(object: Callback<ShowResult>{
+        call = Singleton.createRequest().getShows()
+        call.enqueue(object: Callback<ShowResult>{
             override fun onFailure(call: Call<ShowResult>, t: Throwable) {
-                getDataFromDatabase()
+                if(!call.isCanceled) getDataFromDatabase()
             }
 
             override fun onResponse(call: Call<ShowResult>, response: Response<ShowResult>) {
@@ -94,8 +96,11 @@ class ShowFragment : Fragment() {
                     show.likesCount
                 ))
             }
+
+            activity?.runOnUiThread {
+                initRecyclerview()
+            }
         }
-        Handler().postDelayed(this::initRecyclerview, 150)
     }
 
     fun initRecyclerview(){
@@ -151,6 +156,16 @@ class ShowFragment : Fragment() {
             .replace(R.id.fragmentContainer, ShowDetailFragment.returnShowDetailFragment(showID, title))
             .addToBackStack("ShowDetail")
             .commit()
+    }
+
+    override fun onBackPressed(): Boolean{
+        call.cancel()
+        if(userLogedIn){
+            requireActivity().finishAffinity()
+        } else {
+            startActivity(LoginRegisterActivity.startLoginRegisterActivity(requireActivity()))
+        }
+        return true
     }
 
 }

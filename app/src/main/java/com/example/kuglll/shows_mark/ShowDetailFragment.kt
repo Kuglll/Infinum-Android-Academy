@@ -28,12 +28,14 @@ import retrofit2.Response
 private const val SHOWID = "showid"
 private const val TITLE = "TITLE"
 
-class ShowDetailFragment : Fragment() {
+class ShowDetailFragment : Fragment(), FragmentBackListener {
 
     var showID = ""
     var showTitle = ""
     var episodes : MutableList<Episode> = ArrayList()
     lateinit var viewModel: DataViewModel
+    lateinit var callShowDetail: Call<ShowDetailResult>
+    var callEpisodeResult: Call<EpisodeResult>? = null
 
 
     companion object{
@@ -72,12 +74,16 @@ class ShowDetailFragment : Fragment() {
     }
 
     fun fetchShowDetails(){
-        Singleton.createRequest().getShowDetails(showID).enqueue(object : Callback<ShowDetailResult> {
+        callShowDetail = Singleton.createRequest().getShowDetails(showID)
+        callShowDetail.enqueue(object : Callback<ShowDetailResult> {
+
             override fun onFailure(call: Call<ShowDetailResult>, t: Throwable) {
-                Repository.getDescriptionByShowId(showID){description ->
-                    viewModel.showDescription.postValue(description)
+                if(!call.isCanceled) {
+                    Repository.getDescriptionByShowId(showID) { description ->
+                        viewModel.showDescription.postValue(description)
+                    }
+                    getEpisodesFromDatabase()
                 }
-                getEpisodesFromDatabase()
             }
 
             override fun onResponse(call: Call<ShowDetailResult>, response: Response<ShowDetailResult>) {
@@ -97,7 +103,8 @@ class ShowDetailFragment : Fragment() {
     }
 
     fun fetchEpisodes(){
-        Singleton.createRequest().getShowEpisodes(showID).enqueue(object : Callback<EpisodeResult>{
+        callEpisodeResult = Singleton.createRequest().getShowEpisodes(showID)
+        callEpisodeResult?.enqueue(object : Callback<EpisodeResult>{
             override fun onFailure(call: Call<EpisodeResult>, t: Throwable) {
             }
 
@@ -134,9 +141,12 @@ class ShowDetailFragment : Fragment() {
                     )
                 )
             }
+
+            activity?.runOnUiThread {
+                initEpisodes()
+                initOnClickListeners()
+            }
         }
-        Handler().postDelayed(this::initEpisodes, 150)
-        Handler().postDelayed(this::initOnClickListeners, 150)
     }
 
     fun addEpisodeToDatabase(episode: Episode){
@@ -202,6 +212,13 @@ class ShowDetailFragment : Fragment() {
         }
     }
 
+    override fun onBackPressed(): Boolean {
+        if(callEpisodeResult != null) {
+            callEpisodeResult?.cancel()
+        }
+        callShowDetail.cancel()
+        return false
+    }
 
 }
 

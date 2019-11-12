@@ -2,6 +2,7 @@ package com.example.kuglll.shows_mark
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -20,10 +21,11 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-lateinit var token: String
+const val TOKEN = "TOKEN"
 
 class LoginFragment : Fragment() {
 
+    var token: String? = null
     var userLogedIn = false
     val mail_regex = Regex("[^@]+@[^\\.]+\\..+")
     lateinit var viewModel: DataViewModel
@@ -54,9 +56,12 @@ class LoginFragment : Fragment() {
 
         val sharedPref = requireActivity().getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
         userLogedIn = sharedPref.getBoolean(REMEMBERME, false)
+        token = sharedPref.getString(TOKEN,null)
 
 
-        if(userLogedIn) startActivity(MainActivity.startMainActivity(activity!!))
+        if(userLogedIn) {
+            if(token != null) startActivity(MainActivity.startMainActivity(activity!!))
+        }
 
         initOnClickListeners()
     }
@@ -88,11 +93,20 @@ class LoginFragment : Fragment() {
                     val body = response.body()
                     if(body != null){
                         token = body.data.token
+                        storeToken(token)
                         startActivity(MainActivity.startMainActivity(activity!!))
                     }
                 }
             }
         })
+    }
+
+    fun storeToken(token: String?){
+        val sharedPref = requireActivity().getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE) ?: return
+        with (sharedPref.edit()) {
+            putString(TOKEN, token)
+            apply()
+        }
     }
 
     fun validateInput(){
