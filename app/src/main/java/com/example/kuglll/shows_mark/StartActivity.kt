@@ -15,29 +15,26 @@ class StartActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_start)
 
-
-        text.visibility = View.INVISIBLE
-
         Handler().postDelayed(this::startIconAnimation, 100)
-        Handler().postDelayed(this::startTextAnimation, 1100)
+        startTextAnimation()
 
         Handler().postDelayed(this::startLoginRegisterActivity, 2500)
     }
 
     fun startIconAnimation(){
         icon.animate()
-            .translationY((root.height/2-80).toFloat())
+            .translationY((root.height/2-text.height/3).toFloat())
             .setInterpolator(BounceInterpolator())
             .setDuration(1000L)
             .start()
     }
 
     fun startTextAnimation(){
-        text.visibility = View.VISIBLE
         text.animate()
-            .scaleXBy(20f)
-            .scaleYBy(20f)
+            .scaleXBy(1f)
+            .scaleYBy(1f)
             .setInterpolator(OvershootInterpolator())
+            .setStartDelay(1200L)
             .setDuration(1000L)
             .start()
     }
