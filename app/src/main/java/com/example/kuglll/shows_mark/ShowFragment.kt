@@ -27,7 +27,6 @@ import retrofit2.Response
 class ShowFragment : Fragment(), FragmentBackListener {
 
     var userLogedIn = false
-    var shows = ArrayList<Show>()
     lateinit var call: Call<ShowResult>
     lateinit var viewModel: DataViewModel
 
@@ -54,8 +53,6 @@ class ShowFragment : Fragment(), FragmentBackListener {
 
         initShowObserver()
 
-        shows = ArrayList()
-
         viewModel.loadShows()
 
         initOnClickListeners()
@@ -79,66 +76,6 @@ class ShowFragment : Fragment(), FragmentBackListener {
         showsRecyclerView.adapter =
             ShowsAdapter(shows) { showID, title -> displayShowDetailFragment(showID, title) }
 
-    }
-
-    fun fetchShows(){
-        call = Singleton.service.getShows()
-        call.enqueue(object: Callback<ShowResult>{
-            override fun onFailure(call: Call<ShowResult>, t: Throwable) {
-                if(!call.isCanceled) getDataFromDatabase()
-            }
-
-            override fun onResponse(call: Call<ShowResult>, response: Response<ShowResult>) {
-                if (response.isSuccessful){
-                    val body = response.body()
-                    if(body != null){
-                        body.data.map {Show ->
-                            shows.add(Show)
-                            Repository.getShowById(Show.id){
-                                if (it == null) addShowtoDatabase(Show)
-                            }
-                        }
-                        initRecyclerview()
-                    }
-                }
-            }
-        })
-    }
-
-    fun addShowtoDatabase(show: Show){
-        Repository.addShow(ShowTable(
-            show.id,
-            show.title,
-            show.imageUrl,
-            show.likesCount
-        ))
-    }
-
-    fun getDataFromDatabase(){
-        Repository.getShows{
-            it.map {show ->
-                shows.add(Show(
-                    show.id,
-                    show.title,
-                    show.imageUrl,
-                    show.likesCount
-                ))
-            }
-
-            activity?.runOnUiThread {
-                initRecyclerview()
-            }
-        }
-    }
-
-    fun initRecyclerview(){
-        if(shows.size > 0) {
-            showsRecyclerView.layoutManager = LinearLayoutManager(activity)
-            showsRecyclerView.adapter =
-                ShowsAdapter(shows) { showID, title -> displayShowDetailFragment(showID, title) }
-            showsRecyclerView.visibility = View.VISIBLE
-            sleepGroupShows.visibility = View.GONE
-        }
     }
 
     fun initOnClickListeners(){
