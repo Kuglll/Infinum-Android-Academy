@@ -25,4 +25,7 @@ interface ShowDao{
     @Query("SELECT description FROM ShowTable WHERE id = :id")
     fun getDescriptionByShowId(id: String): String
 
+    @Query("SELECT likesCount FROM ShowTable WHERE id = :id")
+    fun getLikesCountByShowId(id: String): Int
+
 }

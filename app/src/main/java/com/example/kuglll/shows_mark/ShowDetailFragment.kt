@@ -1,7 +1,7 @@
 package com.example.kuglll.shows_mark
 
+import android.content.Context
 import android.os.Bundle
-import android.os.Handler
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_show_detail.*
@@ -32,9 +32,10 @@ class ShowDetailFragment : Fragment(), FragmentBackListener {
 
     var showID = ""
     var showTitle = ""
+    var token: String? = ""
     var episodes : MutableList<Episode> = ArrayList()
     lateinit var viewModel: DataViewModel
-    lateinit var callShowDetail: Call<ShowDetailResult>
+    var callShowDetail: Call<ShowDetailResult>? = null
     var callEpisodeResult: Call<EpisodeResult>? = null
 
 
@@ -66,6 +67,9 @@ class ShowDetailFragment : Fragment(), FragmentBackListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val sharedPref = requireActivity().getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
+        token = sharedPref.getString(TOKEN, "")
+
         viewModel.showDescription.value = "Missing description!"
         showID = arguments!!.getString(SHOWID, "")
         showTitle = arguments!!.getString(TITLE, "")
@@ -76,12 +80,13 @@ class ShowDetailFragment : Fragment(), FragmentBackListener {
 
     fun fetchShowDetails(){
         callShowDetail = Singleton.service.getShowDetails(showID)
-        callShowDetail.enqueue(object : Callback<ShowDetailResult> {
+        callShowDetail?.enqueue(object : Callback<ShowDetailResult> {
 
             override fun onFailure(call: Call<ShowDetailResult>, t: Throwable) {
                 if(!call.isCanceled) {
-                    Repository.getDescriptionByShowId(showID) { description ->
+                    Repository.getShowDetailsById(showID) { description, likesCount ->
                         viewModel.showDescription.postValue(description)
+                        viewModel.likesCount.postValue(likesCount)
                     }
                     getEpisodesFromDatabase()
                 }
@@ -95,6 +100,7 @@ class ShowDetailFragment : Fragment(), FragmentBackListener {
                         showTitle = body.data.title
                         toolbarTitle.text = showTitle
                         viewModel.showDescription.value = body.data.description
+                        viewModel.likesCount.value = body.data.likesCount
                         fetchEpisodes()
                     }
                 }
@@ -214,10 +220,8 @@ class ShowDetailFragment : Fragment(), FragmentBackListener {
     }
 
     fun cancleAllApiCalls(){
-        if(callEpisodeResult != null) {
-            callEpisodeResult?.cancel()
-        }
-        callShowDetail.cancel()
+        if(callEpisodeResult != null) callEpisodeResult?.cancel()
+        if(callShowDetail != null) callShowDetail?.cancel()
     }
 
     override fun onBackPressed(): Boolean {

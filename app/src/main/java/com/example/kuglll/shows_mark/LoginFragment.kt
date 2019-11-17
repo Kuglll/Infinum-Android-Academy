@@ -2,7 +2,6 @@ package com.example.kuglll.shows_mark
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View

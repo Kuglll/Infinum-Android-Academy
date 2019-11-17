@@ -19,6 +19,7 @@ class DataViewModel : ViewModel(){
     val episodeInserted = MutableLiveData<Boolean>()
 
     val showDescription = MutableLiveData<String>()
+    val likesCount = MutableLiveData<Int>()
 
     val shows = MutableLiveData<List<Show>>()
 

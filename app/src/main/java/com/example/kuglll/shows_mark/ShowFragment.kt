@@ -27,7 +27,7 @@ import retrofit2.Response
 class ShowFragment : Fragment(), FragmentBackListener {
 
     var userLogedIn = false
-    lateinit var call: Call<ShowResult>
+    var call: Call<ShowResult>? = null
     lateinit var viewModel: DataViewModel
 
     companion object{
@@ -87,6 +87,9 @@ class ShowFragment : Fragment(), FragmentBackListener {
                 activity!!.finish()
              }
         }
+        sleepGroupShows.setOnClickListener{
+            viewModel.loadShows()
+        }
     }
 
 
@@ -124,7 +127,7 @@ class ShowFragment : Fragment(), FragmentBackListener {
     }
 
     override fun onBackPressed(): Boolean{
-        call.cancel()
+        if(call != null) call?.cancel()
         if(userLogedIn){
             requireActivity().finishAffinity()
         } else {

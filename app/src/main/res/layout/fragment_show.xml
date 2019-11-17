@@ -63,7 +63,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/fallenAsleepShowTextView"
-        android:text="There is no Shows available"
+        android:text="Click here to refresh"
         android:textColor="@color/pink"
         android:textSize="15sp"
         android:textAlignment="center"/>
