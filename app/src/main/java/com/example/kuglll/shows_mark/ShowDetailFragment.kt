@@ -71,10 +71,11 @@ class ShowDetailFragment : Fragment(), FragmentBackListener {
         showTitle = arguments!!.getString(TITLE, "")
         toolbarTitle.text = showTitle
         fetchShowDetails()
+        initOnClickListeners()
     }
 
     fun fetchShowDetails(){
-        callShowDetail = Singleton.createRequest().getShowDetails(showID)
+        callShowDetail = Singleton.service.getShowDetails(showID)
         callShowDetail.enqueue(object : Callback<ShowDetailResult> {
 
             override fun onFailure(call: Call<ShowDetailResult>, t: Throwable) {
@@ -103,7 +104,7 @@ class ShowDetailFragment : Fragment(), FragmentBackListener {
     }
 
     fun fetchEpisodes(){
-        callEpisodeResult = Singleton.createRequest().getShowEpisodes(showID)
+        callEpisodeResult = Singleton.service.getShowEpisodes(showID)
         callEpisodeResult?.enqueue(object : Callback<EpisodeResult>{
             override fun onFailure(call: Call<EpisodeResult>, t: Throwable) {
             }
@@ -119,7 +120,6 @@ class ShowDetailFragment : Fragment(), FragmentBackListener {
                             }
                         }
                         initEpisodes()
-                        initOnClickListeners()
                     }
                 }
             }
@@ -187,6 +187,7 @@ class ShowDetailFragment : Fragment(), FragmentBackListener {
     }
 
     fun displayAddEpisodeFragment(){
+        cancleAllApiCalls()
         activity!!.supportFragmentManager.beginTransaction()
             .replace(R.id.fragmentContainer, AddEpisodeFragment.returnAddEpisodeFragment(showID))
             .addToBackStack("AddEpisode")
@@ -212,11 +213,15 @@ class ShowDetailFragment : Fragment(), FragmentBackListener {
         }
     }
 
-    override fun onBackPressed(): Boolean {
+    fun cancleAllApiCalls(){
         if(callEpisodeResult != null) {
             callEpisodeResult?.cancel()
         }
         callShowDetail.cancel()
+    }
+
+    override fun onBackPressed(): Boolean {
+        cancleAllApiCalls()
         return false
     }
 

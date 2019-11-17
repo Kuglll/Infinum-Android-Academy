@@ -73,7 +73,7 @@ class RegisterFragment : Fragment(){
     }
 
     fun registerUser(email : String, password: String){
-        Singleton.createRequest().register(RegisterRequest(email, password)).enqueue(object : Callback<Any>{
+        Singleton.service.register(RegisterRequest(email, password)).enqueue(object : Callback<Any>{
             override fun onFailure(call: Call<Any>, t: Throwable) {
                 //TODO: Handle failure
             }
@@ -100,7 +100,7 @@ class RegisterFragment : Fragment(){
     }
 
     fun validateInput(){
-        registerButton.isEnabled = emailEditText.text.length > 1 &&
+        registerButton.isEnabled = emailEditText.text.length >= 1 &&
                                    registerPasswordEdittext.text.length >= 6 &&
                                    registerAgainPasswordEdittext.text.length >= 6
     }

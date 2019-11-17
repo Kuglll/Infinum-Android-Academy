@@ -83,7 +83,7 @@ class LoginFragment : Fragment() {
     }
 
     fun loginUser(email: String, password: String){
-        Singleton.createRequest().login(LoginRequest(email, password)).enqueue(object : Callback<LoginResult>{
+        Singleton.service.login(LoginRequest(email, password)).enqueue(object : Callback<LoginResult>{
             override fun onFailure(call: Call<LoginResult>, t: Throwable) {
                 //TODO: implement on failure
             }

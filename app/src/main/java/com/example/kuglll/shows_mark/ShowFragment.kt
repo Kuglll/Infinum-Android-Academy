@@ -8,8 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.kuglll.shows_mark.Adapters.ShowsAdapter
+import com.example.kuglll.shows_mark.dataClasses.DataViewModel
 import com.example.kuglll.shows_mark.database.Repository
 import com.example.kuglll.shows_mark.database.ShowTable
 import com.example.kuglll.shows_mark.utils.Show
@@ -25,6 +29,7 @@ class ShowFragment : Fragment(), FragmentBackListener {
     var userLogedIn = false
     var shows = ArrayList<Show>()
     lateinit var call: Call<ShowResult>
+    lateinit var viewModel: DataViewModel
 
     companion object{
         fun returnShowFragment(): ShowFragment{
@@ -37,6 +42,7 @@ class ShowFragment : Fragment(), FragmentBackListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        viewModel = ViewModelProviders.of(requireActivity()).get(DataViewModel::class.java)
         return inflater.inflate(R.layout.fragment_show, container, false)
     }
 
@@ -46,15 +52,37 @@ class ShowFragment : Fragment(), FragmentBackListener {
         val sharedPref = requireActivity().getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
         userLogedIn = sharedPref.getBoolean(REMEMBERME, false)
 
+        initShowObserver()
+
         shows = ArrayList()
 
-        fetchShows()
+        viewModel.loadShows()
 
         initOnClickListeners()
     }
 
+    fun initShowObserver(){
+        viewModel.shows.observe(this, Observer<List<Show>> { shows ->
+            updateUi(shows)
+        })
+    }
+
+    fun updateUi(shows: List<Show>){
+        if(shows.isEmpty()) {
+            showsRecyclerView.visibility = View.GONE
+            sleepGroupShows.visibility = View.VISIBLE
+        } else {
+            showsRecyclerView.visibility = View.VISIBLE
+            sleepGroupShows.visibility = View.GONE
+        }
+        showsRecyclerView.layoutManager = LinearLayoutManager(activity)
+        showsRecyclerView.adapter =
+            ShowsAdapter(shows) { showID, title -> displayShowDetailFragment(showID, title) }
+
+    }
+
     fun fetchShows(){
-        call = Singleton.createRequest().getShows()
+        call = Singleton.service.getShows()
         call.enqueue(object: Callback<ShowResult>{
             override fun onFailure(call: Call<ShowResult>, t: Throwable) {
                 if(!call.isCanceled) getDataFromDatabase()
