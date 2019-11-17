@@ -28,4 +28,10 @@ interface ShowDao{
     @Query("SELECT likesCount FROM ShowTable WHERE id = :id")
     fun getLikesCountByShowId(id: String): Int
 
+    @Query("UPDATE ShowTable SET likeStatus = :likeStatus WHERE id = :id")
+    fun updateLikeStatus(likeStatus: Boolean?, id: String)
+
+    @Query("SELECT likeStatus FROM ShowTable WHERE id = :id")
+    fun getLikeStatusByShowId(id: String): Boolean?
+
 }

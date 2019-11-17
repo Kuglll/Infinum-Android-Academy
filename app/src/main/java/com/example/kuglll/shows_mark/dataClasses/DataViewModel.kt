@@ -1,6 +1,7 @@
 package com.example.kuglll.shows_mark.dataClasses
 
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.kuglll.shows_mark.database.Repository
@@ -21,12 +22,14 @@ class DataViewModel : ViewModel(){
     val showDescription = MutableLiveData<String>()
     val likesCount = MutableLiveData<Int>()
 
+    val likeStatus = MutableLiveData<Boolean>()
+
     val shows = MutableLiveData<List<Show>>()
 
     fun loadShows(){
         Singleton.service.getShows().enqueue(object: Callback<ShowResult> {
             override fun onFailure(call: Call<ShowResult>, t: Throwable) {
-                if(!call.isCanceled) getShowsFromDatabase()
+                getShowsFromDatabase()
             }
 
             override fun onResponse(call: Call<ShowResult>, response: Response<ShowResult>) {
@@ -69,6 +72,54 @@ class DataViewModel : ViewModel(){
             }
         }
         shows.postValue(mapping)
+    }
+
+    fun likeShow(showId: String, token: String?){
+        Singleton.service.likeShow(showId, token).enqueue(object: Callback<Unit> {
+            override fun onFailure(call: Call<Unit>, t: Throwable) {
+                Log.d("likeStatus", "Show liked successfully failed")
+            }
+
+            override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
+                Log.d("likeStatus", "Show successfully liked")
+                likesCount.value?.let{count ->
+                    if(likeStatus.value == null){
+                        likesCount.value = count + 1
+                    } else{
+                        likesCount.value = count + 2
+                    }
+                }
+                likeStatus.value = true
+                Repository.updateLikeStatus(true, showId)
+            }
+        })
+    }
+
+    fun dislikeShow(showId: String, token: String?){
+        Singleton.service.dislikeShow(showId, token).enqueue(object: Callback<Unit>{
+            override fun onFailure(call: Call<Unit>, t: Throwable) {
+                Log.d("likeStatus", "Show disliked successfully failed")
+            }
+
+            override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
+                Log.d("likeStatus", "Show successfully disliked")
+                likesCount.value?.let{count ->
+                    if(likeStatus.value == null){
+                        likesCount.value = count - 1
+                    } else{
+                        likesCount.value = count - 2
+                    }
+                }
+                likeStatus.value = false
+                Repository.updateLikeStatus(false, showId)
+            }
+        })
+    }
+
+    fun checkDatabaseForLikeStatus(showId: String){
+        Repository.getLikeStatusByShowId(showId){
+            likeStatus.postValue(it)
+        }
     }
 
 }

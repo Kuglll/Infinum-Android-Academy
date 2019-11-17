@@ -2,6 +2,7 @@ package com.example.kuglll.shows_mark
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import android.view.ViewGroup
 import androidx.core.widget.doOnTextChanged
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.example.kuglll.shows_mark.dataClasses.DataViewModel
 import com.example.kuglll.shows_mark.databinding.FragmentLoginBinding
@@ -55,8 +57,7 @@ class LoginFragment : Fragment() {
 
         val sharedPref = requireActivity().getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
         userLogedIn = sharedPref.getBoolean(REMEMBERME, false)
-        token = sharedPref.getString(TOKEN,null)
-
+        token = sharedPref.getString(TOKEN, null)
 
         if(userLogedIn) {
             if(token != null) startActivity(MainActivity.startMainActivity(activity!!))

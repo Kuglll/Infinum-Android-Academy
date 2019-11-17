@@ -10,5 +10,6 @@ data class ShowTable(
     val title: String,
     val imageUrl: String,
     val likesCount: Int,
-    val description: String = "Description missing!"
+    val description: String = "Description missing!",
+    val likeStatus: Boolean? = null
 )

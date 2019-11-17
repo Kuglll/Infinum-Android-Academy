@@ -25,5 +25,13 @@ interface ApiService{
 
     @GET("/api/shows/{showID}/episodes")
     fun getShowEpisodes(@Path("showID") showID : String): Call<EpisodeResult>
+
+    @POST("/api/shows/{showId}/like")
+    fun likeShow(@Path("showId") showId: String, @Header("Authorization") token: String?): Call<Unit>
+
+    @POST("/api/shows/{showId}/dislike")
+    fun dislikeShow(@Path("showId") showId: String, @Header("Authorization") token: String?): Call<Unit>
+
+
 }
 

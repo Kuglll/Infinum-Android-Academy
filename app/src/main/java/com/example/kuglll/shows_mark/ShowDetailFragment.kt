@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.Group
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.example.kuglll.shows_mark.Adapters.EpisodesAdapter
 import com.example.kuglll.shows_mark.dataClasses.DataViewModel
@@ -32,7 +33,7 @@ class ShowDetailFragment : Fragment(), FragmentBackListener {
 
     var showID = ""
     var showTitle = ""
-    var token: String? = ""
+    var token: String? = null
     var episodes : MutableList<Episode> = ArrayList()
     lateinit var viewModel: DataViewModel
     var callShowDetail: Call<ShowDetailResult>? = null
@@ -68,14 +69,23 @@ class ShowDetailFragment : Fragment(), FragmentBackListener {
         super.onViewCreated(view, savedInstanceState)
 
         val sharedPref = requireActivity().getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
-        token = sharedPref.getString(TOKEN, "")
+        token = sharedPref.getString(TOKEN, null)
 
         viewModel.showDescription.value = "Missing description!"
+        viewModel.likeStatus.value = null
         showID = arguments!!.getString(SHOWID, "")
         showTitle = arguments!!.getString(TITLE, "")
         toolbarTitle.text = showTitle
+
+        checkForLikeStatus(showID)
         fetchShowDetails()
+
         initOnClickListeners()
+        initObservers()
+    }
+
+    fun checkForLikeStatus(showId: String){
+        viewModel.checkDatabaseForLikeStatus(showId)
     }
 
     fun fetchShowDetails(){
@@ -174,10 +184,35 @@ class ShowDetailFragment : Fragment(), FragmentBackListener {
         displayEpisodes()
     }
 
+    fun initObservers(){
+        viewModel.likeStatus.observe(this, Observer<Boolean?> { likeStatus ->
+            updateLikeButtons(likeStatus)
+        })
+    }
+
+    fun updateLikeButtons(likeStatus: Boolean?){
+        if(likeStatus == true){
+            like.isEnabled = false
+            dislike.isEnabled = true
+            like.setBackgroundResource(R.drawable.ic_like_pressed)
+            dislike.setBackgroundResource(R.drawable.ic_dislike)
+        }
+        else if(likeStatus == false){
+            like.isEnabled = true
+            dislike.isEnabled = false
+            like.setBackgroundResource(R.drawable.ic_like)
+            dislike.setBackgroundResource(R.drawable.ic_dislike_pressed)
+        }
+    }
+
     fun initOnClickListeners(){
         toolbar.setNavigationOnClickListener{activity?.onBackPressed()}
 
         floatingButton.setOnClickListener { displayAddEpisodeFragment() }
+
+        like.setOnClickListener{ viewModel.likeShow(showID, token) }
+
+        dislike.setOnClickListener{ viewModel.dislikeShow(showID, token) }
 
         sleepGroupEpisodes.setAllOnClickListeners(object : View.OnClickListener{
             override fun onClick(p0: View?) {
@@ -193,7 +228,7 @@ class ShowDetailFragment : Fragment(), FragmentBackListener {
     }
 
     fun displayAddEpisodeFragment(){
-        cancleAllApiCalls()
+        cancelAllApiCalls()
         activity!!.supportFragmentManager.beginTransaction()
             .replace(R.id.fragmentContainer, AddEpisodeFragment.returnAddEpisodeFragment(showID))
             .addToBackStack("AddEpisode")
@@ -219,13 +254,13 @@ class ShowDetailFragment : Fragment(), FragmentBackListener {
         }
     }
 
-    fun cancleAllApiCalls(){
+    fun cancelAllApiCalls(){
         if(callEpisodeResult != null) callEpisodeResult?.cancel()
         if(callShowDetail != null) callShowDetail?.cancel()
     }
 
     override fun onBackPressed(): Boolean {
-        cancleAllApiCalls()
+        cancelAllApiCalls()
         return false
     }
 

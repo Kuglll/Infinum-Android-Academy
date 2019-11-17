@@ -88,6 +88,7 @@ class ShowFragment : Fragment(), FragmentBackListener {
              }
         }
         sleepGroupShows.setOnClickListener{
+            println("LODA SHWO")
             viewModel.loadShows()
         }
     }

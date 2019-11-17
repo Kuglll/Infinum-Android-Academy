@@ -82,4 +82,17 @@ object Repository{
         }
     }
 
+    fun updateLikeStatus(likeStatus: Boolean?, showId: String){
+        exectuor.execute{
+            database.showDao().updateLikeStatus(likeStatus, showId)
+        }
+    }
+
+    fun getLikeStatusByShowId(id: String, callback: (Boolean?) -> Unit){
+        exectuor.execute{
+            val likeStatus = database.showDao().getLikeStatusByShowId(id)
+            callback(likeStatus)
+        }
+    }
+
 }

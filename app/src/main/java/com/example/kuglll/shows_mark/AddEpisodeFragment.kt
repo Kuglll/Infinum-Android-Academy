@@ -38,7 +38,7 @@ private const val EPISODE_NUMBER = "EPISODE_NUMBER"
 private const val SEASON_NUMBER = "SEASON_NUMBER"
 private const val IMAGE = "IMAGE"
 
-class AddEpisodeFragment : Fragment() {
+class AddEpisodeFragment : Fragment(), FragmentBackListener {
 
     var showID = -1
     var pathToFile : String = ""
@@ -95,11 +95,11 @@ class AddEpisodeFragment : Fragment() {
 
 
     fun initOnClickListeners(){
-        toolbar.setNavigationOnClickListener{onBackPressed()}
+        toolbar.setNavigationOnClickListener{activity?.onBackPressed()}
 
         saveButton.setOnClickListener{
                 viewModel.episodeInserted.value = true
-                activity?.onBackPressed()
+                onBackPressed()
         }
 
         uploadPhotoGroup.setAllOnClickListeners(object : View.OnClickListener{
@@ -127,14 +127,6 @@ class AddEpisodeFragment : Fragment() {
         }
     }
 
-    fun onBackPressed() {
-        if(textInInputFields()){
-            displayDialog()
-        } else{
-            activity?.onBackPressed()
-        }
-    }
-
     fun textInInputFields() : Boolean{
         return episodeTitleEditText.text.isNotEmpty() || episodeDescriptionEditText.text.isNotEmpty()
     }
@@ -152,7 +144,7 @@ class AddEpisodeFragment : Fragment() {
         builder.setPositiveButton("YES"){dialog, which ->
             episodeTitleEditText.setText("")
             episodeDescriptionEditText.setText("")
-            onBackPressed()
+            activity?.onBackPressed()
         }
 
         builder.setNegativeButton("No"){dialog,which ->
@@ -258,6 +250,15 @@ class AddEpisodeFragment : Fragment() {
     fun allPermisionGranted(grantResults: IntArray): Boolean{
         for (grantResult in grantResults){
             if(grantResult == PackageManager.PERMISSION_DENIED) return false
+        }
+        return true
+    }
+
+    override fun onBackPressed(): Boolean {
+        if(textInInputFields()){
+            displayDialog()
+        } else{
+            return false
         }
         return true
     }
