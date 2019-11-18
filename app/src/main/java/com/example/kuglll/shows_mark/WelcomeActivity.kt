@@ -12,6 +12,8 @@ private const val USERNAME = "username"
 
 class WelcomeActivity : AppCompatActivity() {
 
+    var handler: Handler? = null
+
     companion object {
         fun startWelcomeActivity(context: Context, username : String): Intent {
             val intent = Intent(context, WelcomeActivity::class.java)
@@ -27,11 +29,25 @@ class WelcomeActivity : AppCompatActivity() {
         var username = intent.getStringExtra("username").split("@")[0]
         welcomeUserTextview.text = "Welcome $username"
 
-        Handler().postDelayed(this::startMainActivity, 2000)
+        handler = Handler()
+        handler?.let {
+            it.postDelayed(this::startMainActivity, 2000)
+        }
     }
 
     fun startMainActivity(){
         startActivity(MainActivity.startMainActivity(this@WelcomeActivity))
         finish()
+    }
+
+    override fun onPause() {
+        handler?.removeCallbacksAndMessages(null)
+        onBackPressed()
+        super.onPause()
+    }
+
+    override fun onBackPressed() {
+        finishAffinity()
+        super.onBackPressed()
     }
 }

@@ -48,8 +48,9 @@ class StartActivity : AppCompatActivity() {
         startActivity(LoginRegisterActivity.startLoginRegisterActivity(this))
     }
 
-    override fun onBackPressed() {
-        handler?.removeCallbacksAndMessages(null);
+    override fun onPause() {
+        handler?.removeCallbacksAndMessages(null)
         super.onBackPressed()
+        super.onPause()
     }
 }
