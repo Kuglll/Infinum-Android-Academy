@@ -11,14 +11,19 @@ import kotlinx.android.synthetic.main.activity_start.*
 
 class StartActivity : AppCompatActivity() {
 
+    var handler: Handler? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_start)
+        handler = Handler()
 
-        Handler().postDelayed(this::startIconAnimation, 100)
         startTextAnimation()
 
-        Handler().postDelayed(this::startLoginRegisterActivity, 2500)
+        handler?.let {
+            it.postDelayed(this::startIconAnimation, 100)
+            it.postDelayed(this::startLoginRegisterActivity, 2500)
+        }
     }
 
     fun startIconAnimation(){
@@ -41,5 +46,10 @@ class StartActivity : AppCompatActivity() {
 
     fun startLoginRegisterActivity(){
         startActivity(LoginRegisterActivity.startLoginRegisterActivity(this))
+    }
+
+    override fun onBackPressed() {
+        handler?.removeCallbacksAndMessages(null);
+        super.onBackPressed()
     }
 }

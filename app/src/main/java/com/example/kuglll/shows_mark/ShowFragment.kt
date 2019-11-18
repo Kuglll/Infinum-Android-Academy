@@ -3,10 +3,12 @@ package com.example.kuglll.shows_mark
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
+import androidx.constraintlayout.widget.Group
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
@@ -87,9 +89,18 @@ class ShowFragment : Fragment(), FragmentBackListener {
                 activity!!.finish()
              }
         }
-        sleepGroupShows.setOnClickListener{
-            println("LODA SHWO")
-            viewModel.loadShows()
+        sleepGroupShows.setAllOnClickListeners(object: View.OnClickListener{
+            override fun onClick(v: View?) {
+                Log.d("EMPTYSTATE", "Clicked")
+                viewModel.loadShows()
+            }
+        })
+
+    }
+
+    fun Group.setAllOnClickListeners(listener: View.OnClickListener){
+        referencedIds.forEach { id ->
+            rootView.findViewById<View>(id).setOnClickListener(listener)
         }
     }
 
