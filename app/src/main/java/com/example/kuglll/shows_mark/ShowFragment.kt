@@ -77,7 +77,6 @@ class ShowFragment : Fragment(), FragmentBackListener {
         showsRecyclerView.layoutManager = LinearLayoutManager(activity)
         showsRecyclerView.adapter =
             ShowsAdapter(shows) { showID, title -> displayShowDetailFragment(showID, title) }
-
     }
 
     fun initOnClickListeners(){

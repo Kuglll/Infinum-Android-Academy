@@ -48,11 +48,12 @@ object Repository{
         }
     }
 
-    fun getShowDetailsById(id: String, callback: (String, Int) -> Unit){
+    fun getShowDetailsById(id: String, callback: (String, Int, String) -> Unit){
         exectuor.execute{
             val description = database.showDao().getDescriptionByShowId(id)
             val likesCount = database.showDao().getLikesCountByShowId(id)
-            callback(description, likesCount)
+            val title = database.showDao().getTitleByShowId(id)
+            callback(description, likesCount, title)
         }
     }
 
