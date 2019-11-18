@@ -5,6 +5,8 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Environment
@@ -27,13 +29,18 @@ import androidx.lifecycle.ViewModelProviders
 import com.example.kuglll.shows_mark.dataClasses.DataViewModel
 import kotlinx.android.synthetic.main.fragment_add_episode.*
 import kotlinx.android.synthetic.main.toolbar.*
+import kotlinx.android.synthetic.main.upload_photo_dialog.*
 import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
 private const val SHOWID = "showid"
 private const val CAMERA_PERMISSION_REQUEST = 1
+private const val GALLERY_PERMISSION_REQUEST = 3
 private const val REQUEST_IMAGE_CAPTURE = 2
+private const val REQUEST_GALLERY_IMAGE = 4
 private const val EPISODE_NUMBER = "EPISODE_NUMBER"
 private const val SEASON_NUMBER = "SEASON_NUMBER"
 private const val IMAGE = "IMAGE"
@@ -104,13 +111,13 @@ class AddEpisodeFragment : Fragment(), FragmentBackListener {
 
         uploadPhotoGroup.setAllOnClickListeners(object : View.OnClickListener{
             override fun onClick(p0: View?) {
-                startCamera()
+                displayCameraDialog()
             }
         })
 
         changePhotoGroup.setAllOnClickListeners(object : View.OnClickListener{
             override fun onClick(p0: View?) {
-                startCamera()
+                displayCameraDialog()
             }
         })
 
@@ -155,6 +162,25 @@ class AddEpisodeFragment : Fragment(), FragmentBackListener {
         dialog.show()
     }
 
+    fun displayCameraDialog(){
+        val dialog = Dialog(context!!)
+        dialog.setContentView(R.layout.upload_photo_dialog)
+
+        val selectCamera : TextView = dialog.findViewById(R.id.selectCamera)
+        val selectGalery : TextView = dialog.findViewById(R.id.selectGalery)
+
+        selectCamera.setOnClickListener{
+            startCamera()
+            dialog.dismiss()
+        }
+        selectGalery.setOnClickListener{
+            startGallery()
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
     fun displayNumberPicker() {
         val dialog = Dialog(context!!)
         dialog.setContentView(R.layout.number_picker_dialog)
@@ -177,6 +203,16 @@ class AddEpisodeFragment : Fragment(), FragmentBackListener {
         }
 
         dialog.show()
+    }
+
+    fun startGallery(){
+        //if permission is granted start the gallery
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            startActivityForResult(galleryIntent, REQUEST_GALLERY_IMAGE)
+        } else { //request for permission
+            requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), GALLERY_PERMISSION_REQUEST)
+        }
     }
 
     fun startCamera(){
@@ -208,9 +244,22 @@ class AddEpisodeFragment : Fragment(), FragmentBackListener {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_IMAGE_CAPTURE){
-            var drawable = Drawable.createFromPath(pathToFile)
+            val drawable = Drawable.createFromPath(pathToFile)
             episodePhoto.setImageDrawable(drawable)
-        } else{
+        }else if(resultCode == Activity.RESULT_OK && requestCode == REQUEST_GALLERY_IMAGE && data != null){
+            val selectedImage = data.data
+            try{
+                val photoFile = createPhotoFile()
+                pathToFile = photoFile.absolutePath
+                val bitmap = MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, selectedImage)
+                val out = FileOutputStream(pathToFile)
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
+                val drawable = Drawable.createFromPath(pathToFile)
+                episodePhoto.setImageDrawable(drawable)
+            }catch (exception: IOException){
+                Log.d("Gallery exception", exception.toString())
+            }
+        }else{
             pathToFile = ""
         }
     }
@@ -242,7 +291,13 @@ class AddEpisodeFragment : Fragment(), FragmentBackListener {
             } else{
                 Toast.makeText(requireContext(), "To use camera, we need your permissions", Toast.LENGTH_LONG).show()
             }
-        } else{
+        }else if(requestCode == GALLERY_PERMISSION_REQUEST){
+            if(grantResults.isNotEmpty() && grantResults.first() == PackageManager.PERMISSION_GRANTED){
+                startGallery()
+            } else{
+                Toast.makeText(requireContext(), "To use gallery, we need your permissions", Toast.LENGTH_LONG).show()
+            }
+        }else{
             super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         }
     }
