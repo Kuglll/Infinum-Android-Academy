@@ -105,8 +105,16 @@ class AddEpisodeFragment : Fragment(), FragmentBackListener {
         toolbar.setNavigationOnClickListener{activity?.onBackPressed()}
 
         saveButton.setOnClickListener{
-                viewModel.episodeInserted.value = true
-                onBackPressed()
+                if(descriptionLength()) {
+                    viewModel.episodeInserted.value = true
+                    //TODO: actually store episode
+
+                    episodeTitleEditText.setText("")
+                    episodeDescriptionEditText.setText("")
+                    activity?.onBackPressed()
+                } else{
+                    Toast.makeText(requireContext(), "Description should be at least 50 characters long!", Toast.LENGTH_LONG).show()
+                }
         }
 
         uploadPhotoGroup.setAllOnClickListeners(object : View.OnClickListener{
@@ -128,6 +136,10 @@ class AddEpisodeFragment : Fragment(), FragmentBackListener {
         })
     }
 
+    fun descriptionLength(): Boolean{
+        return episodeDescriptionEditText.text.length >= 50
+    }
+
     fun Group.setAllOnClickListeners(listener: View.OnClickListener){
         referencedIds.forEach { id ->
             rootView.findViewById<View>(id).setOnClickListener(listener)
@@ -140,7 +152,7 @@ class AddEpisodeFragment : Fragment(), FragmentBackListener {
 
     fun validateInput() {
         val episodeTitle = episodeTitleEditText.text
-        saveButton.isEnabled = episodeTitle.length >= 1
+        saveButton.isEnabled = episodeTitle.isNotEmpty()
     }
 
     fun displayDialog(){
