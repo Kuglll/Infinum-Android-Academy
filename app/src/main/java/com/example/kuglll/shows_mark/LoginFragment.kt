@@ -1,5 +1,6 @@
 package com.example.kuglll.shows_mark
 
+import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -7,6 +8,7 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.widget.doOnTextChanged
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -17,6 +19,7 @@ import com.example.kuglll.shows_mark.databinding.FragmentLoginBinding
 import com.example.kuglll.shows_mark.utils.LoginRequest
 import com.example.kuglll.shows_mark.utils.LoginResult
 import com.example.kuglll.shows_mark.utils.Singleton
+import dmax.dialog.SpotsDialog
 import kotlinx.android.synthetic.main.fragment_login.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -84,12 +87,16 @@ class LoginFragment : Fragment() {
     }
 
     fun loginUser(email: String, password: String){
+        val dialog: AlertDialog = SpotsDialog.Builder().setContext(context).build()
+        dialog.show()
         Singleton.service.login(LoginRequest(email, password)).enqueue(object : Callback<LoginResult>{
             override fun onFailure(call: Call<LoginResult>, t: Throwable) {
-                //TODO: implement on failure
+                dialog.dismiss()
+                Toast.makeText(context, "For successful login you need internet access!", Toast.LENGTH_LONG).show()
             }
 
             override fun onResponse(call: Call<LoginResult>, response: Response<LoginResult>) {
+                dialog.dismiss()
                 if(response.isSuccessful){
                     val body = response.body()
                     if(body != null){

@@ -1,10 +1,12 @@
 package com.example.kuglll.shows_mark
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.widget.doOnTextChanged
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -13,6 +15,7 @@ import com.example.kuglll.shows_mark.dataClasses.DataViewModel
 import com.example.kuglll.shows_mark.databinding.FragmentRegisterBinding
 import com.example.kuglll.shows_mark.utils.RegisterRequest
 import com.example.kuglll.shows_mark.utils.Singleton
+import dmax.dialog.SpotsDialog
 import kotlinx.android.synthetic.main.fragment_register.*
 import kotlinx.android.synthetic.main.toolbar.*
 import retrofit2.Call
@@ -73,12 +76,16 @@ class RegisterFragment : Fragment(){
     }
 
     fun registerUser(email : String, password: String){
+        val dialog: AlertDialog = SpotsDialog.Builder().setContext(context).build()
+        dialog.show()
         Singleton.service.register(RegisterRequest(email, password)).enqueue(object : Callback<Any>{
             override fun onFailure(call: Call<Any>, t: Throwable) {
-                //TODO: Handle failure
+                dialog.dismiss()
+                Toast.makeText(context, "For successful registration you need internet access!", Toast.LENGTH_LONG).show()
             }
 
             override fun onResponse(call: Call<Any>, response: Response<Any>){
+                dialog.dismiss()
                 if(response.isSuccessful){
                     // how to get each header: response.headers().get("name")
                     val body = response.body()

@@ -145,15 +145,14 @@ class AddEpisodeFragment : Fragment(), FragmentBackListener {
                 episodeTitleEditText.text.toString(),
                 episodeDescriptionEditText.text.toString(),
                 episodeSeasonNumber.text.toString().split(" ")[1],
-                episodeSeasonNumber.text.toString().split(" ")[3]
-            ))
+                episodeSeasonNumber.text.toString().split(" ")[3]), requireContext())
         } else {
             viewModel.uploadEpisode(EpisodeUploadRequest(showID.toString(),
                 "",
                 episodeTitleEditText.text.toString(),
                 episodeDescriptionEditText.text.toString(),
                 episodeSeasonNumber.text.toString().split(" ")[1],
-                episodeSeasonNumber.text.toString().split(" ")[3]), token)
+                episodeSeasonNumber.text.toString().split(" ")[3]), token, requireContext())
         }
 
         episodeTitleEditText.setText("")

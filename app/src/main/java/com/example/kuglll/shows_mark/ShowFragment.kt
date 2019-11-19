@@ -55,7 +55,7 @@ class ShowFragment : Fragment(), FragmentBackListener {
 
         initShowObserver()
 
-        viewModel.loadShows()
+        viewModel.loadShows(requireContext())
 
         initOnClickListeners()
     }
@@ -91,7 +91,7 @@ class ShowFragment : Fragment(), FragmentBackListener {
         sleepGroupShows.setAllOnClickListeners(object: View.OnClickListener{
             override fun onClick(v: View?) {
                 Log.d("EMPTYSTATE", "Clicked")
-                viewModel.loadShows()
+                viewModel.loadShows(requireContext())
             }
         })
 

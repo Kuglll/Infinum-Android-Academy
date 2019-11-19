@@ -79,8 +79,8 @@ class ShowDetailFragment : Fragment(), FragmentBackListener {
         showTitle = arguments!!.getString(TITLE, "")
         toolbarTitle.text = showTitle
 
-        viewModel.fetchShowDetails(showID)
-        viewModel.fetchEpisodes(showID)
+        viewModel.fetchShowDetails(showID, requireContext())
+        viewModel.fetchEpisodes(showID, requireContext())
         checkForLikeStatus(showID)
 
         initOnClickListeners()
@@ -131,9 +131,9 @@ class ShowDetailFragment : Fragment(), FragmentBackListener {
 
         floatingButton.setOnClickListener { displayAddEpisodeFragment() }
 
-        like.setOnClickListener{ viewModel.likeShow(showID, token) }
+        like.setOnClickListener{ viewModel.likeShow(showID, token, requireContext()) }
 
-        dislike.setOnClickListener{ viewModel.dislikeShow(showID, token) }
+        dislike.setOnClickListener{ viewModel.dislikeShow(showID, token, requireContext()) }
 
         sleepGroupEpisodes.setAllOnClickListeners(object : View.OnClickListener{
             override fun onClick(p0: View?) {
