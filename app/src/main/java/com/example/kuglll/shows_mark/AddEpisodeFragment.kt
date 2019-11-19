@@ -3,6 +3,7 @@ package com.example.kuglll.shows_mark
 import android.Manifest
 import android.app.Activity
 import android.app.Dialog
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -27,6 +28,7 @@ import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import com.example.kuglll.shows_mark.dataClasses.DataViewModel
+import com.example.kuglll.shows_mark.utils.EpisodeUploadRequest
 import kotlinx.android.synthetic.main.fragment_add_episode.*
 import kotlinx.android.synthetic.main.toolbar.*
 import kotlinx.android.synthetic.main.upload_photo_dialog.*
@@ -51,6 +53,7 @@ class AddEpisodeFragment : Fragment(), FragmentBackListener {
     var pathToFile : String = ""
     lateinit var viewModel: DataViewModel
 
+    var token: String? = null
     var episodeNumber = 1
     var seasonNumber = 1
 
@@ -87,6 +90,9 @@ class AddEpisodeFragment : Fragment(), FragmentBackListener {
             }
         }
 
+        val sharedPref = requireActivity().getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
+        token = sharedPref.getString(TOKEN, null)
+
         viewModel = ViewModelProviders.of(this).get(DataViewModel::class.java)
 
         showID = requireArguments().getInt(SHOWID, -1)
@@ -107,6 +113,17 @@ class AddEpisodeFragment : Fragment(), FragmentBackListener {
         saveButton.setOnClickListener{
                 if(descriptionLength()) {
                     viewModel.episodeInserted.value = true
+                    if(pathToFile != ""){
+                        viewModel.uploadMedia(File(pathToFile), token) //uploadMedia calls uploadEpisode
+                    } else {
+                        viewModel.uploadEpisode(showID.toString(),
+                            "",
+                            episodeTitleEditText.text.toString(),
+                            episodeDescriptionEditText.text.toString(),
+                            episodeSeasonNumber.text.toString().split(" ")[1],
+                            episodeSeasonNumber.text.toString().split(" ")[3]
+                        )
+                    }
                     //TODO: actually store episode
 
                     episodeTitleEditText.setText("")

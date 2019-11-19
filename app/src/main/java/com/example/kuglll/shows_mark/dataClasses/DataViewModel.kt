@@ -10,9 +10,12 @@ import com.example.kuglll.shows_mark.database.ShowTable
 import com.example.kuglll.shows_mark.utils.*
 import com.example.kuglll.shows_mark.utils.Episode
 import com.example.kuglll.shows_mark.utils.Show
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.File
 
 class DataViewModel : ViewModel(){
 
@@ -204,6 +207,36 @@ class DataViewModel : ViewModel(){
             episode.episodeNumber,
             episode.seasonNumber
         ))
+    }
+
+    fun uploadMedia(imageFile: File, token: String?){
+        Singleton.service.uploadMedia(RequestBody.create(("image/jpg").toMediaType(), imageFile), token)
+            .enqueue(object: Callback<MediaResult>{
+                override fun onFailure(call: Call<MediaResult>, t: Throwable) {
+                    Log.d("MEDIA UPLOAD", "MEDIA UPLOAD failed")
+                    //call uploadEpisode
+                }
+
+                override fun onResponse(call: Call<MediaResult>, response: Response<MediaResult>) {
+                    Log.d("MEDIA UPLOAD", "MEDIA UPLOAD success")
+
+                }
+
+            })
+    }
+
+    fun uploadEpisode(showId: String, mediaId: String, title: String, description: String, episodeNumber: String, season: String){
+        val request = EpisodeUploadRequest(showId, mediaId, title, description, episodeNumber, season)
+        Singleton.service.uploadEpisode(request).enqueue(object: Callback<Unit>{
+            override fun onFailure(call: Call<Unit>, t: Throwable) {
+                Log.d("EPISODE UPLOAD", "EPISODE UPLOAD failed")
+            }
+
+            override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
+                Log.d("EPISODE UPLOAD", "EPISODE UPLOAD failed")
+            }
+
+        })
     }
 
 }

@@ -58,6 +58,7 @@ class LoginFragment : Fragment() {
         val sharedPref = requireActivity().getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
         userLogedIn = sharedPref.getBoolean(REMEMBERME, false)
         token = sharedPref.getString(TOKEN, null)
+        Log.d("TOKEN", token)
 
         if(userLogedIn) {
             if(token != null) startActivity(MainActivity.startMainActivity(activity!!))

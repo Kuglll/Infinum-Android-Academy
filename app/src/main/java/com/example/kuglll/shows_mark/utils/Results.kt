@@ -1,5 +1,6 @@
 package com.example.kuglll.shows_mark.utils
 
+import android.provider.MediaStore
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
@@ -58,4 +59,15 @@ class Episode(
     @Json(name = "episodeNumber") val episodeNumber: String,
     @Json(name = "season") val seasonNumber: String
 )
+
+@JsonClass(generateAdapter = true)
+class MediaResult(
+    @Json(name = "data") val data: Media
+)
+
+@JsonClass(generateAdapter = true)
+class Media(
+    @Json(name = "_id") val path: String
+)
+
 

@@ -1,5 +1,6 @@
 package com.example.kuglll.shows_mark.utils
 
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -31,6 +32,15 @@ interface ApiService{
 
     @POST("/api/shows/{showId}/dislike")
     fun dislikeShow(@Path("showId") showId: String, @Header("Authorization") token: String?): Call<Unit>
+
+    @POST("/api/media")
+    @Multipart
+    fun uploadMedia(@Part("file\"; filename=\"image.jpg\"") request: RequestBody, @Header("Authorization") token: String?): Call<MediaResult>
+
+    @POST("/api/episodes")
+    fun uploadEpisode(@Body episodeUploadRequest: EpisodeUploadRequest): Call<Unit>
+
+
 
 
 }
