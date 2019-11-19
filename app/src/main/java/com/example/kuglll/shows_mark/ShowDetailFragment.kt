@@ -163,20 +163,12 @@ class ShowDetailFragment : Fragment(), FragmentBackListener {
     }
 
     fun displayEpisodes() {
-        checkForNewEpisode()
         if(episodes.size>0){
             episodesRecyclerView.visibility = View.VISIBLE
             sleepGroupEpisodes.visibility = View.GONE
         }else {
             episodesRecyclerView.visibility = View.GONE
             sleepGroupEpisodes.visibility = View.VISIBLE
-        }
-    }
-
-    fun checkForNewEpisode(){
-        if(viewModel.episodeInserted.value == true){
-            viewModel.episodeInserted.value = false
-            episodesRecyclerView.adapter?.notifyItemInserted(episodes.size)
         }
     }
 

@@ -18,7 +18,7 @@ class LoginRequest(
 @JsonClass(generateAdapter = true)
 class EpisodeUploadRequest(
         @Json(name = "showId") val showId: String,
-        @Json(name = "mediaId") val mediaId: String,
+        @Json(name = "mediaId") var mediaId: String,
         @Json(name = "title") val title: String,
         @Json(name = "description") val description: String,
         @Json(name = "episodeNumber") val episodeNumber: String,

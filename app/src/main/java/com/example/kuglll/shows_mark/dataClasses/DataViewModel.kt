@@ -21,7 +21,6 @@ class DataViewModel : ViewModel(){
 
     val username = MutableLiveData<String>()
     val password = MutableLiveData<String>()
-    val episodeInserted = MutableLiveData<Boolean>()
 
     val toolbarTitle = MutableLiveData<String>()
     val showDescription = MutableLiveData<String>()
@@ -163,6 +162,8 @@ class DataViewModel : ViewModel(){
             }
 
             override fun onResponse(call: Call<EpisodeResult>, response: Response<EpisodeResult>) {
+                Log.d("EPISODES FETCHED", "EPISODES FETCHED success")
+
                 if(response.isSuccessful){
                     val body = response.body()
                     if(body != null){
@@ -209,31 +210,35 @@ class DataViewModel : ViewModel(){
         ))
     }
 
-    fun uploadMedia(imageFile: File, token: String?){
+    fun uploadMedia(imageFile: File, token: String?, request: EpisodeUploadRequest){
         Singleton.service.uploadMedia(RequestBody.create(("image/jpg").toMediaType(), imageFile), token)
             .enqueue(object: Callback<MediaResult>{
                 override fun onFailure(call: Call<MediaResult>, t: Throwable) {
                     Log.d("MEDIA UPLOAD", "MEDIA UPLOAD failed")
-                    //call uploadEpisode
                 }
 
                 override fun onResponse(call: Call<MediaResult>, response: Response<MediaResult>) {
                     Log.d("MEDIA UPLOAD", "MEDIA UPLOAD success")
-
+                    if(response.isSuccessful){
+                        val body = response.body()
+                        if(body != null){
+                            request.mediaId = body.data.id
+                            uploadEpisode(request, token)
+                        }
+                    }
                 }
 
             })
     }
 
-    fun uploadEpisode(showId: String, mediaId: String, title: String, description: String, episodeNumber: String, season: String){
-        val request = EpisodeUploadRequest(showId, mediaId, title, description, episodeNumber, season)
-        Singleton.service.uploadEpisode(request).enqueue(object: Callback<Unit>{
+    fun uploadEpisode(request: EpisodeUploadRequest, token: String?){
+        Singleton.service.uploadEpisode(request, token).enqueue(object: Callback<Unit>{
             override fun onFailure(call: Call<Unit>, t: Throwable) {
                 Log.d("EPISODE UPLOAD", "EPISODE UPLOAD failed")
             }
 
             override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
-                Log.d("EPISODE UPLOAD", "EPISODE UPLOAD failed")
+                Log.d("EPISODE UPLOAD", "EPISODE UPLOAD success")
             }
 
         })

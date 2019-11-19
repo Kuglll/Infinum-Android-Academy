@@ -111,27 +111,11 @@ class AddEpisodeFragment : Fragment(), FragmentBackListener {
         toolbar.setNavigationOnClickListener{activity?.onBackPressed()}
 
         saveButton.setOnClickListener{
-                if(descriptionLength()) {
-                    viewModel.episodeInserted.value = true
-                    if(pathToFile != ""){
-                        viewModel.uploadMedia(File(pathToFile), token) //uploadMedia calls uploadEpisode
-                    } else {
-                        viewModel.uploadEpisode(showID.toString(),
-                            "",
-                            episodeTitleEditText.text.toString(),
-                            episodeDescriptionEditText.text.toString(),
-                            episodeSeasonNumber.text.toString().split(" ")[1],
-                            episodeSeasonNumber.text.toString().split(" ")[3]
-                        )
-                    }
-                    //TODO: actually store episode
-
-                    episodeTitleEditText.setText("")
-                    episodeDescriptionEditText.setText("")
-                    activity?.onBackPressed()
-                } else{
-                    Toast.makeText(requireContext(), "Description should be at least 50 characters long!", Toast.LENGTH_LONG).show()
-                }
+            if(descriptionLength()){
+                uploadEpisode()
+            } else{
+                Toast.makeText(requireContext(), "Description should be at least 50 characters long!", Toast.LENGTH_LONG).show()
+            }
         }
 
         uploadPhotoGroup.setAllOnClickListeners(object : View.OnClickListener{
@@ -151,6 +135,30 @@ class AddEpisodeFragment : Fragment(), FragmentBackListener {
                 displayNumberPicker()
             }
         })
+    }
+
+    fun uploadEpisode(){
+        if(pathToFile != ""){
+            viewModel.uploadMedia(File(pathToFile), token, EpisodeUploadRequest(
+                showID.toString(),
+                "",
+                episodeTitleEditText.text.toString(),
+                episodeDescriptionEditText.text.toString(),
+                episodeSeasonNumber.text.toString().split(" ")[1],
+                episodeSeasonNumber.text.toString().split(" ")[3]
+            ))
+        } else {
+            viewModel.uploadEpisode(EpisodeUploadRequest(showID.toString(),
+                "",
+                episodeTitleEditText.text.toString(),
+                episodeDescriptionEditText.text.toString(),
+                episodeSeasonNumber.text.toString().split(" ")[1],
+                episodeSeasonNumber.text.toString().split(" ")[3]), token)
+        }
+
+        episodeTitleEditText.setText("")
+        episodeDescriptionEditText.setText("")
+        activity?.onBackPressed()
     }
 
     fun descriptionLength(): Boolean{

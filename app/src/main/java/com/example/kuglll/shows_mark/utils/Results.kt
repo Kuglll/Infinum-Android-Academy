@@ -67,7 +67,7 @@ class MediaResult(
 
 @JsonClass(generateAdapter = true)
 class Media(
-    @Json(name = "_id") val path: String
+    @Json(name = "_id") val id: String
 )
 
 

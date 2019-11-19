@@ -38,7 +38,7 @@ interface ApiService{
     fun uploadMedia(@Part("file\"; filename=\"image.jpg\"") request: RequestBody, @Header("Authorization") token: String?): Call<MediaResult>
 
     @POST("/api/episodes")
-    fun uploadEpisode(@Body episodeUploadRequest: EpisodeUploadRequest): Call<Unit>
+    fun uploadEpisode(@Body episodeUploadRequest: EpisodeUploadRequest, @Header("Authorization") token: String?): Call<Unit>
 
 
 
