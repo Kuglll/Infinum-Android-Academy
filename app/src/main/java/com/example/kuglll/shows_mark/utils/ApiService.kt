@@ -43,5 +43,8 @@ interface ApiService{
     @GET("/api/episodes/{episodeId}")
     fun getEpisodeDetails(@Path("episodeId") episodeId: String): Call<EpisodeDetailResult>
 
+    @GET("/api/episodes/{episodeId}/comments")
+    fun getEpisodeComments(@Path("episodeId") episodeId: String): Call<CommentsResult>
+
 }
 

@@ -77,7 +77,7 @@ class ShowDetailFragment : Fragment(), FragmentBackListener {
 
         viewModel.showDescription.value = "Missing description!"
         viewModel.likeStatus.value = null
-        viewModel.episodes.postValue(listOf<Episode>())
+        viewModel.episodes.postValue(listOf())
 
 
         showId = arguments!!.getString(SHOWID, "")

@@ -77,6 +77,12 @@
                 app:layout_constraintTop_toBottomOf="@+id/episodeSeason"
                 android:layout_margin="24dp"/>
 
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/commentsGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="commentsIcon,commentsTextview"/>
+
             <ImageView
                 android:id="@+id/commentsIcon"
                 android:layout_width="wrap_content"
@@ -90,11 +96,11 @@
             <TextView
                 android:id="@+id/commentsTextview"
                 android:layout_width="0dp"
-                android:layout_height="20dp"
+                android:layout_height="wrap_content"
                 android:text="Comments"
                 android:textColor="@color/greyText"
                 android:textSize="14sp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="26dp"
                 android:layout_marginStart="10dp"
                 app:layout_constraintStart_toEndOf="@id/commentsIcon"
                 app:layout_constraintEnd_toEndOf="parent"

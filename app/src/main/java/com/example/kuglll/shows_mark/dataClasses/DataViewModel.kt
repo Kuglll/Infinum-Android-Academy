@@ -40,6 +40,8 @@ class DataViewModel : ViewModel(){
     val episodeDescription = MutableLiveData<String>()
     val episodeSeasonNumber = MutableLiveData<String>()
 
+    val comments = MutableLiveData<List<Comment>>()
+
     fun loadShows(onStart: () -> Unit, onStop: (Boolean) -> Unit){
         onStart()
         Singleton.service.getShows().enqueue(object: Callback<ShowResult> {
@@ -286,6 +288,26 @@ class DataViewModel : ViewModel(){
                         episodeTitle.postValue(body.data.title)
                         episodeDescription.postValue(body.data.description)
                         episodeSeasonNumber.postValue(episodeSeason)
+                    }
+                }
+            }
+
+        })
+    }
+
+    fun getEpisodeComments(episodeId: String, onStart: () -> Unit, onStop: (Boolean) -> Unit){
+        onStart()
+        Singleton.service.getEpisodeComments(episodeId).enqueue(object: Callback<CommentsResult>{
+            override fun onFailure(call: Call<CommentsResult>, t: Throwable) {
+                onStop(true)
+            }
+
+            override fun onResponse(call: Call<CommentsResult>, response: Response<CommentsResult>) {
+                onStop(false)
+                if(response.isSuccessful){
+                    val body = response.body()
+                    if(body != null){
+                        comments.postValue(body.data)
                     }
                 }
             }

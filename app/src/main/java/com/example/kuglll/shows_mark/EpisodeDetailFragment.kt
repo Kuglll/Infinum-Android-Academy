@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.constraintlayout.widget.Group
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -87,8 +88,26 @@ class EpisodeDetailFragment: Fragment(), FragmentBackListener{
     fun initOnClickListeners(){
         toolbar.setNavigationOnClickListener{activity?.onBackPressed()}
 
-        //TODO: implement onClick listener for comments screen
+        commentsGroup.setAllOnClickListeners(object: View.OnClickListener{
+            override fun onClick(p0: View?) {
+                displayCommentsFragment()
+            }
+        })
     }
+
+    fun Group.setAllOnClickListeners(listener: View.OnClickListener){
+        referencedIds.forEach { id ->
+            rootView.findViewById<View>(id).setOnClickListener(listener)
+        }
+    }
+
+    fun displayCommentsFragment(){
+        activity!!.supportFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, CommentsFragment.returnCommentsFragment(episodeId))
+            .addToBackStack("Comments")
+            .commit()
+    }
+
 
     fun initObservers(){
         viewModel.episodeImage.observe(this, Observer<String> { imageUrl ->

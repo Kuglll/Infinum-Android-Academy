@@ -10,4 +10,6 @@
     <color name="black">#2e2e2e</color>
     <color name="greyText">#505050</color>
     <color name="showDate">#a0a0a0</color>
+    <color name="rectangleOutline">#1e000000</color>
+    <color name="commentText">#3b4354</color>
 </resources>

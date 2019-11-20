@@ -87,4 +87,17 @@ class EpisodeDetails(
     @Json(name = "imageUrl") val image: String
 )
 
+@JsonClass(generateAdapter = true)
+class CommentsResult(
+    @Json(name = "data") val data: List<Comment>
+)
+
+@JsonClass(generateAdapter = true)
+class Comment(
+    @Json(name = "text") val text: String,
+    @Json(name = "episodeId") val episodeId: String,
+    @Json(name = "userEmail") val email: String,
+    @Json(name = "_id") val id: String
+)
+
 
