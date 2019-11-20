@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="viewmodel"
+            type="com.example.kuglll.shows_mark.dataClasses.DataViewModel"/>
+    </data>
+
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:focusable="true"
+            android:paddingBottom="40dp"
+            android:background="@color/white"
+            android:focusableInTouchMode="true">
+
+            <include
+                layout="@layout/toolbar"/>
+
+
+             <ImageView
+                android:id="@+id/episodeImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/toolbar"/>
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@{viewmodel.episodeTitle}"
+                android:textSize="28sp"
+                android:textColor="@color/black"
+                app:layout_constraintTop_toBottomOf="@+id/episodeImage"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="40dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"
+                android:paddingBottom="20dp"/>
+
+            <TextView
+                android:id="@+id/episodeSeason"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/pink"
+                android:textSize="16sp"
+                android:text="@{viewmodel.episodeSeasonNumber}"
+                android:layout_marginTop="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/title"/>
+
+            <TextView
+                android:id="@+id/episodeDescriptionTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/greyText"
+                android:textSize="16sp"
+                android:text="@{viewmodel.episodeDescription}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/episodeSeason"
+                android:layout_margin="24dp"/>
+
+            <ImageView
+                android:id="@+id/commentsIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_comments"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="24dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/episodeDescriptionTextView"/>
+
+            <TextView
+                android:id="@+id/commentsTextview"
+                android:layout_width="0dp"
+                android:layout_height="20dp"
+                android:text="Comments"
+                android:textColor="@color/greyText"
+                android:textSize="14sp"
+                android:layout_marginTop="24dp"
+                android:layout_marginStart="10dp"
+                app:layout_constraintStart_toEndOf="@id/commentsIcon"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/episodeDescriptionTextView"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+</layout>

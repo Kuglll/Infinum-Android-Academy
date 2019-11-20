@@ -49,7 +49,7 @@ private const val IMAGE = "IMAGE"
 
 class AddEpisodeFragment : Fragment(), FragmentBackListener {
 
-    var showID = -1
+    var showId = -1
     var pathToFile : String = ""
     lateinit var viewModel: DataViewModel
 
@@ -58,9 +58,9 @@ class AddEpisodeFragment : Fragment(), FragmentBackListener {
     var seasonNumber = 1
 
     companion object {
-        fun returnAddEpisodeFragment(showID: String) : AddEpisodeFragment{
+        fun returnAddEpisodeFragment(showId: String) : AddEpisodeFragment{
             val args = Bundle()
-            args.putString(SHOWID, showID)
+            args.putString(SHOWID, showId)
             val fragment = AddEpisodeFragment()
             fragment.arguments = args
             return fragment
@@ -95,7 +95,7 @@ class AddEpisodeFragment : Fragment(), FragmentBackListener {
 
         viewModel = ViewModelProviders.of(this).get(DataViewModel::class.java)
 
-        showID = requireArguments().getInt(SHOWID, -1)
+        showId = requireArguments().getInt(SHOWID, -1)
         toolbarTitle.text = "Add episode"
 
         initOnClickListeners()
@@ -140,14 +140,14 @@ class AddEpisodeFragment : Fragment(), FragmentBackListener {
     fun uploadEpisode(){
         if(pathToFile != ""){
             viewModel.uploadMedia(File(pathToFile), token, EpisodeUploadRequest(
-                showID.toString(),
+                showId.toString(),
                 "",
                 episodeTitleEditText.text.toString(),
                 episodeDescriptionEditText.text.toString(),
                 episodeSeasonNumber.text.toString().split(" ")[1],
                 episodeSeasonNumber.text.toString().split(" ")[3]), requireContext())
         } else {
-            viewModel.uploadEpisode(EpisodeUploadRequest(showID.toString(),
+            viewModel.uploadEpisode(EpisodeUploadRequest(showId.toString(),
                 "",
                 episodeTitleEditText.text.toString(),
                 episodeDescriptionEditText.text.toString(),

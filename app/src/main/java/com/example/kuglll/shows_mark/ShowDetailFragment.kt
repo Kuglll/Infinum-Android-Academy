@@ -32,7 +32,7 @@ private const val TITLE = "TITLE"
 
 class ShowDetailFragment : Fragment(), FragmentBackListener {
 
-    var showID = ""
+    var showId = ""
     var showTitle = ""
     var token: String? = null
     var episodes : List<Episode> = ArrayList()
@@ -40,9 +40,9 @@ class ShowDetailFragment : Fragment(), FragmentBackListener {
 
 
     companion object{
-        fun returnShowDetailFragment(showID: String, title: String) : ShowDetailFragment{
+        fun returnShowDetailFragment(showId: String, title: String) : ShowDetailFragment{
             val args = Bundle()
-            args.putString(SHOWID, showID)
+            args.putString(SHOWID, showId)
             args.putString(TITLE, title)
             val fragment = ShowDetailFragment()
             fragment.arguments = args
@@ -75,13 +75,13 @@ class ShowDetailFragment : Fragment(), FragmentBackListener {
         viewModel.episodes.postValue(listOf<Episode>())
 
 
-        showID = arguments!!.getString(SHOWID, "")
+        showId = arguments!!.getString(SHOWID, "")
         showTitle = arguments!!.getString(TITLE, "")
         toolbarTitle.text = showTitle
 
-        viewModel.fetchShowDetails(showID, requireContext())
-        viewModel.fetchEpisodes(showID, requireContext())
-        checkForLikeStatus(showID)
+        viewModel.fetchShowDetails(showId, requireContext())
+        viewModel.fetchEpisodes(showId, requireContext())
+        checkForLikeStatus(showId)
 
         initOnClickListeners()
         initObservers()
@@ -131,9 +131,9 @@ class ShowDetailFragment : Fragment(), FragmentBackListener {
 
         floatingButton.setOnClickListener { displayAddEpisodeFragment() }
 
-        like.setOnClickListener{ viewModel.likeShow(showID, token, requireContext()) }
+        like.setOnClickListener{ viewModel.likeShow(showId, token, requireContext()) }
 
-        dislike.setOnClickListener{ viewModel.dislikeShow(showID, token, requireContext()) }
+        dislike.setOnClickListener{ viewModel.dislikeShow(showId, token, requireContext()) }
 
         sleepGroupEpisodes.setAllOnClickListeners(object : View.OnClickListener{
             override fun onClick(p0: View?) {
@@ -150,16 +150,23 @@ class ShowDetailFragment : Fragment(), FragmentBackListener {
 
     fun displayAddEpisodeFragment(){
         activity!!.supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainer, AddEpisodeFragment.returnAddEpisodeFragment(showID))
+            .replace(R.id.fragmentContainer, AddEpisodeFragment.returnAddEpisodeFragment(showId))
             .addToBackStack("AddEpisode")
             .commit()
     }
 
     fun initEpisodes(){
         episodesRecyclerView.layoutManager = LinearLayoutManager(activity)
-        episodesRecyclerView.adapter = EpisodesAdapter(episodes)
+        episodesRecyclerView.adapter = EpisodesAdapter(episodes) {episodeId -> displayEpisodeDetailFragment(episodeId)}
 
         displayEpisodes()
+    }
+
+    fun displayEpisodeDetailFragment(episodeId: String){
+        activity!!.supportFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, EpisodeDetailFragment.returnEpisodeDetailFragment(episodeId))
+            .addToBackStack("EpisodeDetail")
+            .commit()
     }
 
     fun displayEpisodes() {

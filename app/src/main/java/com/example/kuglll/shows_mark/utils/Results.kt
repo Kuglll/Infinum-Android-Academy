@@ -70,4 +70,21 @@ class Media(
     @Json(name = "_id") val id: String
 )
 
+@JsonClass(generateAdapter = true)
+class EpisodeDetailResult(
+    @Json(name = "data") val data: EpisodeDetails
+)
+
+@JsonClass(generateAdapter = true)
+class EpisodeDetails(
+    @Json(name = "showId") val showId: String,
+    @Json(name = "title") val title: String,
+    @Json(name = "description") val description: String,
+    @Json(name = "episodeNumber") val episodeNumber: String,
+    @Json(name = "season") val seasonNumber: String,
+    @Json(name = "type") val type: String,
+    @Json(name = "_id") val id: String,
+    @Json(name = "imageUrl") val image: String
+)
+
 

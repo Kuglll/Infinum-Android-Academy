@@ -35,6 +35,11 @@ class DataViewModel : ViewModel(){
     val shows = MutableLiveData<List<Show>>()
     val episodes = MutableLiveData<List<Episode>>()
 
+    val episodeImage = MutableLiveData<String>()
+    val episodeTitle = MutableLiveData<String>()
+    val episodeDescription = MutableLiveData<String>()
+    val episodeSeasonNumber = MutableLiveData<String>()
+
     fun loadShows(context: Context){
         val dialog: AlertDialog = SpotsDialog.Builder().setContext(context).build()
         dialog.show()
@@ -270,6 +275,33 @@ class DataViewModel : ViewModel(){
             override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
                 dialog.dismiss()
                 Log.d("EPISODE UPLOAD", "EPISODE UPLOAD success")
+            }
+
+        })
+    }
+
+    fun getEpisodeDetails(episdeId: String, context: Context){
+        val dialog: AlertDialog = SpotsDialog.Builder().setContext(context).build()
+        dialog.show()
+        Singleton.service.getEpisodeDetails(episdeId).enqueue(object: Callback<EpisodeDetailResult>{
+            override fun onFailure(call: Call<EpisodeDetailResult>, t: Throwable) {
+                dialog.dismiss()
+                Toast.makeText(context, "To show episode details, you need internet connection!", Toast.LENGTH_LONG).show()
+                Log.d("EPISODE DETAIL", "EPISODE DETAIL FETCH failed")
+            }
+
+            override fun onResponse(call: Call<EpisodeDetailResult>, response: Response<EpisodeDetailResult>) {
+                dialog.dismiss()
+                if(response.isSuccessful){
+                    val body = response.body()
+                    if(body != null){
+                        val episodeSeason = String.format("%s %s", body.data.episodeNumber, body.data.seasonNumber)
+                        episodeImage.postValue(body.data.image)
+                        episodeTitle.postValue(body.data.title)
+                        episodeDescription.postValue(body.data.description)
+                        episodeSeasonNumber.postValue(episodeSeason)
+                    }
+                }
             }
 
         })

@@ -21,11 +21,11 @@ interface ApiService{
     @GET("/api/shows")
     fun getShows(): Call<ShowResult>
 
-    @GET("/api/shows/{showID}")
-    fun getShowDetails(@Path("showID") showID : String): Call<ShowDetailResult>
+    @GET("/api/shows/{showId}")
+    fun getShowDetails(@Path("showId") showId: String): Call<ShowDetailResult>
 
-    @GET("/api/shows/{showID}/episodes")
-    fun getShowEpisodes(@Path("showID") showID : String): Call<EpisodeResult>
+    @GET("/api/shows/{showId}/episodes")
+    fun getShowEpisodes(@Path("showId") showId: String): Call<EpisodeResult>
 
     @POST("/api/shows/{showId}/like")
     fun likeShow(@Path("showId") showId: String, @Header("Authorization") token: String?): Call<Unit>
@@ -40,8 +40,8 @@ interface ApiService{
     @POST("/api/episodes")
     fun uploadEpisode(@Body episodeUploadRequest: EpisodeUploadRequest, @Header("Authorization") token: String?): Call<Unit>
 
-
-
+    @GET("/api/episodes/{episodeId}")
+    fun getEpisodeDetails(@Path("episodeId") episodeId: String): Call<EpisodeDetailResult>
 
 }
 

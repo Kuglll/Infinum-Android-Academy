@@ -76,7 +76,7 @@ class ShowFragment : Fragment(), FragmentBackListener {
         }
         showsRecyclerView.layoutManager = LinearLayoutManager(activity)
         showsRecyclerView.adapter =
-            ShowsAdapter(shows) { showID, title -> displayShowDetailFragment(showID, title) }
+            ShowsAdapter(shows) { showId, title -> displayShowDetailFragment(showId, title) }
     }
 
     fun initOnClickListeners(){
@@ -130,9 +130,9 @@ class ShowFragment : Fragment(), FragmentBackListener {
         }
     }
 
-    fun displayShowDetailFragment(showID: String, title: String){
+    fun displayShowDetailFragment(showId: String, title: String){
         activity!!.supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainer, ShowDetailFragment.returnShowDetailFragment(showID, title))
+            .replace(R.id.fragmentContainer, ShowDetailFragment.returnShowDetailFragment(showId, title))
             .addToBackStack("ShowDetail")
             .commit()
     }
