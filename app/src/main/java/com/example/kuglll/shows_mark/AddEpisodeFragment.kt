@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.ImageDecoder
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Environment
@@ -29,9 +28,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import com.example.kuglll.shows_mark.dataClasses.DataViewModel
 import com.example.kuglll.shows_mark.utils.EpisodeUploadRequest
+import dmax.dialog.SpotsDialog
 import kotlinx.android.synthetic.main.fragment_add_episode.*
 import kotlinx.android.synthetic.main.toolbar.*
-import kotlinx.android.synthetic.main.upload_photo_dialog.*
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -52,6 +51,8 @@ class AddEpisodeFragment : Fragment(), FragmentBackListener {
     var showId = -1
     var pathToFile : String = ""
     lateinit var viewModel: DataViewModel
+    var loadingDialog: android.app.AlertDialog? = null
+
 
     var token: String? = null
     var episodeNumber = 1
@@ -137,6 +138,38 @@ class AddEpisodeFragment : Fragment(), FragmentBackListener {
         })
     }
 
+    fun startDialog(){
+        loadingDialog = SpotsDialog.Builder().setContext(context).build()
+        loadingDialog?.let {
+            it.show()
+        }
+    }
+
+    fun stopDialog(id: String = ""){
+        if(loadingDialog != null){
+            loadingDialog!!.dismiss()
+            loadingDialog = null
+
+            if(id != "") {
+                viewModel.uploadEpisode(EpisodeUploadRequest(showId.toString(),
+                    id,
+                    episodeTitleEditText.text.toString(),
+                    episodeDescriptionEditText.text.toString(),
+                    episodeSeasonNumber.text.toString().split(" ")[1],
+                    episodeSeasonNumber.text.toString().split(" ")[3]),
+                    token,
+                    {startDialog()},
+                    {stopDialog()},
+                    {displayWarningDialog()})
+            }
+        }
+    }
+
+    fun displayWarningDialog(){
+        stopDialog()
+        Toast.makeText(requireContext(), "To upload episode you need internet access!", Toast.LENGTH_LONG).show()
+    }
+
     fun uploadEpisode(){
         if(pathToFile != ""){
             viewModel.uploadMedia(File(pathToFile), token, EpisodeUploadRequest(
@@ -145,14 +178,14 @@ class AddEpisodeFragment : Fragment(), FragmentBackListener {
                 episodeTitleEditText.text.toString(),
                 episodeDescriptionEditText.text.toString(),
                 episodeSeasonNumber.text.toString().split(" ")[1],
-                episodeSeasonNumber.text.toString().split(" ")[3]), requireContext())
+                episodeSeasonNumber.text.toString().split(" ")[3]), {startDialog()}, {id -> stopDialog(id)}, {displayWarningDialog()})
         } else {
             viewModel.uploadEpisode(EpisodeUploadRequest(showId.toString(),
                 "",
                 episodeTitleEditText.text.toString(),
                 episodeDescriptionEditText.text.toString(),
                 episodeSeasonNumber.text.toString().split(" ")[1],
-                episodeSeasonNumber.text.toString().split(" ")[3]), token, requireContext())
+                episodeSeasonNumber.text.toString().split(" ")[3]), token, {startDialog()}, {stopDialog()}, {displayWarningDialog()})
         }
 
         episodeTitleEditText.setText("")
@@ -343,6 +376,14 @@ class AddEpisodeFragment : Fragment(), FragmentBackListener {
             if(grantResult == PackageManager.PERMISSION_DENIED) return false
         }
         return true
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if(loadingDialog != null){
+            loadingDialog!!.dismiss()
+            loadingDialog = null
+        }
     }
 
     override fun onBackPressed(): Boolean {

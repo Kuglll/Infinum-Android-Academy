@@ -1,9 +1,11 @@
 package com.example.kuglll.shows_mark
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -11,6 +13,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.example.kuglll.shows_mark.dataClasses.DataViewModel
 import com.example.kuglll.shows_mark.databinding.FragmentEpisodeDetailBinding
 import com.squareup.picasso.Picasso
+import dmax.dialog.SpotsDialog
 import kotlinx.android.synthetic.main.fragment_episode_detail.*
 import kotlinx.android.synthetic.main.toolbar.*
 
@@ -20,6 +23,8 @@ class EpisodeDetailFragment: Fragment(), FragmentBackListener{
 
     var episodeId = ""
     lateinit var viewModel: DataViewModel
+    var loadingDialog: AlertDialog? = null
+
 
     companion object{
         fun returnEpisodeDetailFragment(episodeId: String): EpisodeDetailFragment{
@@ -50,16 +55,33 @@ class EpisodeDetailFragment: Fragment(), FragmentBackListener{
 
         viewModel.episodeTitle.value = "Missing title!"
         viewModel.episodeDescription.value = "Missing description!"
-        viewModel.episodeDescription.value = "S01 E01"
+        viewModel.episodeSeasonNumber.value = "S01 E01"
 
         arguments?.let {
             episodeId = it.getString(EPISODEID, "")
         }
 
-        viewModel.getEpisodeDetails(episodeId, requireContext())
+        viewModel.getEpisodeDetails(episodeId, {startDialog()}, {requestFailed -> stopDialog(requestFailed)})
 
         initOnClickListeners()
         initObservers()
+    }
+
+    fun startDialog(){
+        loadingDialog = SpotsDialog.Builder().setContext(context).build()
+        loadingDialog?.let {
+            it.show()
+        }
+    }
+
+    fun stopDialog(requestFailed: Boolean){
+        if(requestFailed){
+            Toast.makeText(context, "To show episode details, you need internet connection!", Toast.LENGTH_LONG).show()
+        }
+        if(loadingDialog != null){
+            loadingDialog!!.dismiss()
+            loadingDialog = null
+        }
     }
 
     fun initOnClickListeners(){
@@ -78,6 +100,14 @@ class EpisodeDetailFragment: Fragment(), FragmentBackListener{
         if(imageUrl != "") {
             Picasso.get().load("https://api.infinum.academy${imageUrl}")
                 .into(episodeImage)
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if(loadingDialog != null){
+            loadingDialog!!.dismiss()
+            loadingDialog = null
         }
     }
 

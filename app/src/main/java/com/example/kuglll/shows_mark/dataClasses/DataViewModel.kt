@@ -40,18 +40,17 @@ class DataViewModel : ViewModel(){
     val episodeDescription = MutableLiveData<String>()
     val episodeSeasonNumber = MutableLiveData<String>()
 
-    fun loadShows(context: Context){
-        val dialog: AlertDialog = SpotsDialog.Builder().setContext(context).build()
-        dialog.show()
+    fun loadShows(onStart: () -> Unit, onStop: (Boolean) -> Unit){
+        onStart()
         Singleton.service.getShows().enqueue(object: Callback<ShowResult> {
             override fun onFailure(call: Call<ShowResult>, t: Throwable) {
-                dialog.dismiss()
+                onStop(true)
                 getShowsFromDatabase()
             }
 
             override fun onResponse(call: Call<ShowResult>, response: Response<ShowResult>) {
+                onStop(false)
                 if (response.isSuccessful){
-                    dialog.dismiss()
                     val body = response.body()
                     if(body != null){
                         shows.postValue(body.data)
@@ -92,18 +91,16 @@ class DataViewModel : ViewModel(){
         shows.postValue(mapping)
     }
 
-    fun likeShow(showId: String, token: String?, context: Context){
-        val dialog: AlertDialog = SpotsDialog.Builder().setContext(context).build()
-        dialog.show()
+    fun likeShow(showId: String, token: String?, onStart: () -> Unit, onStop: (Boolean) -> Unit){
+        onStart()
         Singleton.service.likeShow(showId, token).enqueue(object: Callback<Unit> {
             override fun onFailure(call: Call<Unit>, t: Throwable) {
-                dialog.dismiss()
-                Toast.makeText(context, "In order to like show you need internet access!", Toast.LENGTH_LONG).show()
+                onStop(true)
                 Log.d("likeStatus", "Show liked successfully failed")
             }
 
             override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
-                dialog.dismiss()
+                onStop(false)
                 Log.d("likeStatus", "Show successfully liked")
                 likesCount.value?.let{count ->
                     if(likeStatus.value == null){
@@ -118,18 +115,16 @@ class DataViewModel : ViewModel(){
         })
     }
 
-    fun dislikeShow(showId: String, token: String?, context: Context){
-        val dialog: AlertDialog = SpotsDialog.Builder().setContext(context).build()
-        dialog.show()
+    fun dislikeShow(showId: String, token: String?, onStart: () -> Unit, onStop: (Boolean) -> Unit){
+        onStart()
         Singleton.service.dislikeShow(showId, token).enqueue(object: Callback<Unit>{
             override fun onFailure(call: Call<Unit>, t: Throwable) {
-                dialog.dismiss()
-                Toast.makeText(context, "In order to dislike show you need internet access!", Toast.LENGTH_LONG).show()
+                onStop(true)
                 Log.d("likeStatus", "Show disliked successfully failed")
             }
 
             override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
-                dialog.dismiss()
+                onStop(false)
                 Log.d("likeStatus", "Show successfully disliked")
                 likesCount.value?.let{count ->
                     if(likeStatus.value == null){
@@ -150,12 +145,10 @@ class DataViewModel : ViewModel(){
         }
     }
 
-    fun fetchShowDetails(showId: String, context: Context){
-        val dialog: AlertDialog = SpotsDialog.Builder().setContext(context).build()
-        dialog.show()
+    fun fetchShowDetails(showId: String, onStop: (Boolean) -> Unit){
         Singleton.service.getShowDetails(showId).enqueue(object : Callback<ShowDetailResult> {
             override fun onFailure(call: Call<ShowDetailResult>, t: Throwable) {
-                dialog.dismiss()
+                onStop(true)
                 if(!call.isCanceled) {
                     Repository.getShowDetailsById(showId) { description, lCount, title ->
                         showDescription.postValue(description)
@@ -166,7 +159,6 @@ class DataViewModel : ViewModel(){
             }
 
             override fun onResponse(call: Call<ShowDetailResult>, response: Response<ShowDetailResult>) {
-                dialog.dismiss()
                 if(response.isSuccessful){
                     val body = response.body()
                     if(body != null){
@@ -181,18 +173,17 @@ class DataViewModel : ViewModel(){
         })
     }
 
-    fun fetchEpisodes(showId: String, context: Context){
-        val dialog: AlertDialog = SpotsDialog.Builder().setContext(context).build()
-        dialog.show()
+    fun fetchEpisodes(showId: String, onStart: () -> Unit, onStop: (Boolean) -> Unit){
+        onStart()
         Singleton.service.getShowEpisodes(showId).enqueue(object : Callback<EpisodeResult>{
             override fun onFailure(call: Call<EpisodeResult>, t: Throwable) {
-                dialog.dismiss()
+                onStop(true)
                 getEpisodesFromDatabase(showId)
             }
 
             override fun onResponse(call: Call<EpisodeResult>, response: Response<EpisodeResult>) {
                 Log.d("EPISODES FETCHED", "EPISODES FETCHED success")
-                dialog.dismiss()
+                onStop(false)
                 if(response.isSuccessful){
                     val body = response.body()
                     if(body != null){
@@ -225,6 +216,7 @@ class DataViewModel : ViewModel(){
             }
         }
         episodes.postValue(mapping)
+        Log.d("EPISODES FETCHED", "EPISODES FETCHED FROM DB success")
     }
 
     fun addEpisodeToDatabase(showId: String, episode: Episode){
@@ -239,59 +231,53 @@ class DataViewModel : ViewModel(){
         ))
     }
 
-    fun uploadMedia(imageFile: File, token: String?, request: EpisodeUploadRequest, context: Context){
-        val dialog: AlertDialog = SpotsDialog.Builder().setContext(context).build()
-        dialog.show()
+    fun uploadMedia(imageFile: File, token: String?, request: EpisodeUploadRequest, onStart: () -> Unit, onResponse: (String) -> Unit, onFailure: () -> Unit){
+        onStart()
         Singleton.service.uploadMedia(RequestBody.create(("image/jpg").toMediaType(), imageFile), token)
             .enqueue(object: Callback<MediaResult>{
                 override fun onFailure(call: Call<MediaResult>, t: Throwable) {
-                    dialog.dismiss()
+                    onFailure()
                     Log.d("MEDIA UPLOAD", "MEDIA UPLOAD failed")
                 }
 
                 override fun onResponse(call: Call<MediaResult>, response: Response<MediaResult>) {
-                    dialog.dismiss()
                     Log.d("MEDIA UPLOAD", "MEDIA UPLOAD success")
                     if(response.isSuccessful){
                         val body = response.body()
                         if(body != null){
-                            request.mediaId = body.data.id
-                            uploadEpisode(request, token, context)
+                            onResponse(body.data.id)
                         }
                     }
                 }
         })
     }
 
-    fun uploadEpisode(request: EpisodeUploadRequest, token: String?, context: Context){
-        val dialog: AlertDialog = SpotsDialog.Builder().setContext(context).build()
-        dialog.show()
+    fun uploadEpisode(request: EpisodeUploadRequest, token: String?, onStart: () -> Unit, onResponse: () -> Unit, onFailure: () -> Unit){
+        onStart()
         Singleton.service.uploadEpisode(request, token).enqueue(object: Callback<Unit>{
             override fun onFailure(call: Call<Unit>, t: Throwable) {
-                dialog.dismiss()
+                onFailure()
                 Log.d("EPISODE UPLOAD", "EPISODE UPLOAD failed")
             }
 
             override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
-                dialog.dismiss()
+                onResponse()
                 Log.d("EPISODE UPLOAD", "EPISODE UPLOAD success")
             }
 
         })
     }
 
-    fun getEpisodeDetails(episdeId: String, context: Context){
-        val dialog: AlertDialog = SpotsDialog.Builder().setContext(context).build()
-        dialog.show()
+    fun getEpisodeDetails(episdeId: String, onStart: () -> Unit, onStop: (Boolean) -> Unit){
+        onStart()
         Singleton.service.getEpisodeDetails(episdeId).enqueue(object: Callback<EpisodeDetailResult>{
             override fun onFailure(call: Call<EpisodeDetailResult>, t: Throwable) {
-                dialog.dismiss()
-                Toast.makeText(context, "To show episode details, you need internet connection!", Toast.LENGTH_LONG).show()
+                onStop(true)
                 Log.d("EPISODE DETAIL", "EPISODE DETAIL FETCH failed")
             }
 
             override fun onResponse(call: Call<EpisodeDetailResult>, response: Response<EpisodeDetailResult>) {
-                dialog.dismiss()
+                onStop(false)
                 if(response.isSuccessful){
                     val body = response.body()
                     if(body != null){

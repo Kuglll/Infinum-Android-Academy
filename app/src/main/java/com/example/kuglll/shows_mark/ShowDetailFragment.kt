@@ -1,5 +1,6 @@
 package com.example.kuglll.shows_mark
 
+import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import android.view.View
@@ -8,6 +9,7 @@ import kotlinx.android.synthetic.main.fragment_show_detail.*
 import kotlinx.android.synthetic.main.toolbar.*
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.constraintlayout.widget.Group
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -23,6 +25,7 @@ import com.example.kuglll.shows_mark.utils.Episode
 import com.example.kuglll.shows_mark.utils.EpisodeResult
 import com.example.kuglll.shows_mark.utils.ShowDetailResult
 import com.example.kuglll.shows_mark.utils.Singleton
+import dmax.dialog.SpotsDialog
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -35,8 +38,10 @@ class ShowDetailFragment : Fragment(), FragmentBackListener {
     var showId = ""
     var showTitle = ""
     var token: String? = null
+    var loadingDialog: AlertDialog? = null
     var episodes : List<Episode> = ArrayList()
     lateinit var viewModel: DataViewModel
+
 
 
     companion object{
@@ -79,13 +84,31 @@ class ShowDetailFragment : Fragment(), FragmentBackListener {
         showTitle = arguments!!.getString(TITLE, "")
         toolbarTitle.text = showTitle
 
-        viewModel.fetchShowDetails(showId, requireContext())
-        viewModel.fetchEpisodes(showId, requireContext())
+        viewModel.fetchShowDetails(showId, {requestFailed -> stopDialog(requestFailed, "")})
+        viewModel.fetchEpisodes(showId, {startDialog()}, {requestFailed -> stopDialog(requestFailed, "")})
         checkForLikeStatus(showId)
 
         initOnClickListeners()
         initObservers()
     }
+
+    fun startDialog(){
+        loadingDialog = SpotsDialog.Builder().setContext(context).build()
+        loadingDialog?.let {
+            it.show()
+        }
+    }
+
+    fun stopDialog(requestFailed: Boolean, message: String){
+        if(requestFailed && message != ""){
+            Toast.makeText(context, "In order to $message you need internet access!", Toast.LENGTH_LONG).show()
+        }
+        if(loadingDialog != null){
+            loadingDialog!!.dismiss()
+            loadingDialog = null
+        }
+    }
+
 
     fun checkForLikeStatus(showId: String){
         viewModel.checkDatabaseForLikeStatus(showId)
@@ -131,9 +154,9 @@ class ShowDetailFragment : Fragment(), FragmentBackListener {
 
         floatingButton.setOnClickListener { displayAddEpisodeFragment() }
 
-        like.setOnClickListener{ viewModel.likeShow(showId, token, requireContext()) }
+        like.setOnClickListener{ viewModel.likeShow(showId, token, {startDialog()}, {requestFailed -> stopDialog(requestFailed, "like show")}) }
 
-        dislike.setOnClickListener{ viewModel.dislikeShow(showId, token, requireContext()) }
+        dislike.setOnClickListener{ viewModel.dislikeShow(showId, token, {startDialog()}, {requestFailed -> stopDialog(requestFailed, "dislike show")}) }
 
         sleepGroupEpisodes.setAllOnClickListeners(object : View.OnClickListener{
             override fun onClick(p0: View?) {
@@ -176,6 +199,14 @@ class ShowDetailFragment : Fragment(), FragmentBackListener {
         }else {
             episodesRecyclerView.visibility = View.GONE
             sleepGroupEpisodes.visibility = View.VISIBLE
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if(loadingDialog != null){
+            loadingDialog!!.dismiss()
+            loadingDialog = null
         }
     }
 

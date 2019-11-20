@@ -21,6 +21,7 @@ import com.example.kuglll.shows_mark.database.ShowTable
 import com.example.kuglll.shows_mark.utils.Show
 import com.example.kuglll.shows_mark.utils.ShowResult
 import com.example.kuglll.shows_mark.utils.Singleton
+import dmax.dialog.SpotsDialog
 import kotlinx.android.synthetic.main.fragment_show.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -31,6 +32,8 @@ class ShowFragment : Fragment(), FragmentBackListener {
     var userLogedIn = false
     var call: Call<ShowResult>? = null
     lateinit var viewModel: DataViewModel
+    var loadingDialog: android.app.AlertDialog? = null
+
 
     companion object{
         fun returnShowFragment(): ShowFragment{
@@ -55,7 +58,7 @@ class ShowFragment : Fragment(), FragmentBackListener {
 
         initShowObserver()
 
-        viewModel.loadShows(requireContext())
+        viewModel.loadShows({startDialog()}, {stopDialog()})
 
         initOnClickListeners()
     }
@@ -91,7 +94,7 @@ class ShowFragment : Fragment(), FragmentBackListener {
         sleepGroupShows.setAllOnClickListeners(object: View.OnClickListener{
             override fun onClick(v: View?) {
                 Log.d("EMPTYSTATE", "Clicked")
-                viewModel.loadShows(requireContext())
+                viewModel.loadShows({startDialog()}, {stopDialog()})
             }
         })
 
@@ -103,6 +106,19 @@ class ShowFragment : Fragment(), FragmentBackListener {
         }
     }
 
+    fun startDialog(){
+        loadingDialog = SpotsDialog.Builder().setContext(context).build()
+        loadingDialog?.let {
+            it.show()
+        }
+    }
+
+    fun stopDialog(){
+        if(loadingDialog != null){
+            loadingDialog!!.dismiss()
+            loadingDialog = null
+        }
+    }
 
     fun displayDialog(){
         val builder = AlertDialog.Builder(requireContext())
@@ -135,6 +151,14 @@ class ShowFragment : Fragment(), FragmentBackListener {
             .replace(R.id.fragmentContainer, ShowDetailFragment.returnShowDetailFragment(showId, title))
             .addToBackStack("ShowDetail")
             .commit()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if(loadingDialog != null){
+            loadingDialog!!.dismiss()
+            loadingDialog = null
+        }
     }
 
     override fun onBackPressed(): Boolean{
