@@ -315,4 +315,19 @@ class DataViewModel : ViewModel(){
         })
     }
 
+    fun uploadComment(message: String, episodeId: String, token: String?, onStart: () -> Unit, onStop: (Boolean) -> Unit){
+        onStart()
+        Singleton.service.uploadComment(CommentUploadRequest(message, episodeId), token).enqueue(object: Callback<Unit>{
+            override fun onFailure(call: Call<Unit>, t: Throwable) {
+                onStop(true)
+                Log.d("COMMENT UPLOAD", "Comment upload failed")
+            }
+
+            override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
+                onStop(false)
+                Log.d("COMMENT UPLOAD", "Comment upload success")
+            }
+        })
+    }
+
 }

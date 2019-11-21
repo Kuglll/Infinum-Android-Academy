@@ -25,3 +25,9 @@ class EpisodeUploadRequest(
         @Json(name = "season") val season: String
 )
 
+@JsonClass(generateAdapter = true)
+class CommentUploadRequest(
+    @Json(name = "text") val message: String,
+    @Json(name = "episodeId") val episodeId: String
+)
+

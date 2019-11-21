@@ -113,7 +113,7 @@
                 android:id="@+id/episodeSeasonNumberHint"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:hint="@string/seasonEpisode"
+                android:hint="@string/season_episode"
                 android:textSize="17sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

@@ -21,7 +21,7 @@
     <string name="or">or</string>
     <string name="create_an_account">Create an account</string>
     <string name="remember_me">Remember me</string>
-    <string name="fallen_asleep">Some has fallen asleep.\n Don't wake him up.</string>
+    <string name="fallen_asleep">Some has fallen asleep.\n Don\'t wake him up.</string>
     <string name="refresh">Click here to refresh</string>
     <string name="episodes">Episodes</string>
     <string name="add_episodes">Add some episodes</string>

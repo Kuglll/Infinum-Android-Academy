@@ -46,5 +46,8 @@ interface ApiService{
     @GET("/api/episodes/{episodeId}/comments")
     fun getEpisodeComments(@Path("episodeId") episodeId: String): Call<CommentsResult>
 
+    @POST("/api/comments")
+    fun uploadComment(@Body commentUploadRequest: CommentUploadRequest, @Header("Authorization") token: String?): Call<Unit>
+
 }
 

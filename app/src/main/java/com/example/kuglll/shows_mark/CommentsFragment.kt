@@ -80,17 +80,23 @@ class CommentsFragment: Fragment(), FragmentBackListener{
 
         postComment.setOnClickListener {
             postComment(commentEdittext.text.toString())
+            commentEdittext.setText("")
         }
     }
 
     fun postComment(message: String){
-        //TODO: post message via API and update the UI
+        viewModel.uploadComment(message, episodeId, token, {startDialog()}, {requestFailed -> stopDialogAndFetchComments(requestFailed)})
     }
 
     fun initObservers(){
         viewModel.comments.observe(this, Observer<List<Comment>>{ comments ->
             updateUi(comments)
         })
+    }
+
+    fun stopDialogAndFetchComments(requestFailed: Boolean){
+        stopDialog(requestFailed)
+        viewModel.getEpisodeComments(episodeId, {startDialog()}, {request -> stopDialog(request)})
     }
 
     fun updateUi(comments: List<Comment>){
