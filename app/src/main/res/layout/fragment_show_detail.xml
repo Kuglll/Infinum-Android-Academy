@@ -67,7 +67,7 @@
             android:id="@+id/episodes"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Episodes"
+            android:text="@string/episodes"
             android:textSize="20sp"
             android:textColor="@color/black"
             app:layout_constraintTop_toBottomOf="@id/showDescriptionTextView"
@@ -101,7 +101,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/iconSleep"
-            android:text="Some has fallen asleep.\n Don't wake him up."
+            android:text="@string/fallen_asleep"
             android:textSize="15sp"
             android:textAlignment="center"
             android:layout_marginTop="16dp"/>
@@ -113,7 +113,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/fallenAsleepTextView"
-            android:text="Add some episodes"
+            android:text="@string/add_episodes"
             android:textColor="@color/pink"
             android:textSize="15sp"
             android:textAlignment="center"/>

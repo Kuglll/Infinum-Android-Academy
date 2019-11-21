@@ -9,7 +9,7 @@
         android:id="@+id/showsTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Shows"
+        android:text="@string/Shows"
         android:textSize="28sp"
         android:textColor="@color/black"
         app:layout_constraintTop_toTopOf="parent"
@@ -51,7 +51,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/iconSleepShow"
-        android:text="Some has fallen asleep.\n Don't wake him up."
+        android:text="@string/fallen_asleep"
         android:textSize="15sp"
         android:textAlignment="center"
         android:layout_marginTop="16dp"/>
@@ -63,7 +63,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/fallenAsleepShowTextView"
-        android:text="Click here to refresh"
+        android:text="@string/refresh"
         android:textColor="@color/pink"
         android:textSize="15sp"
         android:textAlignment="center"/>

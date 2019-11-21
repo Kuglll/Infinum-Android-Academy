@@ -1,4 +1,34 @@
 <resources>
     <string name="app_name">Shows-Mark</string>
+    <string name="shows">shows</string>
+    <string name="Shows">Shows</string>
+    <string name="you_are_in">You\'re in!</string>
+    <string name="upload_photo">Upload photo</string>
+    <string name="episode_title">Episode title</string>
+    <string name="season_episode">Season &amp; Episode</string>
+    <string name="episode_description">Episode description</string>
+    <string name="save">SAVE</string>
+    <string name="comments_text">Sorry, we don’t have comments yet.\n Be first who will write a review.</string>
+    <string name="enter_comment">Enter your comment here</string>
+    <string name="post">Post</string>
+    <string name="comments">Comments</string>
+    <string name="username">Username</string>
+    <string name="email">e-mail</string>
+    <string name="password">Password</string>
+    <string name="password_again">Password again</string>
+    <string name="login">LOG IN</string>
+    <string name="register">REGISTER</string>
+    <string name="or">or</string>
+    <string name="create_an_account">Create an account</string>
+    <string name="remember_me">Remember me</string>
+    <string name="fallen_asleep">Some has fallen asleep.\n Don't wake him up.</string>
+    <string name="refresh">Click here to refresh</string>
+    <string name="episodes">Episodes</string>
+    <string name="add_episodes">Add some episodes</string>
+    <string name="episode">Episode</string>
+    <string name="season">Season</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
+
 
 </resources>
