@@ -45,7 +45,9 @@ class LoginFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewModel = ViewModelProviders.of(requireActivity()).get(DataViewModel::class.java)
+        activity?.let {
+            viewModel = ViewModelProviders.of(it).get(DataViewModel::class.java)
+        }
 
         val binding: FragmentLoginBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_login, container, false)
         binding.viewmodel = viewModel
@@ -58,13 +60,19 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val sharedPref = requireActivity().getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
-        userLogedIn = sharedPref.getBoolean(REMEMBERME, false)
-        token = sharedPref.getString(TOKEN, null)
-        Log.d("TOKEN", token)
+        activity?.let {
+            val sharedPref = it.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
+            userLogedIn = sharedPref.getBoolean(REMEMBERME, false)
+            token = sharedPref.getString(TOKEN, null)
+            Log.d("TOKEN", token)
+        }
 
         if(userLogedIn) {
-            if(token != null) startActivity(MainActivity.startMainActivity(activity!!))
+            if(token != null){
+                activity?.let {
+                    startActivity(MainActivity.startMainActivity(it))
+                }
+            }
         }
 
         initOnClickListeners()
@@ -102,7 +110,9 @@ class LoginFragment : Fragment() {
                     if(body != null){
                         token = body.data.token
                         storeToken(token)
-                        startActivity(MainActivity.startMainActivity(activity!!))
+                        activity?.let {
+                            startActivity(MainActivity.startMainActivity(it))
+                        }
                     }
                 }
             }
@@ -110,10 +120,12 @@ class LoginFragment : Fragment() {
     }
 
     fun storeToken(token: String?){
-        val sharedPref = requireActivity().getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE) ?: return
-        with (sharedPref.edit()) {
-            putString(TOKEN, token)
-            apply()
+        activity?.let {
+            val sharedPref = it.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE) ?: return
+            with (sharedPref.edit()) {
+                putString(TOKEN, token)
+                apply()
+            }
         }
     }
 
@@ -126,10 +138,12 @@ class LoginFragment : Fragment() {
 
     fun checkForRememberMe(){
         if (rememberMeCheckBox.isChecked){
-            val sharedPref = requireActivity().getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE) ?: return
-            with (sharedPref.edit()) {
-                putBoolean(REMEMBERME, true)
-                apply()
+            activity?.let {
+                val sharedPref = it.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE) ?: return
+                with (sharedPref.edit()) {
+                    putBoolean(REMEMBERME, true)
+                    apply()
+                }
             }
         }
     }
@@ -137,10 +151,15 @@ class LoginFragment : Fragment() {
     fun displayRegisterFragment(){
         viewModel.username.value = usernameEditText.text.toString()
         viewModel.password.value = passwordEdittext.text.toString()
-        activity!!.supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainerLoginRegister, RegisterFragment.returnRegisterFragment())
-            .addToBackStack(LOGIN_FRAGMENT)
-            .commit()
+        activity?.let {
+            it.supportFragmentManager.beginTransaction()
+                .replace(
+                    R.id.fragmentContainerLoginRegister,
+                    RegisterFragment.returnRegisterFragment()
+                )
+                .addToBackStack(LOGIN_FRAGMENT)
+                .commit()
+        }
     }
 
     fun emailMatchesRegex(email: String): Boolean{

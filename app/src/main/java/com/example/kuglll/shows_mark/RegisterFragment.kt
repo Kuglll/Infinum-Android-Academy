@@ -38,7 +38,9 @@ class RegisterFragment : Fragment(){
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewModel = ViewModelProviders.of(requireActivity()).get(DataViewModel::class.java)
+        activity?.let {
+            viewModel = ViewModelProviders.of(it).get(DataViewModel::class.java)
+        }
 
         val binding: FragmentRegisterBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_register, container, false)
         binding.viewmodel = viewModel
@@ -64,7 +66,11 @@ class RegisterFragment : Fragment(){
         registerPasswordEdittext.doOnTextChanged { text, start, count, after ->  validateInput()}
         registerAgainPasswordEdittext.doOnTextChanged { text, start, count, after ->  validateInput()}
 
-        toolbar.setNavigationOnClickListener{ activity!!.onBackPressed() }
+        toolbar.setNavigationOnClickListener{
+            activity?.let {
+                it.onBackPressed()
+            }
+        }
 
         registerButton.setOnClickListener{
             if(passwordsMatch() && emailMatchesRegex(emailEditText.text.toString())){
@@ -90,7 +96,9 @@ class RegisterFragment : Fragment(){
                     // how to get each header: response.headers().get("name")
                     val body = response.body()
                     if(body != null){
-                        startActivity(WelcomeActivity.startWelcomeActivity(activity!!, emailEditText.text.toString()))
+                        activity?.let {
+                            startActivity(WelcomeActivity.startWelcomeActivity(it, emailEditText.text.toString()))
+                        }
                     }
                 }
             }

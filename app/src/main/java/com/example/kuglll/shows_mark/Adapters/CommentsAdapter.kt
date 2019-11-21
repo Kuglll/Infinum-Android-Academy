@@ -10,7 +10,7 @@ import com.example.kuglll.shows_mark.utils.Comment
 import kotlinx.android.synthetic.main.comment_item.view.*
 
 
-class CommentsAdapter(private val dataset: List<Comment>, context: Context) :
+class CommentsAdapter(private val dataset: List<Comment>) :
     RecyclerView.Adapter<CommentsAdapter.CommentViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentViewHolder {

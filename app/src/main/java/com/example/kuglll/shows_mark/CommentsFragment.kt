@@ -44,7 +44,9 @@ class CommentsFragment: Fragment(), FragmentBackListener{
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewModel = ViewModelProviders.of(requireActivity()).get(DataViewModel::class.java)
+        activity?.let {
+            viewModel = ViewModelProviders.of(it).get(DataViewModel::class.java)
+        }
         val binding: FragmentCommentsBinding= DataBindingUtil.inflate(inflater, R.layout.fragment_comments, container, false)
         binding.viewmodel = viewModel
         binding.setLifecycleOwner { lifecycle }
@@ -56,8 +58,10 @@ class CommentsFragment: Fragment(), FragmentBackListener{
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val sharedPref = requireActivity().getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
-        token = sharedPref.getString(TOKEN, null)
+        activity?.let {
+            val sharedPref = it.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
+            token = sharedPref.getString(TOKEN, null)
+        }
 
         viewModel.comments.postValue(listOf())
 
@@ -93,7 +97,7 @@ class CommentsFragment: Fragment(), FragmentBackListener{
         if(comments.size > 0){
             toolbarTitle.text = "Comments"
             commentsRecyclerView.layoutManager = LinearLayoutManager(activity)
-            commentsRecyclerView.adapter = CommentsAdapter(comments, requireContext())
+            commentsRecyclerView.adapter = CommentsAdapter(comments)
 
             commentsRecyclerView.visibility = View.VISIBLE
             noCommentsGroup.visibility = View.GONE

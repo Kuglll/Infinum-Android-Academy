@@ -79,6 +79,8 @@ class AddEpisodeFragment : Fragment(), FragmentBackListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel = ViewModelProviders.of(this).get(DataViewModel::class.java)
+
         if(savedInstanceState != null){
             episodeNumber = savedInstanceState.getInt(EPISODE_NUMBER)
             seasonNumber = savedInstanceState.getInt(SEASON_NUMBER)
@@ -91,12 +93,14 @@ class AddEpisodeFragment : Fragment(), FragmentBackListener {
             }
         }
 
-        val sharedPref = requireActivity().getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
-        token = sharedPref.getString(TOKEN, null)
+        activity?.let {
+            val sharedPref = it.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
+            token = sharedPref.getString(TOKEN, null)
+        }
+        arguments?.let{
+            showId = it.getInt(SHOWID, -1)
+        }
 
-        viewModel = ViewModelProviders.of(this).get(DataViewModel::class.java)
-
-        showId = requireArguments().getInt(SHOWID, -1)
         toolbarTitle.text = "Add episode"
 
         initOnClickListeners()
@@ -115,7 +119,9 @@ class AddEpisodeFragment : Fragment(), FragmentBackListener {
             if(descriptionLength()){
                 uploadEpisode()
             } else{
-                Toast.makeText(requireContext(), "Description should be at least 50 characters long!", Toast.LENGTH_LONG).show()
+                context?.let {
+                    Toast.makeText(it, "Description should be at least 50 characters long!", Toast.LENGTH_LONG).show()
+                }
             }
         }
 
@@ -167,7 +173,9 @@ class AddEpisodeFragment : Fragment(), FragmentBackListener {
 
     fun displayWarningDialog(){
         stopDialog()
-        Toast.makeText(requireContext(), "To upload episode you need internet access!", Toast.LENGTH_LONG).show()
+        context?.let {
+            Toast.makeText(it, "To upload episode you need internet access!", Toast.LENGTH_LONG).show()
+        }
     }
 
     fun uploadEpisode(){
@@ -213,92 +221,107 @@ class AddEpisodeFragment : Fragment(), FragmentBackListener {
     }
 
     fun displayDialog(){
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setTitle("Are you sure you want to quit?")
-        builder.setMessage("You left text in input fields.")
+        context?.let {
+            val builder = AlertDialog.Builder(it)
 
-        builder.setPositiveButton("YES"){dialog, which ->
-            episodeTitleEditText.setText("")
-            episodeDescriptionEditText.setText("")
-            activity?.onBackPressed()
+            builder.setTitle("Are you sure you want to quit?")
+            builder.setMessage("You left text in input fields.")
+
+            builder.setPositiveButton("YES") { dialog, which ->
+                episodeTitleEditText.setText("")
+                episodeDescriptionEditText.setText("")
+                activity?.onBackPressed()
+            }
+
+            builder.setNegativeButton("No") { dialog, which ->
+                //I think I can ignore this
+            }
+
+            val dialog: AlertDialog = builder.create()
+            dialog.show()
         }
-
-        builder.setNegativeButton("No"){dialog,which ->
-            //I think I can ignore this
-        }
-
-        val dialog: AlertDialog = builder.create()
-        dialog.show()
     }
 
     fun displayCameraDialog(){
-        val dialog = Dialog(context!!)
-        dialog.setContentView(R.layout.upload_photo_dialog)
+        context?.let {
+            val dialog = Dialog(it)
+            dialog.setContentView(R.layout.upload_photo_dialog)
 
-        val selectCamera : TextView = dialog.findViewById(R.id.selectCamera)
-        val selectGalery : TextView = dialog.findViewById(R.id.selectGalery)
+            val selectCamera: TextView = dialog.findViewById(R.id.selectCamera)
+            val selectGalery: TextView = dialog.findViewById(R.id.selectGalery)
 
-        selectCamera.setOnClickListener{
-            startCamera()
-            dialog.dismiss()
+            selectCamera.setOnClickListener {
+                startCamera()
+                dialog.dismiss()
+            }
+            selectGalery.setOnClickListener {
+                startGallery()
+                dialog.dismiss()
+            }
+
+            dialog.show()
         }
-        selectGalery.setOnClickListener{
-            startGallery()
-            dialog.dismiss()
-        }
-
-        dialog.show()
     }
 
     fun displayNumberPicker() {
-        val dialog = Dialog(context!!)
-        dialog.setContentView(R.layout.number_picker_dialog)
+        context?.let {
 
-        val episodeNumberPicker: NumberPicker = dialog.findViewById(R.id.episodeNumberPicker)
-        val seasonNumberPicker: NumberPicker = dialog.findViewById(R.id.seasonNumberPicker)
-        val saveEpisodeSeason: TextView = dialog.findViewById(R.id.saveEpisodeSeason)
+            val dialog = Dialog(it)
+            dialog.setContentView(R.layout.number_picker_dialog)
 
-        episodeNumberPicker.minValue = 1
-        episodeNumberPicker.maxValue = 99
+            val episodeNumberPicker: NumberPicker = dialog.findViewById(R.id.episodeNumberPicker)
+            val seasonNumberPicker: NumberPicker = dialog.findViewById(R.id.seasonNumberPicker)
+            val saveEpisodeSeason: TextView = dialog.findViewById(R.id.saveEpisodeSeason)
 
-        seasonNumberPicker.minValue = 1
-        seasonNumberPicker.maxValue = 20
+            episodeNumberPicker.minValue = 1
+            episodeNumberPicker.maxValue = 99
 
-        saveEpisodeSeason.setOnClickListener {
-            episodeNumber = episodeNumberPicker.value
-            seasonNumber = seasonNumberPicker.value
-            episodeSeasonNumber.text = String.format("S %02d E %02d", seasonNumber, episodeNumber)
-            dialog.dismiss()
+            seasonNumberPicker.minValue = 1
+            seasonNumberPicker.maxValue = 20
+
+            saveEpisodeSeason.setOnClickListener {
+                episodeNumber = episodeNumberPicker.value
+                seasonNumber = seasonNumberPicker.value
+                episodeSeasonNumber.text =
+                    String.format("S %02d E %02d", seasonNumber, episodeNumber)
+                dialog.dismiss()
+            }
+
+            dialog.show()
         }
-
-        dialog.show()
     }
 
     fun startGallery(){
-        //if permission is granted start the gallery
-        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            startActivityForResult(galleryIntent, REQUEST_GALLERY_IMAGE)
-        } else { //request for permission
-            requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), GALLERY_PERMISSION_REQUEST)
+        context?.let {
+            //if permission is granted start the gallery
+            if (ActivityCompat.checkSelfPermission(it, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                startActivityForResult(galleryIntent, REQUEST_GALLERY_IMAGE)
+            } else { //request for permission
+                requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), GALLERY_PERMISSION_REQUEST)
+            }
         }
     }
 
     fun startCamera(){
-        //if both permissions are granted, start the camera
-        if(ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
-            Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
-                takePictureIntent.resolveActivity(activity!!.packageManager)?.also {
-                    val photoFile = createPhotoFile()
-                    pathToFile = photoFile.absolutePath
-                    val photoURI = FileProvider.getUriForFile(requireContext(), "com.example.kuglll.shows_mark.fileprovider", photoFile)
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+        activity?.let {activity ->
+            context?.let {ctx ->
+                //if both permissions are granted, start the camera
+                if(ActivityCompat.checkSelfPermission(ctx, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
+                        ActivityCompat.checkSelfPermission(ctx, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
+                    Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+                        takePictureIntent.resolveActivity(activity.packageManager)?.also {
+                            val photoFile = createPhotoFile()
+                            pathToFile = photoFile.absolutePath
+                            val photoURI = FileProvider.getUriForFile(ctx, "com.example.kuglll.shows_mark.fileprovider", photoFile)
+                            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+                        }
+                    }
+                }else{ //request for both permissions
+                    requestPermissions(arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE), CAMERA_PERMISSION_REQUEST)
                 }
             }
-        }else{ //request for both permissions
-            requestPermissions(arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE), CAMERA_PERMISSION_REQUEST)
         }
     }
 
@@ -312,24 +335,26 @@ class AddEpisodeFragment : Fragment(), FragmentBackListener {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_IMAGE_CAPTURE){
-            val drawable = Drawable.createFromPath(pathToFile)
-            episodePhoto.setImageDrawable(drawable)
-        }else if(resultCode == Activity.RESULT_OK && requestCode == REQUEST_GALLERY_IMAGE && data != null){
-            val selectedImage = data.data
-            try{
-                val photoFile = createPhotoFile()
-                pathToFile = photoFile.absolutePath
-                val bitmap = MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, selectedImage)
-                val out = FileOutputStream(pathToFile)
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
+        activity?.let {
+            if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_IMAGE_CAPTURE){
                 val drawable = Drawable.createFromPath(pathToFile)
                 episodePhoto.setImageDrawable(drawable)
-            }catch (exception: IOException){
-                Log.d("Gallery exception", exception.toString())
+            }else if(resultCode == Activity.RESULT_OK && requestCode == REQUEST_GALLERY_IMAGE && data != null){
+                val selectedImage = data.data
+                try{
+                    val photoFile = createPhotoFile()
+                    pathToFile = photoFile.absolutePath
+                    val bitmap = MediaStore.Images.Media.getBitmap(it.contentResolver, selectedImage)
+                    val out = FileOutputStream(pathToFile)
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
+                    val drawable = Drawable.createFromPath(pathToFile)
+                    episodePhoto.setImageDrawable(drawable)
+                }catch (exception: IOException){
+                    Log.d("Gallery exception", exception.toString())
+                }
+            }else{
+                pathToFile = ""
             }
-        }else{
-            pathToFile = ""
         }
     }
 
@@ -358,13 +383,17 @@ class AddEpisodeFragment : Fragment(), FragmentBackListener {
             if(grantResults.isNotEmpty() && allPermisionGranted(grantResults)){
                 startCamera()
             } else{
-                Toast.makeText(requireContext(), "To use camera, we need your permissions", Toast.LENGTH_LONG).show()
+                context?.let {
+                    Toast.makeText(it, "To use camera, we need your permissions", Toast.LENGTH_LONG).show()
+                }
             }
         }else if(requestCode == GALLERY_PERMISSION_REQUEST){
             if(grantResults.isNotEmpty() && grantResults.first() == PackageManager.PERMISSION_GRANTED){
                 startGallery()
             } else{
-                Toast.makeText(requireContext(), "To use gallery, we need your permissions", Toast.LENGTH_LONG).show()
+                context?.let {
+                    Toast.makeText(it, "To use gallery, we need your permissions", Toast.LENGTH_LONG).show()
+                }
             }
         }else{
             super.onRequestPermissionsResult(requestCode, permissions, grantResults)

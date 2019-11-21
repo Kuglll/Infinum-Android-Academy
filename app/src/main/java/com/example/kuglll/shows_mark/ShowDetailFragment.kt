@@ -60,7 +60,9 @@ class ShowDetailFragment : Fragment(), FragmentBackListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewModel = ViewModelProviders.of(requireActivity()).get(DataViewModel::class.java)
+        activity?.let {
+            viewModel = ViewModelProviders.of(it).get(DataViewModel::class.java)
+        }
         val binding: FragmentShowDetailBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_show_detail, container, false)
         binding.viewmodel = viewModel
         binding.setLifecycleOwner { lifecycle }
@@ -72,16 +74,20 @@ class ShowDetailFragment : Fragment(), FragmentBackListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val sharedPref = requireActivity().getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
-        token = sharedPref.getString(TOKEN, null)
+        activity?.let {
+            val sharedPref = it.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
+            token = sharedPref.getString(TOKEN, null)
+        }
 
         viewModel.showDescription.value = "Missing description!"
         viewModel.likeStatus.value = null
         viewModel.episodes.postValue(listOf())
 
 
-        showId = arguments!!.getString(SHOWID, "")
-        showTitle = arguments!!.getString(TITLE, "")
+        arguments?.let {
+            showId = it.getString(SHOWID, "")
+            showTitle = it.getString(TITLE, "")
+        }
         toolbarTitle.text = showTitle
 
         viewModel.fetchShowDetails(showId, {requestFailed -> stopDialog(requestFailed, "")})
@@ -172,10 +178,12 @@ class ShowDetailFragment : Fragment(), FragmentBackListener {
     }
 
     fun displayAddEpisodeFragment(){
-        activity!!.supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainer, AddEpisodeFragment.returnAddEpisodeFragment(showId))
-            .addToBackStack("AddEpisode")
-            .commit()
+        activity?.let {
+            it.supportFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, AddEpisodeFragment.returnAddEpisodeFragment(showId))
+                .addToBackStack("AddEpisode")
+                .commit()
+        }
     }
 
     fun initEpisodes(){
@@ -186,10 +194,12 @@ class ShowDetailFragment : Fragment(), FragmentBackListener {
     }
 
     fun displayEpisodeDetailFragment(episodeId: String){
-        activity!!.supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainer, EpisodeDetailFragment.returnEpisodeDetailFragment(episodeId))
-            .addToBackStack("EpisodeDetail")
-            .commit()
+        activity?.let {
+            it.supportFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, EpisodeDetailFragment.returnEpisodeDetailFragment(episodeId))
+                .addToBackStack("EpisodeDetail")
+                .commit()
+        }
     }
 
     fun displayEpisodes() {

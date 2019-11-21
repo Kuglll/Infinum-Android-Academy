@@ -42,7 +42,9 @@ class EpisodeDetailFragment: Fragment(), FragmentBackListener{
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewModel = ViewModelProviders.of(requireActivity()).get(DataViewModel::class.java)
+        activity?.let {
+            viewModel = ViewModelProviders.of(it).get(DataViewModel::class.java)
+        }
         val binding: FragmentEpisodeDetailBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_episode_detail, container, false)
         binding.viewmodel = viewModel
         binding.setLifecycleOwner { lifecycle }
@@ -102,10 +104,12 @@ class EpisodeDetailFragment: Fragment(), FragmentBackListener{
     }
 
     fun displayCommentsFragment(){
-        activity!!.supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainer, CommentsFragment.returnCommentsFragment(episodeId))
-            .addToBackStack("Comments")
-            .commit()
+        activity?.let {
+            it.supportFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, CommentsFragment.returnCommentsFragment(episodeId))
+                .addToBackStack("Comments")
+                .commit()
+        }
     }
 
 

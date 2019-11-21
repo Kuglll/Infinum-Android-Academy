@@ -46,15 +46,19 @@ class ShowFragment : Fragment(), FragmentBackListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewModel = ViewModelProviders.of(requireActivity()).get(DataViewModel::class.java)
+        activity?.let {
+            viewModel = ViewModelProviders.of(it).get(DataViewModel::class.java)
+        }
         return inflater.inflate(R.layout.fragment_show, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val sharedPref = requireActivity().getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
-        userLogedIn = sharedPref.getBoolean(REMEMBERME, false)
+        activity?.let {
+            val sharedPref = it.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
+            userLogedIn = sharedPref.getBoolean(REMEMBERME, false)
+        }
 
         initShowObserver()
 
@@ -87,8 +91,12 @@ class ShowFragment : Fragment(), FragmentBackListener {
             if(userLogedIn) {
                 displayDialog()
             } else{
-                startActivity(LoginRegisterActivity.startLoginRegisterActivity(requireContext()))
-                activity!!.finish()
+                context?.let {ctx ->
+                    startActivity(LoginRegisterActivity.startLoginRegisterActivity(ctx))
+                    activity?.let {
+                        it.finish()
+                    }
+                }
              }
         }
         sleepGroupShows.setAllOnClickListeners(object: View.OnClickListener{
@@ -121,36 +129,44 @@ class ShowFragment : Fragment(), FragmentBackListener {
     }
 
     fun displayDialog(){
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setTitle("Are you sure you want to log out?")
+        context?.let {ctx ->
+            val builder = AlertDialog.Builder(ctx)
+            builder.setTitle("Are you sure you want to log out?")
 
-        builder.setPositiveButton("YES"){dialog, which ->
-            logout()
-            startActivity(LoginRegisterActivity.startLoginRegisterActivity(requireContext()))
-            activity!!.finish()
+            activity?.let {
+                builder.setPositiveButton("YES") { dialog, which ->
+                    logout()
+                    startActivity(LoginRegisterActivity.startLoginRegisterActivity(ctx))
+                    it.finish()
+                }
+            }
+
+            builder.setNegativeButton("No") { dialog, which ->
+                //I think I can ignore this
+            }
+
+            val dialog: AlertDialog = builder.create()
+            dialog.show()
         }
-
-        builder.setNegativeButton("No"){dialog,which ->
-            //I think I can ignore this
-        }
-
-        val dialog: AlertDialog = builder.create()
-        dialog.show()
     }
 
     fun logout(){
-        val sharedPref = requireActivity().getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE) ?: return
-        with (sharedPref.edit()) {
-            putBoolean(REMEMBERME, false)
-            commit()
+        activity?.let {
+            val sharedPref = it.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE) ?: return
+            with (sharedPref.edit()) {
+                putBoolean(REMEMBERME, false)
+                commit()
+            }
         }
     }
 
     fun displayShowDetailFragment(showId: String, title: String){
-        activity!!.supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainer, ShowDetailFragment.returnShowDetailFragment(showId, title))
-            .addToBackStack("ShowDetail")
-            .commit()
+        activity?.let {
+            it.supportFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, ShowDetailFragment.returnShowDetailFragment(showId, title))
+                .addToBackStack("ShowDetail")
+                .commit()
+        }
     }
 
     override fun onPause() {
@@ -161,12 +177,14 @@ class ShowFragment : Fragment(), FragmentBackListener {
         }
     }
 
-    override fun onBackPressed(): Boolean{
-        if(call != null) call?.cancel()
-        if(userLogedIn){
-            requireActivity().finishAffinity()
-        } else {
-            startActivity(LoginRegisterActivity.startLoginRegisterActivity(requireActivity()))
+    override fun onBackPressed(): Boolean {
+        activity?.let {
+            if (call != null) call?.cancel()
+            if (userLogedIn) {
+                it.finishAffinity()
+            } else {
+                startActivity(LoginRegisterActivity.startLoginRegisterActivity(it))
+            }
         }
         return true
     }
