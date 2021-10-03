@@ -10,5 +10,6 @@ Screenshots:
 ![](Screenshots/main.jpg)
 ![](Screenshots/details.jpg)
 ![](Screenshots/add_episode.jpg)
+![](Screenshots/episode_details.jpg)
 ![](Screenshots/comments.jpg)
 
